@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
@@ -36,7 +36,7 @@ export function Editor({
 }: EditorProps) {
   const [selection, setSelection] = useState<TextSelection | null>(null);
   const [showFreeform, setShowFreeform] = useState(false);
-  const recentAIResponsesRef = useRef<string[]>([]);
+  const [recentAIResponses] = useState<string[]>(() => []);
   const { updateContent } = useRevisions({ documentId });
 
   const handleExternalPaste = useCallback(
@@ -70,7 +70,7 @@ export function Editor({
       PasteHandler.configure({
         documentId,
         onExternalPaste: handleExternalPaste,
-        recentAIResponses: recentAIResponsesRef.current,
+        recentAIResponses,
       }),
     ],
     content,

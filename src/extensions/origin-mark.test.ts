@@ -90,7 +90,8 @@ describe("OriginMark", () => {
       .run();
 
     const json = editor.getJSON();
-    const textNode = json.content?.[0]?.content?.[0];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const textNode = json.content?.[0]?.content?.[0] as any;
     expect(textNode?.text).toBe("AI suggestion");
     expect(textNode?.marks?.[0]?.attrs?.type).toBe("ai");
     expect(textNode?.marks?.[0]?.attrs?.sourceId).toBe("src-abc");
@@ -109,7 +110,8 @@ describe("OriginMark", () => {
     });
 
     const json = editor.getJSON();
-    const textNode = json.content?.[0]?.content?.[0];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const textNode = json.content?.[0]?.content?.[0] as any;
     expect(textNode?.text).toBe("Human typed text");
     expect(textNode?.marks).toBeUndefined();
   });
