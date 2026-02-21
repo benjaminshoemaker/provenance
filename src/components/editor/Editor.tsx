@@ -13,6 +13,7 @@ import { Toolbar } from "./Toolbar";
 import { InlineAI } from "./InlineAI";
 import { SidePanel } from "./SidePanel";
 import { FreeformAI } from "./FreeformAI";
+import { BadgeList } from "./BadgeList";
 import NextLink from "next/link";
 
 interface EditorProps {
@@ -147,11 +148,14 @@ export function Editor({
           />
         )}
       </div>
-      <SidePanel
-        documentId={documentId}
-        provider={provider}
-        documentContent={content}
-      />
+      <div className="flex w-80 flex-col gap-4">
+        <SidePanel
+          documentId={documentId}
+          provider={provider}
+          documentContent={content}
+        />
+        <BadgeList documentId={documentId} />
+      </div>
       {showFreeform && (
         <FreeformAI
           documentId={documentId}

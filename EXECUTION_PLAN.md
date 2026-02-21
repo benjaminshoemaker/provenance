@@ -1041,13 +1041,13 @@ Display badges on the dashboard (badge count per document) and on the document e
 **Requirement:** REQ-035
 
 **Acceptance Criteria:**
-- [ ] (CODE) Dashboard shows badge count next to each document
+- [x] (CODE) Dashboard shows badge count next to each document
   - Verify: `grep -q 'badge\|Badge' src/app/dashboard/page.tsx`
-- [ ] (CODE) Editor page shows list of badges with verification URLs
+- [x] (CODE) Editor page shows list of badges with verification URLs
   - Verify: `grep -q 'badge\|Badge' src/components/editor/BadgeList.tsx`
-- [ ] (CODE) Each badge entry has copy buttons for HTML and Markdown snippets
+- [x] (CODE) Each badge entry has copy buttons for HTML and Markdown snippets
   - Verify: `grep -q 'copy\|snippet' src/components/editor/BadgeList.tsx`
-- [ ] (TEST) Badge list fetches badges for the current document
+- [x] (TEST) Badge list fetches badges for the current document
   - Verify: `npx vitest run src/components/editor/BadgeList.test.tsx`
 
 **Files to Create:**

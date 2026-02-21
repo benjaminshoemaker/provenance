@@ -113,6 +113,10 @@ vi.mock("next/link", () => ({
   ),
 }));
 
+vi.mock("./BadgeList", () => ({
+  BadgeList: () => <div data-testid="badge-list">Badge list</div>,
+}));
+
 import { Editor } from "./Editor";
 import { useEditor } from "@tiptap/react";
 

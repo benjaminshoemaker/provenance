@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { documents } from "@/lib/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { documents, badges } from "@/lib/db/schema";
+import { eq, desc, sql } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { createDocument, deleteDocument } from "@/app/actions/documents";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,28 @@ export default async function DashboardPage() {
     .orderBy(desc(documents.updatedAt));
 
   const activeDocuments = userDocuments.filter((doc) => !doc.deletedAt);
+
+  // Fetch badge counts per document
+  const badgeCountMap = new Map<string, number>();
+  if (activeDocuments.length > 0) {
+    const badgeCounts = await db
+      .select({
+        documentId: badges.documentId,
+        count: sql<number>`count(*)::int`,
+      })
+      .from(badges)
+      .where(
+        sql`${badges.documentId} IN (${sql.join(
+          activeDocuments.map((d) => sql`${d.id}`),
+          sql`, `
+        )})`
+      )
+      .groupBy(badges.documentId);
+
+    for (const b of badgeCounts) {
+      badgeCountMap.set(b.documentId, b.count);
+    }
+  }
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
@@ -62,6 +84,11 @@ export default async function DashboardPage() {
                       ? new Date(doc.updatedAt).toLocaleDateString()
                       : "Unknown"}
                     {doc.wordCount ? ` · ${doc.wordCount} words` : ""}
+                    {(badgeCountMap.get(doc.id) ?? 0) > 0 && (
+                      <span className="ml-2 inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                        {badgeCountMap.get(doc.id)} Badge{badgeCountMap.get(doc.id)! > 1 ? "s" : ""}
+                      </span>
+                    )}
                   </CardDescription>
                 </Link>
                 <form
