@@ -23,6 +23,12 @@ export const providers: Record<string, AIProvider> = {
   },
 };
 
+export function isValidModel(providerId: string, modelId: string): boolean {
+  const provider = providers[providerId];
+  if (!provider) return false;
+  return provider.models.some((m) => m.id === modelId);
+}
+
 export function getModel(providerId: string, modelId?: string) {
   const provider = providers[providerId];
   if (!provider) throw new Error(`Unknown provider: ${providerId}`);

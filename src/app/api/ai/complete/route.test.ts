@@ -14,6 +14,7 @@ const mocks = vi.hoisted(() => {
     })),
     mockToUIMessageStreamResponse,
     mockGetModel: vi.fn(() => "mock-model"),
+    mockIsValidModel: vi.fn(() => true),
     mockCheckRateLimit: vi.fn(),
     mockConvertToModelMessages: vi.fn((msgs: unknown) => msgs),
     mockDbSelect,
@@ -33,6 +34,7 @@ vi.mock("ai", () => ({
 
 vi.mock("@/lib/ai/providers", () => ({
   getModel: mocks.mockGetModel,
+  isValidModel: mocks.mockIsValidModel,
   providers: {
     anthropic: {
       id: "anthropic",
@@ -89,6 +91,7 @@ describe("POST /api/ai/complete", () => {
       user: { id: "user-1", name: "Test User", email: "test@test.com" },
     });
     mocks.mockCheckRateLimit.mockResolvedValue({ allowed: true });
+    mocks.mockIsValidModel.mockReturnValue(true);
     mocks.mockToUIMessageStreamResponse.mockReturnValue(
       new Response("stream", { status: 200 })
     );
@@ -129,6 +132,48 @@ describe("POST /api/ai/complete", () => {
       prompt: "test",
       mode: "unknown",
       provider: "anthropic",
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(400);
+  });
+
+  it("should return 400 when prompt exceeds max length", async () => {
+    const req = createRequest({
+      prompt: "x".repeat(10_001),
+      mode: "inline",
+      provider: "anthropic",
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(400);
+  });
+
+  it("should return 400 when context exceeds max length", async () => {
+    const req = createRequest({
+      prompt: "test",
+      context: "x".repeat(100_001),
+      mode: "inline",
+      provider: "anthropic",
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(400);
+  });
+
+  it("should return 400 when neither prompt nor messages provided", async () => {
+    const req = createRequest({
+      mode: "inline",
+      provider: "anthropic",
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(400);
+  });
+
+  it("should return 400 for invalid model", async () => {
+    mocks.mockIsValidModel.mockReturnValue(false);
+    const req = createRequest({
+      prompt: "test",
+      mode: "inline",
+      provider: "anthropic",
+      model: "nonexistent-model",
     });
     const res = await POST(req);
     expect(res.status).toBe(400);
@@ -224,6 +269,26 @@ describe("POST /api/ai/complete", () => {
     );
     expect(mocks.mockStreamText).toHaveBeenCalledWith(
       expect.objectContaining({
+        messages,
+      })
+    );
+  });
+
+  it("should inject context into system prompt for messages mode", async () => {
+    const messages = [
+      { role: "user", content: "Summarize the document" },
+    ];
+    const req = createRequest({
+      messages,
+      context: "This is the document content.",
+      mode: "side_panel",
+      provider: "anthropic",
+    });
+    await POST(req);
+
+    expect(mocks.mockStreamText).toHaveBeenCalledWith(
+      expect.objectContaining({
+        system: expect.stringContaining("Document context:\nThis is the document content."),
         messages,
       })
     );

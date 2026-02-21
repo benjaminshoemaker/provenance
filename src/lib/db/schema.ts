@@ -71,20 +71,24 @@ export const verificationTokens = pgTable(
 
 // ─── Domain Tables ──────────────────────────────────────────────────────────
 
-export const documents = pgTable("documents", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => users.id),
-  title: text("title").notNull().default("Untitled"),
-  content: jsonb("content")
-    .notNull()
-    .default('{"type":"doc","content":[{"type":"paragraph"}]}'),
-  wordCount: integer("word_count").default(0),
-  deletedAt: timestamp("deleted_at", { withTimezone: true }),
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
-});
+export const documents = pgTable(
+  "documents",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id),
+    title: text("title").notNull().default("Untitled"),
+    content: jsonb("content")
+      .notNull()
+      .default('{"type":"doc","content":[{"type":"paragraph"}]}'),
+    wordCount: integer("word_count").default(0),
+    deletedAt: timestamp("deleted_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+  },
+  (table) => [index("documents_user_updated_idx").on(table.userId, table.updatedAt)]
+);
 
 export const revisions = pgTable(
   "revisions",
@@ -101,74 +105,97 @@ export const revisions = pgTable(
   (table) => [index("revisions_document_created_idx").on(table.documentId, table.createdAt)]
 );
 
-export const aiInteractions = pgTable("ai_interactions", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  documentId: uuid("document_id")
-    .notNull()
-    .references(() => documents.id),
-  sessionId: uuid("session_id").references(() => writingSessions.id),
-  mode: text("mode").notNull(),
-  prompt: text("prompt").notNull(),
-  selectedText: text("selected_text"),
-  response: text("response").notNull(),
-  action: text("action").notNull(),
-  documentDiff: jsonb("document_diff"),
-  charactersInserted: integer("characters_inserted").default(0),
-  provider: text("provider").notNull(),
-  model: text("model").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
-});
+export const aiInteractions = pgTable(
+  "ai_interactions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    documentId: uuid("document_id")
+      .notNull()
+      .references(() => documents.id),
+    sessionId: uuid("session_id").references(() => writingSessions.id),
+    mode: text("mode").notNull(),
+    prompt: text("prompt").notNull(),
+    selectedText: text("selected_text"),
+    response: text("response").notNull(),
+    action: text("action").notNull(),
+    documentDiff: jsonb("document_diff"),
+    charactersInserted: integer("characters_inserted").default(0),
+    provider: text("provider").notNull(),
+    model: text("model").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  },
+  (table) => [index("ai_interactions_document_created_idx").on(table.documentId, table.createdAt)]
+);
 
-export const pasteEvents = pgTable("paste_events", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  documentId: uuid("document_id")
-    .notNull()
-    .references(() => documents.id),
-  sessionId: uuid("session_id").references(() => writingSessions.id),
-  content: text("content").notNull(),
-  sourceType: text("source_type").notNull(),
-  characterCount: integer("character_count").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
-});
+export const pasteEvents = pgTable(
+  "paste_events",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    documentId: uuid("document_id")
+      .notNull()
+      .references(() => documents.id),
+    sessionId: uuid("session_id").references(() => writingSessions.id),
+    content: text("content").notNull(),
+    sourceType: text("source_type").notNull(),
+    characterCount: integer("character_count").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  },
+  (table) => [index("paste_events_document_created_idx").on(table.documentId, table.createdAt)]
+);
 
-export const writingSessions = pgTable("writing_sessions", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  documentId: uuid("document_id")
-    .notNull()
-    .references(() => documents.id),
-  userId: text("user_id")
-    .notNull()
-    .references(() => users.id),
-  startedAt: timestamp("started_at", { withTimezone: true }).notNull(),
-  endedAt: timestamp("ended_at", { withTimezone: true }),
-  activeSeconds: integer("active_seconds").default(0),
-  lastHeartbeat: timestamp("last_heartbeat", { withTimezone: true }),
-});
+export const writingSessions = pgTable(
+  "writing_sessions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    documentId: uuid("document_id")
+      .notNull()
+      .references(() => documents.id),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id),
+    startedAt: timestamp("started_at", { withTimezone: true }).notNull(),
+    endedAt: timestamp("ended_at", { withTimezone: true }),
+    activeSeconds: integer("active_seconds").default(0),
+    lastHeartbeat: timestamp("last_heartbeat", { withTimezone: true }),
+  },
+  (table) => [
+    index("writing_sessions_document_idx").on(table.documentId),
+    index("writing_sessions_user_idx").on(table.userId),
+  ]
+);
 
-export const badges = pgTable("badges", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  documentId: uuid("document_id")
-    .notNull()
-    .references(() => documents.id),
-  verificationId: text("verification_id").notNull().unique(),
-  documentTitle: text("document_title").notNull(),
-  documentText: text("document_text").notNull(),
-  documentContent: jsonb("document_content").notNull(),
-  auditTrail: jsonb("audit_trail").notNull(),
-  stats: jsonb("stats").notNull(),
-  imageUrl: text("image_url"),
-  isTakenDown: boolean("is_taken_down").default(false),
-  takedownReason: text("takedown_reason"),
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
-});
+export const badges = pgTable(
+  "badges",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    documentId: uuid("document_id")
+      .notNull()
+      .references(() => documents.id),
+    verificationId: text("verification_id").notNull().unique(),
+    documentTitle: text("document_title").notNull(),
+    documentText: text("document_text").notNull(),
+    documentContent: jsonb("document_content").notNull(),
+    auditTrail: jsonb("audit_trail").notNull(),
+    stats: jsonb("stats").notNull(),
+    imageUrl: text("image_url"),
+    isTakenDown: boolean("is_taken_down").default(false),
+    takedownReason: text("takedown_reason"),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  },
+  (table) => [index("badges_document_created_idx").on(table.documentId, table.createdAt)]
+);
 
-export const aiRequestLog = pgTable("ai_request_log", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => users.id),
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
-});
+export const aiRequestLog = pgTable(
+  "ai_request_log",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  },
+  (table) => [index("ai_request_log_user_created_idx").on(table.userId, table.createdAt)]
+);
 
 // ─── Relations ──────────────────────────────────────────────────────────────
 

@@ -1,8 +1,9 @@
 import { streamText, convertToModelMessages } from "ai";
 import { auth } from "@/auth";
-import { getModel } from "@/lib/ai/providers";
+import { getModel, isValidModel } from "@/lib/ai/providers";
 import { getSystemPrompt } from "@/lib/ai/system-prompts";
 import { checkRateLimit } from "@/lib/ai/rate-limit";
+import { aiCompletionSchema } from "@/lib/ai/schemas";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -16,8 +17,19 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json();
-  const { messages, prompt, context, selectedText, mode } = body;
-  let { provider, model } = body;
+
+  // Validate request body with Zod
+  const parsed = aiCompletionSchema.safeParse(body);
+  if (!parsed.success) {
+    return Response.json(
+      { error: "Invalid request", issues: parsed.error.issues },
+      { status: 400 }
+    );
+  }
+
+  const { messages, prompt, context, selectedText, mode } = parsed.data;
+  let provider = parsed.data.provider;
+  let model = parsed.data.model;
 
   // Read user's aiProvider preference as fallback
   if (!provider) {
@@ -25,39 +37,13 @@ export async function POST(req: Request) {
       .select({ aiProvider: users.aiProvider, aiModel: users.aiModel })
       .from(users)
       .where(eq(users.id, session.user.id));
-    provider = userRow?.aiProvider || "anthropic";
+    provider = (userRow?.aiProvider as "anthropic" | "openai") || "anthropic";
     if (!model) model = userRow?.aiModel || undefined;
   }
 
-  if (!mode || !provider) {
-    return Response.json(
-      { error: "Missing required fields: mode, provider" },
-      { status: 400 }
-    );
-  }
-
-  if (!prompt && (!messages || messages.length === 0)) {
-    return Response.json(
-      { error: "Missing prompt or messages" },
-      { status: 400 }
-    );
-  }
-
-  if (!["inline", "side_panel", "freeform"].includes(mode)) {
-    return Response.json({ error: "Invalid mode" }, { status: 400 });
-  }
-
-  if (!["anthropic", "openai"].includes(provider)) {
-    return Response.json({ error: "Invalid provider" }, { status: 400 });
-  }
-
   // Validate model against allowlist if specified
-  if (model) {
-    const { providers } = await import("@/lib/ai/providers");
-    const providerConfig = providers[provider];
-    if (providerConfig && !providerConfig.models.some((m) => m.id === model)) {
-      return Response.json({ error: "Invalid model for provider" }, { status: 400 });
-    }
+  if (model && !isValidModel(provider, model)) {
+    return Response.json({ error: "Invalid model for provider" }, { status: 400 });
   }
 
   // Rate limit check (database-backed, serverless-safe)
@@ -74,10 +60,17 @@ export async function POST(req: Request) {
 
   // Build streamText options based on input type
   if (messages) {
+    // Inject document context into system prompt for Side Panel mode
+    let system = systemPrompt;
+    if (context) {
+      system = `${systemPrompt}\n\nDocument context:\n${context}`;
+    }
+
     const result = streamText({
       model: aiModel,
-      system: systemPrompt,
-      messages: await convertToModelMessages(messages),
+      system,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      messages: await convertToModelMessages(messages as any),
     });
 
     return result.toUIMessageStreamResponse({
@@ -100,7 +93,7 @@ export async function POST(req: Request) {
   }
 
   // Single prompt mode (inline/freeform)
-  let fullPrompt = prompt;
+  let fullPrompt = prompt!;
   if (selectedText) {
     fullPrompt = `Selected text: "${selectedText}"\n\nInstruction: ${prompt}`;
   }

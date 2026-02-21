@@ -1,6 +1,5 @@
 import { db } from "@/lib/db";
-import { aiRequestLog } from "@/lib/db/schema";
-import { eq, gte, and, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 
 const RATE_LIMIT = 20;
 const WINDOW_MS = 60_000;
@@ -10,19 +9,18 @@ export async function checkRateLimit(
 ): Promise<{ allowed: boolean }> {
   const windowStart = new Date(Date.now() - WINDOW_MS);
 
-  // Log this request
-  await db.insert(aiRequestLog).values({ userId });
+  // Atomic: insert the request log row AND count the window in a single statement
+  const result = await db.execute(sql`
+    WITH inserted AS (
+      INSERT INTO ai_request_log (id, user_id, created_at)
+      VALUES (gen_random_uuid(), ${userId}, now())
+    )
+    SELECT count(*)::int AS count
+    FROM ai_request_log
+    WHERE user_id = ${userId}
+      AND created_at >= ${windowStart}
+  `);
 
-  // Count requests in the window
-  const result = await db
-    .select({ count: sql<number>`count(*)::int` })
-    .from(aiRequestLog)
-    .where(
-      and(
-        eq(aiRequestLog.userId, userId),
-        gte(aiRequestLog.createdAt, windowStart)
-      )
-    );
-
-  return { allowed: (result[0]?.count ?? 0) <= RATE_LIMIT };
+  const count = (result.rows[0] as { count: number })?.count ?? 0;
+  return { allowed: count < RATE_LIMIT };
 }

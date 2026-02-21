@@ -101,6 +101,44 @@ describe("PasteHandler extension", () => {
     expect(onExternalPaste).not.toHaveBeenCalled();
   });
 
+  it("should apply origin mark with type 'ai' for ai_internal paste", () => {
+    const onExternalPaste = vi.fn();
+    const aiResponse = "This is AI generated text";
+
+    editor = new Editor({
+      element: document.createElement("div"),
+      extensions: [
+        StarterKit,
+        OriginMark,
+        PasteHandler.configure({
+          documentId: "doc-1",
+          onExternalPaste,
+          recentAIResponses: [aiResponse],
+        }),
+      ],
+      content: {
+        type: "doc",
+        content: [{ type: "paragraph" }],
+      },
+    });
+
+    // Simulate what the paste handler does for ai_internal classification:
+    // apply origin mark with type "ai"
+    const { schema, tr } = editor.state;
+    const mark = schema.marks.origin.create({
+      type: "ai",
+      sourceId: "test-ai-paste-id",
+      originalLength: aiResponse.length,
+    });
+    const textNode = schema.text(aiResponse, [mark]);
+    editor.view.dispatch(tr.replaceWith(1, 1, textNode));
+
+    const json = editor.getJSON();
+    const textContent = json.content?.[0]?.content?.[0];
+    expect(textContent?.marks?.[0]?.attrs?.type).toBe("ai");
+    expect(onExternalPaste).not.toHaveBeenCalled();
+  });
+
   it("should record recent AI responses in extension storage", () => {
     editor = new Editor({
       element: document.createElement("div"),

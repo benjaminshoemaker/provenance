@@ -99,9 +99,24 @@ export const PasteHandler = Extension.create<PasteHandlerOptions>({
             );
 
             if (classification === "ai_internal") {
-              // Let default paste handling proceed — AI origin is
-              // tracked separately through the AI interaction flow.
-              return false;
+              // Apply origin mark with type "ai" so metrics count this correctly
+              const { schema: aiSchema } = view.state;
+              const aiOriginMarkType = aiSchema.marks.origin;
+              if (!aiOriginMarkType) return false;
+
+              const aiSourceId = nanoid();
+              const aiMark = aiOriginMarkType.create({
+                type: "ai",
+                sourceId: aiSourceId,
+                originalLength: clipboardText.length,
+              });
+
+              const aiTextNode = aiSchema.text(clipboardText, [aiMark]);
+              const { from: aiFrom, to: aiTo } = view.state.selection;
+              const aiTr = view.state.tr.replaceWith(aiFrom, aiTo, aiTextNode);
+              view.dispatch(aiTr);
+
+              return true;
             }
 
             // External paste — apply origin mark and log
