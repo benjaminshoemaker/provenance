@@ -63,10 +63,31 @@
       },
       {
         "phase": 3,
-        "status": "COMPLETE",
+        "status": "CHECKPOINTED",
         "started_at": "2026-02-21T01:00:00.000Z",
-        "completed_at": "2026-02-21T01:33:00.000Z",
-        "checkpoint": null,
+        "completed_at": "2026-02-21T01:45:00.000Z",
+        "checkpoint": {
+          "tests_passed": true,
+          "type_check_passed": true,
+          "lint_passed": true,
+          "build_passed": true,
+          "security_passed": true,
+          "mutation_tests_passed": false,
+          "coverage_percent": null,
+          "manual_verified": true,
+          "codex_review": {
+            "status": "needs_attention",
+            "critical_issues": 4,
+            "recommendations": 4,
+            "notes": "4 security findings: missing document ownership check in logAIInteraction, rate limit bypass via client-side logging, model ID not allowlisted, no input size bounds. All accepted as risk — will address in hardening pass.",
+            "user_accepted_risks": [
+              "logAIInteraction lacks document ownership check",
+              "Rate limiting based on ai_interactions not actual requests",
+              "Model ID not validated against allowlist",
+              "No input schema validation or size bounds"
+            ]
+          }
+        },
         "tasks": [
           { "id": "3.1.A", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
           { "id": "3.2.A", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },

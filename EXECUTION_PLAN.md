@@ -664,14 +664,14 @@ Allow users to choose their AI provider (Anthropic or OpenAI) and preferred mode
 ### Phase 3 Checkpoint
 
 **Automated Checks:**
-- [ ] All tests pass: `npx vitest run`
-- [ ] Type checking passes: `npx tsc --noEmit`
-- [ ] Build succeeds: `npm run build`
+- [x] All tests pass: `npx vitest run`
+- [x] Type checking passes: `npx tsc --noEmit`
+- [x] Build succeeds: `npm run build`
 
 **Regression Verification:**
-- [ ] Editor auto-save still works
-- [ ] Session tracking still works
-- [ ] Document CRUD from dashboard still works
+- [x] Editor auto-save still works
+- [x] Session tracking still works
+- [x] Document CRUD from dashboard still works
 
 ---
 
