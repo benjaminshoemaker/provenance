@@ -152,7 +152,6 @@ describe("deleteDocument", () => {
 
     mocks.mockUpdate.mockReturnValue({ set: mocks.mockSet });
     mocks.mockSet.mockReturnValue({ where: mocks.mockWhere });
-    mocks.mockWhere.mockResolvedValue(undefined);
   });
 
   it("should set deleted_at (soft-delete) instead of row deletion", async () => {
