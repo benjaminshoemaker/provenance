@@ -58,6 +58,24 @@ vi.mock("@tiptap/extension-image", () => ({
   },
 }));
 
+vi.mock("@ai-sdk/react", () => ({
+  useCompletion: vi.fn(() => ({
+    completion: "",
+    complete: vi.fn(),
+    isLoading: false,
+    stop: vi.fn(),
+    setCompletion: vi.fn(),
+    input: "",
+    setInput: vi.fn(),
+    handleInputChange: vi.fn(),
+    handleSubmit: vi.fn(),
+  })),
+}));
+
+vi.mock("@/app/actions/ai-interactions", () => ({
+  logAIInteraction: vi.fn(),
+}));
+
 import { Editor } from "./Editor";
 import { useEditor } from "@tiptap/react";
 

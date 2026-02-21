@@ -1,19 +1,35 @@
 "use client";
 
+import { useState, useEffect, useCallback } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import { Toolbar } from "./Toolbar";
+import { InlineAI } from "./InlineAI";
 
 interface EditorProps {
   content: Record<string, unknown>;
   documentId: string;
   title: string;
+  provider?: string;
   onUpdate?: (json: Record<string, unknown>) => void;
 }
 
-export function Editor({ content, onUpdate }: EditorProps) {
+interface TextSelection {
+  text: string;
+  from: number;
+  to: number;
+}
+
+export function Editor({
+  content,
+  documentId,
+  onUpdate,
+  provider = "anthropic",
+}: EditorProps) {
+  const [selection, setSelection] = useState<TextSelection | null>(null);
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -37,13 +53,47 @@ export function Editor({ content, onUpdate }: EditorProps) {
     },
   });
 
+  useEffect(() => {
+    if (!editor) return;
+
+    const handleSelectionUpdate = () => {
+      const { from, to } = editor.state.selection;
+      if (from !== to) {
+        const text = editor.state.doc.textBetween(from, to);
+        setSelection({ text, from, to });
+      } else {
+        setSelection(null);
+      }
+    };
+
+    editor.on("selectionUpdate", handleSelectionUpdate);
+    return () => {
+      editor.off("selectionUpdate", handleSelectionUpdate);
+    };
+  }, [editor]);
+
+  const handleDismissInlineAI = useCallback(() => {
+    setSelection(null);
+  }, []);
+
   return (
-    <div className="rounded-lg border">
+    <div className="relative rounded-lg border">
       <Toolbar editor={editor} />
       <EditorContent
         editor={editor}
         className="prose prose-neutral dark:prose-invert max-w-none p-4 focus-within:outline-none [&_.tiptap]:min-h-[60vh] [&_.tiptap]:outline-none"
       />
+      {selection && editor && (
+        <InlineAI
+          editor={editor}
+          documentId={documentId}
+          provider={provider}
+          selectedText={selection.text}
+          selectionFrom={selection.from}
+          selectionTo={selection.to}
+          onDismiss={handleDismissInlineAI}
+        />
+      )}
     </div>
   );
 }

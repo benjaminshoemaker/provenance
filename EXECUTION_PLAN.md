@@ -519,15 +519,15 @@ Implement the inline AI interaction mode. When the user selects text, show a flo
 **Requirement:** REQ-013, REQ-014, REQ-015
 
 **Acceptance Criteria:**
-- [ ] (CODE) Floating AI toolbar appears on text selection with preset options
+- [x] (CODE) Floating AI toolbar appears on text selection with preset options
   - Verify: `grep -q 'selection\|floating' src/components/editor/InlineAI.tsx`
-- [ ] (CODE) AI response streams into a diff-style preview below the selection using `@ai-sdk/react` hooks
+- [x] (CODE) AI response streams into a diff-style preview below the selection using `@ai-sdk/react` hooks
   - Verify: `grep -q 'useChat\|useCompletion\|@ai-sdk/react' src/components/editor/InlineAI.tsx`
-- [ ] (CODE) Accept button replaces selected text with AI response
+- [x] (CODE) Accept button replaces selected text with AI response
   - Verify: `grep -q 'accept\|replaceRange\|insertContent' src/components/editor/InlineAI.tsx`
-- [ ] (CODE) Reject button dismisses the suggestion
+- [x] (CODE) Reject button dismisses the suggestion
   - Verify: `grep -q 'reject\|dismiss' src/components/editor/InlineAI.tsx`
-- [ ] (TEST) Accept inserts AI text and logs interaction
+- [x] (TEST) Accept inserts AI text and logs interaction
   - Verify: `npx vitest run src/components/editor/InlineAI.test.tsx`
 
 **Files to Create:**
