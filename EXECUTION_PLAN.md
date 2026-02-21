@@ -268,13 +268,13 @@ Create the document editor page shell at `/editor/[id]`. Fetch and display docum
 **Requirement:** REQ-010
 
 **Acceptance Criteria:**
-- [ ] (CODE) Editor page exists at /editor/[id] with document fetching
+- [x] (CODE) Editor page exists at /editor/[id] with document fetching
   - Verify: `test -f src/app/editor/\[id\]/page.tsx`
-- [ ] (CODE) Page displays document title (editable)
+- [x] (CODE) Page displays document title (editable)
   - Verify: `grep -q 'title' src/app/editor/\[id\]/page.tsx`
-- [ ] (CODE) Page has navigation back to dashboard
+- [x] (CODE) Page has navigation back to dashboard
   - Verify: `grep -q 'dashboard' src/app/editor/\[id\]/page.tsx`
-- [ ] (CODE) Page checks document ownership (redirects if not owner)
+- [x] (CODE) Page checks document ownership (redirects if not owner)
   - Verify: `grep -q 'redirect\|notFound' src/app/editor/\[id\]/page.tsx`
 
 **Files to Create:**
