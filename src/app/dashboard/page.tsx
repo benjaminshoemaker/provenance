@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { documents } from "@/lib/db/schema";
-import { eq, isNull, desc } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { createDocument, deleteDocument } from "@/app/actions/documents";
 import { Button } from "@/components/ui/button";

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import { useChat, DefaultChatTransport } from "@ai-sdk/react";
+import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport } from "ai";
 import { logAIInteraction } from "@/app/actions/ai-interactions";
 
 interface SidePanelProps {

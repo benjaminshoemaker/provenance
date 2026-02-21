@@ -23,6 +23,9 @@ vi.mock("@ai-sdk/react", () => ({
     setMessages: mocks.mockSetMessages,
     error: null,
   })),
+}));
+
+vi.mock("ai", () => ({
   DefaultChatTransport: vi.fn().mockImplementation(function (this: Record<string, unknown>, opts: Record<string, unknown>) { Object.assign(this, opts); }),
 }));
 
