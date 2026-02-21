@@ -45,9 +45,9 @@ describe("calculateMetrics", () => {
 
     const metrics = calculateMetrics(doc);
     expect(metrics.total_characters).toBe(23);
-    expect(metrics.ai_percentage).toBe(Math.round((7 / 23) * 100));
+    expect(metrics.ai_percentage).toBe(Math.floor((7 / 23) * 100));
     expect(metrics.external_paste_percentage).toBe(
-      Math.round((6 / 23) * 100)
+      Math.floor((6 / 23) * 100)
     );
   });
 
@@ -241,6 +241,138 @@ describe("calculateMetrics", () => {
     const metrics = calculateMetrics(doc);
     expect(metrics.ai_percentage).toBe(100);
   });
+
+  it("should never have ai_percentage + external_paste_percentage exceed 100", () => {
+    // Construct a doc where Math.round would produce 51% + 50% = 101%
+    // 101 AI chars + 99 external chars = 200 total
+    const doc = {
+      type: "doc",
+      content: [
+        {
+          type: "paragraph",
+          content: [
+            {
+              type: "text",
+              text: "a".repeat(101),
+              marks: [
+                {
+                  type: "origin",
+                  attrs: { type: "ai", sourceId: "s1", originalLength: 101 },
+                },
+              ],
+            },
+            {
+              type: "text",
+              text: "b".repeat(99),
+              marks: [
+                {
+                  type: "origin",
+                  attrs: { type: "external_paste", sourceId: "p1", originalLength: 99 },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    const metrics = calculateMetrics(doc);
+    expect(metrics.ai_percentage + metrics.external_paste_percentage).toBeLessThanOrEqual(100);
+  });
+
+  it("should handle originalLength of 0 without division by zero", () => {
+    const doc = {
+      type: "doc",
+      content: [
+        {
+          type: "paragraph",
+          content: [
+            {
+              type: "text",
+              text: "some text here",
+              marks: [
+                {
+                  type: "origin",
+                  attrs: { type: "ai", sourceId: "s1", originalLength: 0 },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    // Should not throw; originalLength=0 should default to AI classification
+    const metrics = calculateMetrics(doc);
+    expect(metrics.ai_percentage).toBe(100);
+    expect(metrics.total_characters).toBe(14);
+  });
+
+  it("should keep AI classification at exactly 20% edit distance boundary", () => {
+    // "abcde" (5 chars), change 1 char = distance 1, 1/5 = 0.2 = exactly 20%
+    // > 0.2 is false, so it should stay AI
+    const original = "abcde";
+    const modified = "abcdX"; // 1 substitution
+    const doc = {
+      type: "doc",
+      content: [
+        {
+          type: "paragraph",
+          content: [
+            {
+              type: "text",
+              text: modified,
+              marks: [
+                {
+                  type: "origin",
+                  attrs: {
+                    type: "ai",
+                    sourceId: "s1",
+                    originalLength: original.length,
+                    originalText: original,
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    const metrics = calculateMetrics(doc);
+    // Exactly 20% should stay classified as AI (threshold is >20%)
+    expect(metrics.ai_percentage).toBe(100);
+  });
+
+  it("should count unicode characters correctly (emoji as single char)", () => {
+    // Each emoji is 1 visible character but 2 UTF-16 code units
+    const doc = {
+      type: "doc",
+      content: [
+        {
+          type: "paragraph",
+          content: [
+            { type: "text", text: "\u{1F600}\u{1F601}\u{1F602}" }, // 3 emoji = 3 code points
+            {
+              type: "text",
+              text: "abc",
+              marks: [
+                {
+                  type: "origin",
+                  attrs: { type: "ai", sourceId: "s1", originalLength: 3 },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    const metrics = calculateMetrics(doc);
+    // 3 emoji (human) + 3 ASCII (ai) = 6 total chars
+    expect(metrics.total_characters).toBe(6);
+    expect(metrics.ai_percentage).toBe(50);
+  });
 });
 
 describe("editDistance", () => {
@@ -266,5 +398,11 @@ describe("editDistance", () => {
   it("should handle multi-edit transformations", () => {
     // kitten -> sitting = 3 edits
     expect(editDistance("kitten", "sitting")).toBe(3);
+  });
+
+  it("should count emoji as single characters", () => {
+    // One emoji substitution = distance 1, not 2
+    expect(editDistance("\u{1F600}", "\u{1F601}")).toBe(1);
+    expect(editDistance("a\u{1F600}b", "a\u{1F601}b")).toBe(1);
   });
 });
