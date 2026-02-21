@@ -1212,13 +1212,13 @@ Create the landing page at `/` that explains the Provenance product to new visit
 **Requirement:** REQ-001
 
 **Acceptance Criteria:**
-- [ ] (CODE) Landing page at / with product explanation
+- [x] (CODE) Landing page at / with product explanation
   - Verify: `grep -q 'Provenance' src/app/page.tsx`
-- [ ] (CODE) How it works section explaining writer and reader flows
+- [x] (CODE) How it works section explaining writer and reader flows
   - Verify: `grep -q 'how.*works\|How.*Works\|writer\|reader' src/app/page.tsx`
-- [ ] (CODE) Call-to-action button linking to /login
+- [x] (CODE) Call-to-action button linking to /login
   - Verify: `grep -q '/login' src/app/page.tsx`
-- [ ] (CODE) Authenticated users redirected to /dashboard
+- [x] (CODE) Authenticated users redirected to /dashboard
   - Verify: `grep -q 'redirect\|dashboard' src/app/page.tsx`
 
 **Files to Create:** None
