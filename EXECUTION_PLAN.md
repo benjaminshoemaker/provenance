@@ -142,19 +142,19 @@ Configure Drizzle ORM with `@neondatabase/serverless` driver. Define the full da
 **Requirement:** REQ-040, REQ-041, REQ-044, REQ-054
 
 **Acceptance Criteria:**
-- [ ] (CODE) Drizzle database client instance exists using `drizzle-orm/neon-http`
+- [x] (CODE) Drizzle database client instance exists using `drizzle-orm/neon-http`
   - Verify: `grep -q 'drizzle' src/lib/db/index.ts && grep -q 'neon' src/lib/db/index.ts`
-- [ ] (CODE) Schema defines all Auth.js tables with concrete column definitions (user, account, session, verificationToken)
+- [x] (CODE) Schema defines all Auth.js tables with concrete column definitions (user, account, session, verificationToken)
   - Verify: `grep -q 'pgTable.*user' src/lib/db/schema.ts && grep -q 'pgTable.*account' src/lib/db/schema.ts`
-- [ ] (CODE) Auth.js `user` table extended with `ai_provider` and `ai_model` columns
+- [x] (CODE) Auth.js `user` table extended with `ai_provider` and `ai_model` columns
   - Verify: `grep -q 'ai_provider\|aiProvider' src/lib/db/schema.ts`
-- [ ] (CODE) All domain tables defined with correct columns, types, and FK relationships
+- [x] (CODE) All domain tables defined with correct columns, types, and FK relationships
   - Verify: `grep -q 'documents' src/lib/db/schema.ts && grep -q 'writing_sessions' src/lib/db/schema.ts && grep -q 'badges' src/lib/db/schema.ts`
-- [ ] (CODE) `user.id` is `text` type (cuid2) and domain table FKs use `text` for `userId`
+- [x] (CODE) `user.id` is `text` type (cuid2) and domain table FKs use `text` for `userId`
   - Verify: `grep -q "text.*id" src/lib/db/schema.ts`
-- [ ] (CODE) `drizzle.config.ts` configured with `DATABASE_URL_UNPOOLED`
+- [x] (CODE) `drizzle.config.ts` configured with `DATABASE_URL_UNPOOLED`
   - Verify: `grep -q 'DATABASE_URL_UNPOOLED' drizzle.config.ts`
-- [ ] (CODE) TypeScript types auto-inferred via `$inferSelect` and `$inferInsert`
+- [x] (CODE) TypeScript types auto-inferred via `$inferSelect` and `$inferInsert`
   - Verify: `grep -q 'inferSelect\|inferInsert' src/lib/db/schema.ts`
 
 **Files to Create:**
