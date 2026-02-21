@@ -371,13 +371,13 @@ Implement auto-save that triggers on TipTap's `onUpdate` callback with a 2-secon
 **Requirement:** REQ-011
 
 **Acceptance Criteria:**
-- [ ] (TEST) Auto-save debounces at 2 seconds and calls updateDocument
+- [x] (TEST) Auto-save debounces at 2 seconds and calls updateDocument
   - Verify: `npx vitest run src/hooks/useAutoSave.test.ts`
-- [ ] (CODE) Save status indicator shows Saving/Saved/Error states
+- [x] (CODE) Save status indicator shows Saving/Saved/Error states
   - Verify: `grep -q 'Saved\|Saving\|Error' src/components/editor/SaveIndicator.tsx`
-- [ ] (TEST) Failed saves retry with exponential backoff (up to 3 retries)
+- [x] (TEST) Failed saves retry with exponential backoff (up to 3 retries)
   - Verify: `npx vitest run src/hooks/useAutoSave.test.ts`
-- [ ] (CODE) Auto-save sends full TipTap JSON content to updateDocument
+- [x] (CODE) Auto-save sends full TipTap JSON content to updateDocument
   - Verify: `grep -q 'getJSON\|content' src/hooks/useAutoSave.ts`
 
 **Files to Create:**

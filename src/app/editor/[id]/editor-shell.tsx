@@ -2,6 +2,8 @@
 
 import { useState, useCallback } from "react";
 import { Editor } from "@/components/editor/Editor";
+import { useAutoSave } from "@/hooks/useAutoSave";
+import { SaveIndicator } from "@/components/editor/SaveIndicator";
 
 interface EditorShellProps {
   documentId: string;
@@ -15,19 +17,26 @@ export function EditorShell({
   initialContent,
 }: EditorShellProps) {
   const [title, setTitle] = useState(initialTitle);
+  const { save, status } = useAutoSave({ documentId, title });
 
-  const handleUpdate = useCallback((_json: Record<string, unknown>) => {
-    // Auto-save will be wired in Task 2.2.A
-  }, []);
+  const handleUpdate = useCallback(
+    (json: Record<string, unknown>) => {
+      save(json);
+    },
+    [save]
+  );
 
   return (
     <div>
-      <input
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        className="mb-4 w-full border-b border-transparent bg-transparent text-3xl font-bold outline-none focus:border-border"
-        placeholder="Untitled"
-      />
+      <div className="mb-4 flex items-center gap-4">
+        <input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="flex-1 border-b border-transparent bg-transparent text-3xl font-bold outline-none focus:border-border"
+          placeholder="Untitled"
+        />
+        <SaveIndicator status={status} />
+      </div>
 
       <Editor
         content={initialContent}
