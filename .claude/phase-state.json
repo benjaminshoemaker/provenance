@@ -1,6 +1,6 @@
 {
   "main": {
-    "current_phase": 2,
+    "current_phase": 3,
     "phases": [
       {
         "phase": 1,
@@ -59,6 +59,20 @@
           { "id": "2.1.A", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
           { "id": "2.2.A", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
           { "id": "2.2.B", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } }
+        ]
+      },
+      {
+        "phase": 3,
+        "status": "IN_PROGRESS",
+        "started_at": "2026-02-21T01:00:00.000Z",
+        "completed_at": null,
+        "checkpoint": null,
+        "tasks": [
+          { "id": "3.1.A", "status": "PENDING", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "3.2.A", "status": "PENDING", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "3.2.B", "status": "PENDING", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "3.2.C", "status": "PENDING", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "3.3.A", "status": "PENDING", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } }
         ]
       }
     ]

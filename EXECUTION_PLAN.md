@@ -473,17 +473,17 @@ Create the AI provider abstraction layer with unified interfaces for Claude and 
 **Requirement:** REQ-012
 
 **Acceptance Criteria:**
-- [ ] (CODE) AIProvider and AICompletionRequest interfaces defined
+- [x] (CODE) AIProvider and AICompletionRequest interfaces defined
   - Verify: `grep -q 'AIProvider' src/lib/ai/types.ts`
-- [ ] (CODE) Provider config with models for both Anthropic and OpenAI
+- [x] (CODE) Provider config with models for both Anthropic and OpenAI
   - Verify: `grep -q 'anthropic' src/lib/ai/providers.ts && grep -q 'openai' src/lib/ai/providers.ts`
-- [ ] (TEST) Route handler validates auth, provider, and required fields
+- [x] (TEST) Route handler validates auth, provider, and required fields
   - Verify: `npx vitest run src/app/api/ai/complete/route.test.ts`
-- [ ] (CODE) Route handler uses Vercel AI SDK `streamText()` with `toUIMessageStreamResponse()` (AI SDK 6 pattern)
+- [x] (CODE) Route handler uses Vercel AI SDK `streamText()` with `toUIMessageStreamResponse()` (AI SDK 6 pattern)
   - Verify: `grep -q 'streamText\|toUIMessageStreamResponse' src/app/api/ai/complete/route.ts`
-- [ ] (TEST) Blocked/refused requests return custom metadata event via AI SDK 6 response API
+- [x] (TEST) Blocked/refused requests return custom metadata event via AI SDK 6 response API
   - Verify: `npx vitest run src/app/api/ai/complete/route.test.ts`
-- [ ] (CODE) Rate limiting at 20 requests/minute per user (database-backed, not in-memory — serverless-safe)
+- [x] (CODE) Rate limiting at 20 requests/minute per user (database-backed, not in-memory — serverless-safe)
   - Verify: `grep -q 'rate\|limit' src/app/api/ai/complete/route.ts`
 
 **Files to Create:**
