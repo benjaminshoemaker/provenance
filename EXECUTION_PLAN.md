@@ -329,15 +329,15 @@ Integrate TipTap v2 with all required formatting extensions. Create a rich text 
 **Requirement:** REQ-002, REQ-007, REQ-008, REQ-009
 
 **Acceptance Criteria:**
-- [ ] (CODE) TipTap editor component with StarterKit and all required extensions
+- [x] (CODE) TipTap editor component with StarterKit and all required extensions
   - Verify: `grep -q 'StarterKit' src/components/editor/Editor.tsx`
-- [ ] (CODE) Editor uses 'use client' directive and immediatelyRender: false
+- [x] (CODE) Editor uses 'use client' directive and immediatelyRender: false
   - Verify: `grep -q "'use client'" src/components/editor/Editor.tsx && grep -q 'immediatelyRender.*false' src/components/editor/Editor.tsx`
-- [ ] (CODE) Formatting toolbar with heading, bold, italic, link, image, code, quote, list buttons
+- [x] (CODE) Formatting toolbar with heading, bold, italic, link, image, code, quote, list buttons
   - Verify: `grep -q 'Toolbar\|toolbar' src/components/editor/Toolbar.tsx`
-- [ ] (TEST) Editor renders without hydration errors in test environment
+- [x] (TEST) Editor renders without hydration errors in test environment
   - Verify: `npx vitest run src/components/editor/Editor.test.tsx`
-- [ ] (CODE) Editor page at /editor/[id] uses TipTap component — desktop-only layout, no mobile responsive editor (REQ-002)
+- [x] (CODE) Editor page at /editor/[id] uses TipTap component — desktop-only layout, no mobile responsive editor (REQ-002)
   - Verify: `grep -q 'Editor' src/app/editor/\[id\]/page.tsx`
 
 **Files to Create:**
