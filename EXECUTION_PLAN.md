@@ -1000,15 +1000,15 @@ Create the `/api/badges/[verificationId]/image` Route Handler that serves badge 
 **Requirement:** REQ-022, REQ-024, REQ-025, REQ-050
 
 **Acceptance Criteria:**
-- [ ] (CODE) Badge image Route Handler at /api/badges/[verificationId]/image
+- [x] (CODE) Badge image Route Handler at /api/badges/[verificationId]/image
   - Verify: `test -f src/app/api/badges/\[verificationId\]/image/route.ts`
-- [ ] (CODE) Cache-Control header: public, s-maxage=86400, stale-while-revalidate=86400
+- [x] (CODE) Cache-Control header: public, s-maxage=86400, stale-while-revalidate=86400
   - Verify: `grep -q 's-maxage=86400' src/app/api/badges/\[verificationId\]/image/route.ts`
-- [ ] (CODE) Returns 410 Gone for taken-down badges
+- [x] (CODE) Returns 410 Gone for taken-down badges
   - Verify: `grep -q '410' src/app/api/badges/\[verificationId\]/image/route.ts`
-- [ ] (TEST) HTML snippet includes correct alt text with percentage and URL
+- [x] (TEST) HTML snippet includes correct alt text with percentage and URL
   - Verify: `npx vitest run src/lib/badge-snippets.test.ts`
-- [ ] (CODE) Embed snippet UI shown after badge generation with copy buttons
+- [x] (CODE) Embed snippet UI shown after badge generation with copy buttons
   - Verify: `grep -q 'copy\|clipboard' src/components/editor/BadgeSnippets.tsx`
 
 **Files to Create:**
