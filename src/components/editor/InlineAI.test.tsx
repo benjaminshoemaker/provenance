@@ -28,6 +28,10 @@ vi.mock("@/app/actions/ai-interactions", () => ({
   logAIInteraction: mocks.mockLogAIInteraction,
 }));
 
+vi.mock("nanoid", () => ({
+  nanoid: vi.fn(() => "mock-nanoid-123"),
+}));
+
 import { InlineAI } from "./InlineAI";
 
 function createMockEditor() {
@@ -147,7 +151,22 @@ describe("InlineAI", () => {
     expect(editor.chain).toHaveBeenCalled();
     expect(editor._chainObj.insertContentAt).toHaveBeenCalledWith(
       { from: 10, to: 23 },
-      "improved AI text"
+      [
+        {
+          type: "text",
+          text: "improved AI text",
+          marks: [
+            {
+              type: "origin",
+              attrs: {
+                type: "ai",
+                sourceId: "mock-nanoid-123",
+                originalLength: 16,
+              },
+            },
+          ],
+        },
+      ]
     );
     expect(editor._chainObj.run).toHaveBeenCalled();
 

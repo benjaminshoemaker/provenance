@@ -698,15 +698,15 @@ Create the custom TipTap `origin` mark that tracks content provenance. The mark 
 **Requirement:** REQ-020, REQ-014
 
 **Acceptance Criteria:**
-- [ ] (CODE) Custom TipTap Mark with type, sourceId, and originalLength attributes
+- [x] (CODE) Custom TipTap Mark with type, sourceId, and originalLength attributes
   - Verify: `grep -q "name: 'origin'" src/extensions/origin-mark.ts`
-- [ ] (TEST) Mark persists through editor JSON serialization/deserialization
+- [x] (TEST) Mark persists through editor JSON serialization/deserialization
   - Verify: `npx vitest run src/extensions/origin-mark.test.ts`
-- [ ] (TEST) AI text insertion applies origin mark with type='ai' and sourceId
+- [x] (TEST) AI text insertion applies origin mark with type='ai' and sourceId
   - Verify: `npx vitest run src/extensions/origin-mark.test.ts`
-- [ ] (TEST) Unmarked text is treated as human (conservative fallback)
+- [x] (TEST) Unmarked text is treated as human (conservative fallback)
   - Verify: `npx vitest run src/extensions/origin-mark.test.ts`
-- [ ] (CODE) Mark is invisible — no visual rendering in the editor
+- [x] (CODE) Mark is invisible — no visual rendering in the editor
   - Verify: `grep -q 'data-origin' src/extensions/origin-mark.ts`
 
 **Files to Create:**

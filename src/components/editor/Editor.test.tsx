@@ -58,6 +58,10 @@ vi.mock("@tiptap/extension-image", () => ({
   },
 }));
 
+vi.mock("@/extensions/origin-mark", () => ({
+  OriginMark: {},
+}));
+
 vi.mock("@ai-sdk/react", () => ({
   useCompletion: vi.fn(() => ({
     completion: "",

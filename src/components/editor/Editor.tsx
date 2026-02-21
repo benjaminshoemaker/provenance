@@ -5,6 +5,7 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
+import { OriginMark } from "@/extensions/origin-mark";
 import { Toolbar } from "./Toolbar";
 import { InlineAI } from "./InlineAI";
 import { SidePanel } from "./SidePanel";
@@ -48,6 +49,7 @@ export function Editor({
       Image.configure({
         inline: false,
       }),
+      OriginMark,
     ],
     content,
     immediatelyRender: false,

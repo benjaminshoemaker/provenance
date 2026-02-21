@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import { useCompletion } from "@ai-sdk/react";
 import type { Editor } from "@tiptap/react";
+import { nanoid } from "nanoid";
 import { logAIInteraction } from "@/app/actions/ai-interactions";
 
 const PRESETS = [
@@ -65,10 +66,27 @@ export function InlineAI({
   const handleAccept = useCallback(async () => {
     if (!completion) return;
 
+    const sourceId = nanoid();
+
     editor
       .chain()
       .focus()
-      .insertContentAt({ from: selectionFrom, to: selectionTo }, completion)
+      .insertContentAt({ from: selectionFrom, to: selectionTo }, [
+        {
+          type: "text",
+          text: completion,
+          marks: [
+            {
+              type: "origin",
+              attrs: {
+                type: "ai",
+                sourceId,
+                originalLength: completion.length,
+              },
+            },
+          ],
+        },
+      ])
       .run();
 
     await logAIInteraction({
