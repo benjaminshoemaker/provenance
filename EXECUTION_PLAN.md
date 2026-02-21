@@ -591,13 +591,13 @@ Implement the freeform AI mode (command palette-style input) and the AI interact
 **Requirement:** REQ-013, REQ-017
 
 **Acceptance Criteria:**
-- [ ] (CODE) Freeform command palette triggered by keyboard shortcut or button
+- [x] (CODE) Freeform command palette triggered by keyboard shortcut or button
   - Verify: `grep -q 'freeform\|command\|palette' src/components/editor/FreeformAI.tsx`
-- [ ] (TEST) logAIInteraction() writes full interaction record to ai_interactions table
+- [x] (TEST) logAIInteraction() writes full interaction record to ai_interactions table
   - Verify: `npx vitest run src/app/actions/ai-interactions.test.ts`
-- [ ] (TEST) Interaction logging is append-only (no update/delete supported)
+- [x] (TEST) Interaction logging is append-only (no update/delete supported)
   - Verify: `npx vitest run src/app/actions/ai-interactions.test.ts`
-- [ ] (CODE) All three modes (inline, side panel, freeform) call logAIInteraction on completion
+- [x] (CODE) All three modes (inline, side panel, freeform) call logAIInteraction on completion
   - Verify: `grep -q 'logAIInteraction' src/components/editor/InlineAI.tsx`
 
 **Files to Create:**

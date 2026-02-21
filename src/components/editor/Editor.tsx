@@ -8,6 +8,7 @@ import Image from "@tiptap/extension-image";
 import { Toolbar } from "./Toolbar";
 import { InlineAI } from "./InlineAI";
 import { SidePanel } from "./SidePanel";
+import { FreeformAI } from "./FreeformAI";
 
 interface EditorProps {
   content: Record<string, unknown>;
@@ -30,6 +31,7 @@ export function Editor({
   provider = "anthropic",
 }: EditorProps) {
   const [selection, setSelection] = useState<TextSelection | null>(null);
+  const [showFreeform, setShowFreeform] = useState(false);
 
   const editor = useEditor({
     extensions: [
@@ -77,6 +79,17 @@ export function Editor({
     setSelection(null);
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setShowFreeform((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   return (
     <div className="flex gap-4">
       <div className="relative flex-1 rounded-lg border">
@@ -102,6 +115,14 @@ export function Editor({
         provider={provider}
         documentContent={content}
       />
+      {showFreeform && (
+        <FreeformAI
+          documentId={documentId}
+          provider={provider}
+          documentContent={content}
+          onClose={() => setShowFreeform(false)}
+        />
+      )}
     </div>
   );
 }
