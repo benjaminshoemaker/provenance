@@ -107,6 +107,12 @@ vi.mock("@/app/actions/ai-interactions", () => ({
   logAIInteraction: vi.fn(),
 }));
 
+vi.mock("next/link", () => ({
+  default: ({ children, href }: { children: React.ReactNode; href: string }) => (
+    <a href={href}>{children}</a>
+  ),
+}));
+
 import { Editor } from "./Editor";
 import { useEditor } from "@tiptap/react";
 

@@ -142,7 +142,7 @@ export function Toolbar({ editor }: ToolbarProps) {
   ];
 
   return (
-    <div className="flex flex-wrap gap-1 border-b p-2">
+    <div className="flex flex-wrap gap-1 p-2">
       {items.map((item, index) => {
         if ("type" in item && item.type === "divider") {
           return (

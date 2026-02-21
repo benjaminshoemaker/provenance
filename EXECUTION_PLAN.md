@@ -925,15 +925,15 @@ Create the `/editor/[id]/preview` page that shows writers exactly what will beco
 **Requirement:** REQ-049
 
 **Acceptance Criteria:**
-- [ ] (CODE) Preview page at /editor/[id]/preview showing all public data
+- [x] (CODE) Preview page at /editor/[id]/preview showing all public data
   - Verify: `test -f src/app/editor/\[id\]/preview/page.tsx`
-- [ ] (CODE) Prominent warning: "Everything shown here will be publicly visible"
+- [x] (CODE) Prominent warning: "Everything shown here will be publicly visible"
   - Verify: `grep -q 'publicly visible' src/app/editor/\[id\]/preview/page.tsx`
-- [ ] (CODE) Shows all AI interactions with prompts and responses
+- [x] (CODE) Shows all AI interactions with prompts and responses
   - Verify: `grep -q 'interaction\|prompt\|response' src/app/editor/\[id\]/preview/page.tsx`
-- [ ] (CODE) Confirm & Generate button calls generateBadge() and shows embed snippets
+- [x] (CODE) Confirm & Generate button calls generateBadge() and shows embed snippets
   - Verify: `grep -q 'generateBadge\|Confirm' src/app/editor/\[id\]/preview/page.tsx`
-- [ ] (CODE) Only accessible by document owner (auth check)
+- [x] (CODE) Only accessible by document owner (auth check)
   - Verify: `grep -q 'redirect\|auth' src/app/editor/\[id\]/preview/page.tsx`
 
 **Files to Create:**

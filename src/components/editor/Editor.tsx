@@ -13,6 +13,7 @@ import { Toolbar } from "./Toolbar";
 import { InlineAI } from "./InlineAI";
 import { SidePanel } from "./SidePanel";
 import { FreeformAI } from "./FreeformAI";
+import NextLink from "next/link";
 
 interface EditorProps {
   content: Record<string, unknown>;
@@ -119,7 +120,17 @@ export function Editor({
   return (
     <div className="flex gap-4">
       <div className="relative flex-1 rounded-lg border">
-        <Toolbar editor={editor} />
+        <div className="flex items-center border-b">
+          <div className="flex-1">
+            <Toolbar editor={editor} />
+          </div>
+          <NextLink
+            href={`/editor/${documentId}/preview`}
+            className="mr-2 shrink-0 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
+          >
+            Generate Badge
+          </NextLink>
+        </div>
         <EditorContent
           editor={editor}
           className="prose prose-neutral dark:prose-invert max-w-none p-4 focus-within:outline-none [&_.tiptap]:min-h-[60vh] [&_.tiptap]:outline-none"
