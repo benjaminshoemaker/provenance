@@ -814,15 +814,15 @@ Implement the `calculateMetrics()` function that walks TipTap JSON to compute AI
 **Requirement:** REQ-020
 
 **Acceptance Criteria:**
-- [ ] (TEST) calculateMetrics() correctly counts AI, human, and external paste characters
+- [x] (TEST) calculateMetrics() correctly counts AI, human, and external paste characters
   - Verify: `npx vitest run src/lib/metrics.test.ts`
-- [ ] (TEST) Unmarked text is counted as human (conservative default)
+- [x] (TEST) Unmarked text is counted as human (conservative default)
   - Verify: `npx vitest run src/lib/metrics.test.ts`
-- [ ] (TEST) AI span modified >20% is reclassified as human
+- [x] (TEST) AI span modified >20% is reclassified as human
   - Verify: `npx vitest run src/lib/metrics.test.ts`
-- [ ] (TEST) Empty document returns 0% for all metrics
+- [x] (TEST) Empty document returns 0% for all metrics
   - Verify: `npx vitest run src/lib/metrics.test.ts`
-- [ ] (TEST) External paste characters reported as separate metric
+- [x] (TEST) External paste characters reported as separate metric
   - Verify: `npx vitest run src/lib/metrics.test.ts`
 
 **Files to Create:**
