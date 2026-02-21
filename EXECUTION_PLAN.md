@@ -1238,16 +1238,16 @@ Create the landing page at `/` that explains the Provenance product to new visit
 ### Phase 6 Checkpoint
 
 **Automated Checks:**
-- [ ] All tests pass: `npx vitest run`
-- [ ] Type checking passes: `npx tsc --noEmit`
-- [ ] Build succeeds: `npm run build`
+- [x] All tests pass: `npx vitest run`
+- [x] Type checking passes: `npx tsc --noEmit`
+- [x] Build succeeds: `npm run build`
 
 **Regression Verification:**
-- [ ] Full writer flow: login → create document → write → use AI → generate badge → copy snippet
-- [ ] Full reader flow: visit verification page → view stats → expand audit trail
-- [ ] All AI modes work (inline, side panel, freeform)
-- [ ] Origin tracking produces correct AI percentages
-- [ ] Auto-save and session tracking work correctly
+- [x] Full writer flow: login → create document → write → use AI → generate badge → copy snippet
+- [x] Full reader flow: visit verification page → view stats → expand audit trail
+- [x] All AI modes work (inline, side panel, freeform)
+- [x] Origin tracking produces correct AI percentages
+- [x] Auto-save and session tracking work correctly
 
 ---
 
