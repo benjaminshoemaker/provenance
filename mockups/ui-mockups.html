@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Provenance UI Mockups</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwindcss.config = {
+      theme: {
+        extend: {
+          colors: {
+            provenance: {
+              50: '#f0f4ff',
+              100: '#dbe4ff',
+              500: '#4c6ef5',
+              600: '#3b5bdb',
+              700: '#364fc7',
+              900: '#1c2541',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .mockup-section { border-bottom: 4px solid #e5e7eb; }
+    .timeline-rail { position: relative; }
+    .timeline-rail::before {
+      content: '';
+      position: absolute;
+      left: 19px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #e5e7eb;
+    }
+    .timeline-dot {
+      position: relative;
+      z-index: 1;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .ghost-text { color: #9ca3af; }
+    .origin-ai { background-color: rgba(139, 92, 246, 0.08); border-bottom: 1px solid rgba(139, 92, 246, 0.2); }
+    .origin-paste { background-color: rgba(249, 115, 22, 0.08); border-bottom: 1px solid rgba(249, 115, 22, 0.15); }
+    .diff-remove { text-decoration: line-through; color: #ef4444; background: rgba(239, 68, 68, 0.08); }
+    .diff-add { color: #059669; background: rgba(5, 150, 105, 0.08); text-decoration: underline; text-decoration-color: #059669; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+<!-- ===================== HEADER ===================== -->
+<div class="bg-white border-b border-gray-200 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <div class="w-6 h-6 bg-provenance-700 rotate-45"></div>
+      <span class="text-lg font-semibold tracking-tight">Provenance UI Mockups</span>
+    </div>
+    <nav class="flex gap-6 text-sm text-gray-500">
+      <a href="#dashboard" class="hover:text-gray-900">Dashboard</a>
+      <a href="#editor" class="hover:text-gray-900">Editor</a>
+      <a href="#inline-ai" class="hover:text-gray-900">Inline AI</a>
+      <a href="#verification" class="hover:text-gray-900">Verification</a>
+      <a href="#timeline" class="hover:text-gray-900">Timeline</a>
+      <a href="#badge-preview" class="hover:text-gray-900">Badge Preview</a>
+      <a href="#mobile" class="hover:text-gray-900">Mobile</a>
+    </nav>
+  </div>
+</div>
+
+<!-- ============ 1. DASHBOARD ============ -->
+<section id="dashboard" class="mockup-section py-12">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="mb-6">
+      <span class="text-xs font-mono text-gray-400 uppercase tracking-wider">Mockup 1</span>
+      <h2 class="text-2xl font-bold mt-1">Document Dashboard</h2>
+      <p class="text-gray-500 mt-1 text-sm">Inspired by: Linear (dense rows), Bear (three-column, archive), Vercel (status indicators)</p>
+    </div>
+
+    <!-- Dashboard mockup -->
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden" style="height: 600px;">
+      <div class="flex h-full">
+        <!-- Sidebar -->
+        <div class="w-56 border-r border-gray-100 bg-gray-50/50 p-4 flex flex-col">
+          <div class="flex items-center gap-2 mb-6">
+            <div class="w-5 h-5 bg-provenance-700 rotate-45"></div>
+            <span class="font-semibold text-sm">Provenance</span>
+          </div>
+          <div class="space-y-1 text-sm">
+            <div class="flex items-center gap-2 px-2 py-1.5 bg-provenance-50 text-provenance-700 rounded-md font-medium">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+              All Documents
+            </div>
+            <div class="flex items-center gap-2 px-2 py-1.5 text-gray-600 hover:bg-gray-100 rounded-md cursor-pointer">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              Recent
+            </div>
+            <div class="flex items-center gap-2 px-2 py-1.5 text-gray-600 hover:bg-gray-100 rounded-md cursor-pointer">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+              Archive
+            </div>
+            <div class="flex items-center gap-2 px-2 py-1.5 text-gray-600 hover:bg-gray-100 rounded-md cursor-pointer">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+              Trash
+            </div>
+          </div>
+          <div class="mt-auto">
+            <div class="flex items-center gap-2 px-2 py-1.5 text-gray-600 hover:bg-gray-100 rounded-md cursor-pointer text-sm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+              Settings
+            </div>
+          </div>
+        </div>
+
+        <!-- Main content -->
+        <div class="flex-1 p-6">
+          <!-- Header with filters -->
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+              <button class="px-3 py-1.5 text-sm font-medium bg-gray-900 text-white rounded-md">All</button>
+              <button class="px-3 py-1.5 text-sm text-gray-500 hover:bg-gray-100 rounded-md">Drafts</button>
+              <button class="px-3 py-1.5 text-sm text-gray-500 hover:bg-gray-100 rounded-md">Has Badge</button>
+              <button class="px-3 py-1.5 text-sm text-gray-500 hover:bg-gray-100 rounded-md">Archived</button>
+            </div>
+            <button class="flex items-center gap-2 px-4 py-2 bg-provenance-600 text-white text-sm font-medium rounded-lg hover:bg-provenance-700 transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+              New Document
+            </button>
+          </div>
+
+          <!-- Search -->
+          <div class="relative mb-4">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <input type="text" placeholder="Search documents... (Cmd+K)" class="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-provenance-500/20 focus:border-provenance-500">
+          </div>
+
+          <!-- Document list -->
+          <div class="space-y-0 border border-gray-200 rounded-lg overflow-hidden">
+            <!-- Row 1: Has badges -->
+            <div class="flex items-start gap-3 px-4 py-3.5 bg-white hover:bg-gray-50 transition-colors cursor-pointer border-b border-gray-100">
+              <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 mt-1.5 flex-shrink-0" title="Has Badge"></div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <h3 class="font-medium text-sm truncate">Why I Still Write My Own Blog Posts in the Age of AI</h3>
+                  <span class="text-xs text-gray-400 flex-shrink-0 ml-4">Today</span>
+                </div>
+                <p class="text-xs text-gray-400 mt-0.5 truncate">In a world where anyone can generate a passable blog post in seconds, I find myself returning to the keyboard with renewed purpose...</p>
+                <div class="flex items-center gap-2 mt-1.5">
+                  <span class="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-emerald-50 text-emerald-700 rounded">12% AI</span>
+                  <span class="text-[10px] text-gray-400">2,847 words</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 2: Has badges, multiple -->
+            <div class="flex items-start gap-3 px-4 py-3.5 bg-white hover:bg-gray-50 transition-colors cursor-pointer border-b border-gray-100">
+              <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 mt-1.5 flex-shrink-0" title="Has Badge"></div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <h3 class="font-medium text-sm truncate">The Art of Debugging: A Developer's Meditation</h3>
+                  <span class="text-xs text-gray-400 flex-shrink-0 ml-4">Yesterday</span>
+                </div>
+                <p class="text-xs text-gray-400 mt-0.5 truncate">There is a moment, after the third hour of staring at a stack trace, when something shifts in your perception...</p>
+                <div class="flex items-center gap-2 mt-1.5">
+                  <span class="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-emerald-50 text-emerald-700 rounded">8% AI</span>
+                  <span class="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-50 text-amber-700 rounded">23% AI</span>
+                  <span class="text-[10px] text-gray-400">4,122 words</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 3: Draft -->
+            <div class="flex items-start gap-3 px-4 py-3.5 bg-white hover:bg-gray-50 transition-colors cursor-pointer border-b border-gray-100">
+              <div class="w-2.5 h-2.5 rounded-full bg-gray-300 mt-1.5 flex-shrink-0" title="Draft"></div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <h3 class="font-medium text-sm truncate">Lessons from Building a SaaS in Public</h3>
+                  <span class="text-xs text-gray-400 flex-shrink-0 ml-4">3 days ago</span>
+                </div>
+                <p class="text-xs text-gray-400 mt-0.5 truncate">Six months ago, I decided to build my next project entirely in public. Here's what I learned about transparency...</p>
+                <div class="flex items-center gap-2 mt-1.5">
+                  <span class="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-gray-100 text-gray-500 rounded">Draft</span>
+                  <span class="text-[10px] text-gray-400">1,203 words</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 4: Draft -->
+            <div class="flex items-start gap-3 px-4 py-3.5 bg-white hover:bg-gray-50 transition-colors cursor-pointer border-b border-gray-100">
+              <div class="w-2.5 h-2.5 rounded-full bg-gray-300 mt-1.5 flex-shrink-0" title="Draft"></div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <h3 class="font-medium text-sm truncate">Untitled Document</h3>
+                  <span class="text-xs text-gray-400 flex-shrink-0 ml-4">1 week ago</span>
+                </div>
+                <p class="text-xs text-gray-400 mt-0.5 truncate">The question isn't whether AI will change writing. The question is whether we'll remember why writing mattered...</p>
+                <div class="flex items-center gap-2 mt-1.5">
+                  <span class="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-gray-100 text-gray-500 rounded">Draft</span>
+                  <span class="text-[10px] text-gray-400">342 words</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 5: Archived -->
+            <div class="flex items-start gap-3 px-4 py-3.5 bg-white hover:bg-gray-50 transition-colors cursor-pointer opacity-60">
+              <div class="w-2.5 h-2.5 rounded-full bg-gray-200 mt-1.5 flex-shrink-0" title="Archived"></div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <h3 class="font-medium text-sm truncate">My First Provenance Post</h3>
+                  <span class="text-xs text-gray-400 flex-shrink-0 ml-4">2 weeks ago</span>
+                </div>
+                <p class="text-xs text-gray-400 mt-0.5 truncate">Hello world! This is my first post written with Provenance. Let me show you how this works...</p>
+                <div class="flex items-center gap-2 mt-1.5">
+                  <span class="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-emerald-50 text-emerald-700 rounded">5% AI</span>
+                  <span class="text-[10px] text-gray-400">890 words</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. EDITOR WITH ORIGIN MARKS ============ -->
+<section id="editor" class="mockup-section py-12">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="mb-6">
+      <span class="text-xs font-mono text-gray-400 uppercase tracking-wider">Mockup 2</span>
+      <h2 class="text-2xl font-bold mt-1">Editor with Origin Marks</h2>
+      <p class="text-gray-500 mt-1 text-sm">Inspired by: iA Writer (authorship coloring), Lex (writing-first), Grammarly (color-coded overlays)</p>
+    </div>
+
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden" style="height: 520px;">
+      <!-- Toolbar -->
+      <div class="border-b border-gray-100 px-6 py-2 flex items-center justify-between">
+        <div class="flex items-center gap-1">
+          <button class="p-1.5 rounded hover:bg-gray-100 text-gray-500"><span class="text-sm font-bold">B</span></button>
+          <button class="p-1.5 rounded hover:bg-gray-100 text-gray-500"><span class="text-sm italic">I</span></button>
+          <div class="w-px h-5 bg-gray-200 mx-1"></div>
+          <button class="p-1.5 rounded hover:bg-gray-100 text-gray-500 text-xs font-semibold">H1</button>
+          <button class="p-1.5 rounded hover:bg-gray-100 text-gray-500 text-xs font-semibold">H2</button>
+          <div class="w-px h-5 bg-gray-200 mx-1"></div>
+          <button class="p-1.5 rounded hover:bg-gray-100 text-gray-500 text-xs">Link</button>
+          <button class="p-1.5 rounded hover:bg-gray-100 text-gray-500 text-xs">Image</button>
+          <button class="p-1.5 rounded hover:bg-gray-100 text-gray-500 text-xs">Code</button>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-1.5 text-xs text-gray-400">
+            <span class="w-2 h-2 rounded-full bg-gray-200"></span> Human
+            <span class="w-2 h-2 rounded-full bg-violet-300 ml-2"></span> AI
+            <span class="w-2 h-2 rounded-full bg-orange-300 ml-2"></span> Pasted
+          </div>
+          <span class="text-xs text-gray-400">Saved</span>
+          <button class="px-3 py-1.5 text-xs font-medium bg-provenance-600 text-white rounded-md">Generate Badge</button>
+        </div>
+      </div>
+
+      <!-- Editor content -->
+      <div class="px-16 py-8 max-w-3xl mx-auto">
+        <input type="text" value="Why I Still Write My Own Blog Posts in the Age of AI" class="text-2xl font-bold w-full border-none outline-none mb-6 text-gray-900" readonly>
+
+        <div class="text-base leading-7 text-gray-800 space-y-4">
+          <p>In a world where anyone can generate a passable blog post in seconds, I find myself returning to the keyboard with renewed purpose. Not because I think AI writing is bad — it isn't — but because the act of writing has always been, for me, an act of thinking.</p>
+
+          <p><span class="origin-ai">Writing forces you to confront the gaps in your understanding. When you sit down to explain something, you quickly discover what you don't actually know.</span> This is the fundamental tension that AI writing tools create: they give you the output without requiring the process.</p>
+
+          <p>I've been experimenting with AI assistance for the past six months. <span class="origin-paste">According to a 2025 survey by the Content Marketing Institute, 73% of content creators now use AI tools in some capacity, up from 48% just one year prior.</span> The numbers tell one story, but my experience tells another.</p>
+
+          <p>Here's what I've learned: <span class="origin-ai">the most effective use of AI in writing isn't generation — it's refinement. Using AI to tighten a sentence, suggest a stronger verb, or identify logical gaps preserves your voice while leveraging the tool's strengths.</span></p>
+
+          <p class="ghost-text">The question then becomes one of transparency. When I use AI to polish a sentence, should my readers know? I believe they should — not because AI assistance is shameful, but because...<span class="animate-pulse">|</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. INLINE AI INTERACTION ============ -->
+<section id="inline-ai" class="mockup-section py-12">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="mb-6">
+      <span class="text-xs font-mono text-gray-400 uppercase tracking-wider">Mockup 3</span>
+      <h2 class="text-2xl font-bold mt-1">Inline AI: Select + Rewrite with Diff</h2>
+      <p class="text-gray-500 mt-1 text-sm">Inspired by: Cursor (inline diff), Wordtune (multiple alternatives), Notion (comparison view)</p>
+    </div>
+
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden p-8">
+      <div class="max-w-2xl mx-auto space-y-4 text-base leading-7">
+        <p class="text-gray-800">In a world where anyone can generate a passable blog post in seconds, I find myself returning to the keyboard with renewed purpose.</p>
+
+        <!-- Selected text with floating toolbar -->
+        <div class="relative">
+          <p class="text-gray-800">
+            <span class="bg-blue-100 rounded px-0.5">Writing forces you to confront the gaps in your understanding. When you sit down to explain something, you quickly discover what you don't actually know.</span>
+          </p>
+          <!-- Floating AI toolbar -->
+          <div class="absolute -top-12 left-1/2 -translate-x-1/2 bg-gray-900 text-white rounded-lg shadow-xl flex items-center gap-1 px-2 py-1.5 text-xs">
+            <button class="px-2 py-1 rounded hover:bg-gray-700">Improve</button>
+            <button class="px-2 py-1 rounded hover:bg-gray-700">Simplify</button>
+            <button class="px-2 py-1 rounded hover:bg-gray-700">Expand</button>
+            <button class="px-2 py-1 rounded hover:bg-gray-700">Fix</button>
+            <div class="w-px h-4 bg-gray-600 mx-1"></div>
+            <button class="px-2 py-1 rounded hover:bg-gray-700 text-violet-300">Custom...</button>
+          </div>
+        </div>
+
+        <!-- Diff preview (after clicking "Simplify") -->
+        <div class="border-l-4 border-violet-400 bg-violet-50/50 rounded-r-lg p-4 space-y-3">
+          <div class="flex items-center gap-2 text-xs">
+            <span class="px-1.5 py-0.5 bg-violet-100 text-violet-700 rounded font-medium">AI Suggestion</span>
+            <span class="text-gray-400">Simplify</span>
+          </div>
+
+          <!-- Track-changes style diff -->
+          <p class="text-sm leading-6">
+            <span class="diff-remove">Writing forces you to confront the gaps in your understanding. When you sit down to explain something, you quickly discover what you don't actually know.</span>
+            <span class="diff-add">Writing reveals what you don't actually understand. The moment you try to explain something clearly, you discover where your knowledge falls short.</span>
+          </p>
+
+          <!-- Alternative 2 -->
+          <div class="border-t border-violet-200 pt-3">
+            <p class="text-xs text-gray-400 mb-1">Alternative 2</p>
+            <p class="text-sm leading-6 text-gray-600">
+              <span class="diff-add">Writing exposes gaps in your thinking. Explaining an idea forces you to reckon with what you truly know versus what you only think you know.</span>
+            </p>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex items-center gap-2 pt-2">
+            <button class="px-3 py-1.5 text-xs font-medium bg-violet-600 text-white rounded-md hover:bg-violet-700">Accept</button>
+            <button class="px-3 py-1.5 text-xs font-medium bg-white border border-gray-200 text-gray-600 rounded-md hover:bg-gray-50">Reject</button>
+            <button class="px-3 py-1.5 text-xs text-gray-500 hover:text-gray-700">Refine...</button>
+            <div class="ml-auto flex items-center gap-1 text-xs text-gray-400">
+              <span>1/2</span>
+              <button class="p-0.5 hover:text-gray-600">&larr;</button>
+              <button class="p-0.5 hover:text-gray-600">&rarr;</button>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-gray-800">This is the fundamental tension that AI writing tools create: they give you the output without requiring the process.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4. VERIFICATION PAGE ============ -->
+<section id="verification" class="mockup-section py-12">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="mb-6">
+      <span class="text-xs font-mono text-gray-400 uppercase tracking-wider">Mockup 4</span>
+      <h2 class="text-2xl font-bold mt-1">Verification Page (Desktop)</h2>
+      <p class="text-gray-500 mt-1 text-sm">Inspired by: Stripe (hero stat + grid), HIBP (clear hierarchy), Content Credentials (provenance chain)</p>
+    </div>
+
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <!-- Header -->
+      <div class="border-b border-gray-100 px-8 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="w-4 h-4 bg-provenance-700 rotate-45"></div>
+          <span class="text-sm font-semibold text-gray-700">Provenance</span>
+          <span class="text-gray-300 mx-1">|</span>
+          <span class="text-sm text-gray-500">Verified Writing Process</span>
+        </div>
+        <span class="text-xs text-gray-400 font-mono">verify/k8xYm2nP9qR</span>
+      </div>
+
+      <div class="p-8">
+        <!-- Title -->
+        <h1 class="text-xl font-bold text-gray-900 mb-6">Why I Still Write My Own Blog Posts in the Age of AI</h1>
+
+        <!-- Stats grid -->
+        <div class="grid grid-cols-5 gap-4 mb-8">
+          <!-- Hero stat -->
+          <div class="col-span-1 bg-gradient-to-br from-emerald-50 to-emerald-100/50 rounded-xl p-5 text-center border border-emerald-200/50">
+            <div class="text-4xl font-bold text-emerald-700">12%</div>
+            <div class="text-xs text-emerald-600 mt-1 font-medium">AI-Generated</div>
+          </div>
+          <!-- Secondary stats -->
+          <div class="bg-gray-50 rounded-xl p-5 text-center">
+            <div class="text-2xl font-semibold text-gray-800">88%</div>
+            <div class="text-xs text-gray-500 mt-1">Human-Written</div>
+          </div>
+          <div class="bg-gray-50 rounded-xl p-5 text-center">
+            <div class="text-2xl font-semibold text-gray-800">8</div>
+            <div class="text-xs text-gray-500 mt-1">AI Interactions</div>
+          </div>
+          <div class="bg-gray-50 rounded-xl p-5 text-center">
+            <div class="text-2xl font-semibold text-gray-800">3</div>
+            <div class="text-xs text-gray-500 mt-1">Writing Sessions</div>
+          </div>
+          <div class="bg-gray-50 rounded-xl p-5 text-center">
+            <div class="text-2xl font-semibold text-gray-800">2h 14m</div>
+            <div class="text-xs text-gray-500 mt-1">Active Time</div>
+          </div>
+        </div>
+
+        <!-- Scope statement -->
+        <details class="mb-6 border border-gray-200 rounded-lg">
+          <summary class="px-5 py-3 text-sm font-medium text-gray-700 cursor-pointer hover:bg-gray-50">What this badge certifies</summary>
+          <div class="px-5 pb-4 text-sm text-gray-600 leading-relaxed border-t border-gray-100 pt-3">
+            <p class="mb-2"><strong>Certifies:</strong> The writing process for this piece was conducted in Provenance, and the complete record of that process — including all AI interactions — is available for review.</p>
+            <p><strong>Does not certify:</strong> That no AI was used outside the tool, that the ideas are original, that the published version matches this snapshot, or that no other tools were used alongside Provenance.</p>
+          </div>
+        </details>
+
+        <!-- Methodology -->
+        <details class="mb-6 border border-gray-200 rounded-lg">
+          <summary class="px-5 py-3 text-sm font-medium text-gray-700 cursor-pointer hover:bg-gray-50">How the AI percentage is calculated</summary>
+          <div class="px-5 pb-4 text-sm text-gray-600 leading-relaxed border-t border-gray-100 pt-3">
+            <p>The AI-generated percentage represents the proportion of final document characters that originated from accepted AI suggestions and remained substantially unchanged (&lt;20% modification). Characters typed directly, or AI text modified by 20% or more, are classified as human-written. This metric can be gamed and represents what the tool observed, not a guarantee of authorship.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. AUDIT TIMELINE ============ -->
+<section id="timeline" class="mockup-section py-12">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="mb-6">
+      <span class="text-xs font-mono text-gray-400 uppercase tracking-wider">Mockup 5</span>
+      <h2 class="text-2xl font-bold mt-1">Audit Timeline (Session-Grouped)</h2>
+      <p class="text-gray-500 mt-1 text-sm">Inspired by: GitHub (two-tier weight + rail), Slack (session grouping), Stripe (type badges + filter chips), Linear (date separators), Datadog (minimap)</p>
+    </div>
+
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <!-- Timeline minimap -->
+      <div class="px-8 pt-6 pb-2">
+        <div class="flex items-center gap-2 text-xs text-gray-400 mb-2">
+          <span>Feb 15</span>
+          <div class="flex-1 relative h-3 bg-gray-100 rounded-full overflow-hidden">
+            <div class="absolute left-[5%] w-[35%] h-full bg-emerald-200 rounded-full"></div>
+            <div class="absolute left-[42%] w-1.5 h-full bg-violet-400 rounded-full"></div>
+            <div class="absolute left-[50%] w-[25%] h-full bg-emerald-200 rounded-full"></div>
+            <div class="absolute left-[77%] w-1 h-full bg-orange-400 rounded-full"></div>
+            <div class="absolute left-[80%] w-[15%] h-full bg-emerald-200 rounded-full"></div>
+          </div>
+          <span>Feb 16</span>
+          <div class="flex-1 relative h-3 bg-gray-100 rounded-full overflow-hidden">
+            <div class="absolute left-[10%] w-[40%] h-full bg-emerald-200 rounded-full"></div>
+            <div class="absolute left-[30%] w-1.5 h-full bg-violet-400 rounded-full"></div>
+            <div class="absolute left-[45%] w-1.5 h-full bg-violet-400 rounded-full"></div>
+            <div class="absolute left-[52%] w-[30%] h-full bg-emerald-200 rounded-full"></div>
+            <div class="absolute left-[85%] w-2 h-2 bg-provenance-600 rounded-full top-0.5"></div>
+          </div>
+          <span>Badge</span>
+        </div>
+        <div class="flex items-center gap-3 text-[10px] text-gray-400">
+          <span class="flex items-center gap-1"><span class="w-2 h-2 bg-emerald-200 rounded-sm"></span>Writing</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 bg-violet-400 rounded-sm"></span>AI</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 bg-orange-400 rounded-sm"></span>Paste</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 bg-provenance-600 rounded-full"></span>Badge</span>
+        </div>
+      </div>
+
+      <!-- Filter chips -->
+      <div class="px-8 py-3 flex items-center gap-2 border-b border-gray-100">
+        <button class="px-2.5 py-1 text-xs font-medium bg-gray-900 text-white rounded-md">All (14)</button>
+        <button class="px-2.5 py-1 text-xs text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-md flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-violet-500"></span> AI Interactions (3)
+        </button>
+        <button class="px-2.5 py-1 text-xs text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-md flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span> Paste Events (1)
+        </button>
+        <button class="px-2.5 py-1 text-xs text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-md flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Sessions (3)
+        </button>
+      </div>
+
+      <!-- Timeline -->
+      <div class="px-8 py-6">
+        <!-- Day separator -->
+        <div class="flex items-center gap-3 mb-4">
+          <div class="h-px bg-gray-200 flex-1"></div>
+          <span class="text-xs font-medium text-gray-400">February 15, 2026</span>
+          <div class="h-px bg-gray-200 flex-1"></div>
+        </div>
+
+        <!-- Session 1 -->
+        <div class="mb-6">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">
+              <svg class="w-3 h-3 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path></svg>
+            </div>
+            <div>
+              <span class="text-sm font-medium text-gray-800">Session 1</span>
+              <span class="text-xs text-gray-400 ml-2">2:00 PM - 3:45 PM (1h 42m active)</span>
+            </div>
+          </div>
+
+          <div class="ml-3 timeline-rail space-y-3">
+            <!-- Grouped revisions -->
+            <div class="flex items-start gap-3 pl-4">
+              <div class="timeline-dot bg-gray-300 mt-1.5"></div>
+              <div class="text-xs text-gray-400">
+                8 revisions over 15 min <span class="text-gray-300 ml-1">&middot;</span> <span>0 &rarr; 142 words</span>
+              </div>
+            </div>
+
+            <!-- AI Interaction (expanded) -->
+            <div class="flex items-start gap-3 pl-4">
+              <div class="timeline-dot bg-violet-500 mt-2"></div>
+              <div class="flex-1 border border-violet-200 rounded-lg bg-violet-50/30 overflow-hidden">
+                <div class="px-4 py-2.5 flex items-center gap-2">
+                  <span class="px-1.5 py-0.5 text-[10px] font-medium bg-violet-100 text-violet-700 rounded">AI</span>
+                  <span class="text-xs text-gray-400">Inline</span>
+                  <span class="text-xs text-gray-600 truncate flex-1">"Rephrase this paragraph to be more concise"</span>
+                  <span class="px-1.5 py-0.5 text-[10px] font-medium bg-emerald-100 text-emerald-700 rounded">Accepted</span>
+                  <span class="text-xs text-gray-400">2:18 PM</span>
+                </div>
+                <!-- Expanded content -->
+                <div class="border-t border-violet-200 px-4 py-3 text-xs space-y-2 bg-white/50">
+                  <div>
+                    <span class="font-medium text-gray-500">Prompt:</span>
+                    <span class="text-gray-600"> "Rephrase this paragraph to be more concise while keeping the key insight about writing as thinking"</span>
+                  </div>
+                  <div>
+                    <span class="font-medium text-gray-500">Response:</span>
+                    <span class="text-gray-600"> "Writing forces you to confront the gaps in your understanding. When you sit down to explain something, you quickly discover what you don't actually know."</span>
+                  </div>
+                  <div>
+                    <span class="font-medium text-gray-500">Result:</span>
+                    <span class="text-gray-600"> Replaced 2 sentences (89 chars &rarr; 142 chars)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- More grouped revisions -->
+            <div class="flex items-start gap-3 pl-4">
+              <div class="timeline-dot bg-gray-300 mt-1.5"></div>
+              <div class="text-xs text-gray-400">
+                5 revisions over 12 min <span class="text-gray-300 ml-1">&middot;</span> <span>142 &rarr; 380 words (+238)</span>
+              </div>
+            </div>
+
+            <!-- Paste event -->
+            <div class="flex items-start gap-3 pl-4">
+              <div class="timeline-dot bg-orange-400 mt-1.5"></div>
+              <div class="flex items-center gap-2 text-xs">
+                <span class="px-1.5 py-0.5 text-[10px] font-medium bg-orange-100 text-orange-700 rounded">PASTE</span>
+                <span class="text-gray-600">External paste &mdash; 127 characters</span>
+                <span class="text-gray-400">3:12 PM</span>
+              </div>
+            </div>
+
+            <!-- More revisions -->
+            <div class="flex items-start gap-3 pl-4">
+              <div class="timeline-dot bg-gray-300 mt-1.5"></div>
+              <div class="text-xs text-gray-400">
+                3 revisions over 8 min <span class="text-gray-300 ml-1">&middot;</span> <span>380 &rarr; 425 words (+45)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Day separator -->
+        <div class="flex items-center gap-3 mb-4">
+          <div class="h-px bg-gray-200 flex-1"></div>
+          <span class="text-xs font-medium text-gray-400">February 16, 2026</span>
+          <div class="h-px bg-gray-200 flex-1"></div>
+        </div>
+
+        <!-- Session 2 -->
+        <div class="mb-6">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">
+              <svg class="w-3 h-3 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path></svg>
+            </div>
+            <div>
+              <span class="text-sm font-medium text-gray-800">Session 2</span>
+              <span class="text-xs text-gray-400 ml-2">10:00 AM - 11:30 AM (1h 15m active)</span>
+            </div>
+          </div>
+
+          <div class="ml-3 timeline-rail space-y-3">
+            <div class="flex items-start gap-3 pl-4">
+              <div class="timeline-dot bg-gray-300 mt-1.5"></div>
+              <div class="text-xs text-gray-400">Resumed &middot; 425 words</div>
+            </div>
+
+            <!-- AI Interaction (collapsed) -->
+            <div class="flex items-start gap-3 pl-4">
+              <div class="timeline-dot bg-violet-500 mt-2"></div>
+              <div class="flex-1 border border-gray-200 rounded-lg hover:border-violet-200 transition-colors cursor-pointer">
+                <div class="px-4 py-2.5 flex items-center gap-2">
+                  <span class="px-1.5 py-0.5 text-[10px] font-medium bg-violet-100 text-violet-700 rounded">AI</span>
+                  <span class="text-xs text-gray-400">Side Panel</span>
+                  <span class="text-xs text-gray-600 truncate flex-1">"What are the latest statistics on AI content creation?"</span>
+                  <span class="px-1.5 py-0.5 text-[10px] font-medium bg-red-100 text-red-700 rounded">Rejected</span>
+                  <span class="text-xs text-gray-400">10:22 AM</span>
+                  <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- AI Interaction (collapsed) -->
+            <div class="flex items-start gap-3 pl-4">
+              <div class="timeline-dot bg-violet-500 mt-2"></div>
+              <div class="flex-1 border border-gray-200 rounded-lg hover:border-violet-200 transition-colors cursor-pointer">
+                <div class="px-4 py-2.5 flex items-center gap-2">
+                  <span class="px-1.5 py-0.5 text-[10px] font-medium bg-violet-100 text-violet-700 rounded">AI</span>
+                  <span class="text-xs text-gray-400">Freeform</span>
+                  <span class="text-xs text-gray-600 truncate flex-1">"Suggest a stronger conclusion for this essay"</span>
+                  <span class="px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Modified</span>
+                  <span class="text-xs text-gray-400">11:05 AM</span>
+                  <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3 pl-4">
+              <div class="timeline-dot bg-gray-300 mt-1.5"></div>
+              <div class="text-xs text-gray-400">
+                12 revisions over 45 min <span class="text-gray-300 ml-1">&middot;</span> <span>425 &rarr; 2,847 words (+2,422)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Badge generated landmark -->
+        <div class="flex items-center gap-3 p-4 bg-provenance-50 rounded-xl border border-provenance-100">
+          <div class="w-8 h-8 rounded-full bg-provenance-600 flex items-center justify-center">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+          <div>
+            <span class="text-sm font-semibold text-provenance-900">Badge Generated</span>
+            <span class="text-xs text-provenance-600 ml-2">Feb 16, 11:35 AM</span>
+            <div class="text-xs text-provenance-600 mt-0.5">2,847 words &middot; 12% AI-generated &middot; 3 sessions &middot; 2h 57m total</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6. BADGE PREVIEW ============ -->
+<section id="badge-preview" class="mockup-section py-12">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="mb-6">
+      <span class="text-xs font-mono text-gray-400 uppercase tracking-wider">Mockup 6</span>
+      <h2 class="text-2xl font-bold mt-1">Pre-Publish Badge Preview</h2>
+      <p class="text-gray-500 mt-1 text-sm">Inspired by: GitHub PR (staged review), Substack (consequence awareness), Medium (social preview)</p>
+    </div>
+
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden max-w-2xl">
+      <!-- Warning banner -->
+      <div class="bg-amber-50 border-b border-amber-200 px-6 py-3 flex items-start gap-3">
+        <svg class="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+        <p class="text-sm text-amber-800">Everything below will be <strong>publicly visible</strong> to anyone with the badge link.</p>
+      </div>
+
+      <div class="p-6 space-y-5">
+        <!-- Summary stats -->
+        <div class="grid grid-cols-3 gap-3">
+          <div class="text-center p-3 bg-gray-50 rounded-lg">
+            <div class="text-lg font-bold text-gray-800">12%</div>
+            <div class="text-[10px] text-gray-500">AI-Generated</div>
+          </div>
+          <div class="text-center p-3 bg-gray-50 rounded-lg">
+            <div class="text-lg font-bold text-gray-800">8</div>
+            <div class="text-[10px] text-gray-500">AI Interactions</div>
+          </div>
+          <div class="text-center p-3 bg-gray-50 rounded-lg">
+            <div class="text-lg font-bold text-gray-800">2,847</div>
+            <div class="text-[10px] text-gray-500">Words</div>
+          </div>
+        </div>
+
+        <!-- Public content sections -->
+        <details class="border border-gray-200 rounded-lg">
+          <summary class="px-4 py-3 text-sm font-medium text-gray-700 cursor-pointer hover:bg-gray-50 flex items-center justify-between">
+            <span>Full Document Text</span>
+            <span class="text-xs text-gray-400">2,847 words</span>
+          </summary>
+          <div class="px-4 pb-3 text-xs text-gray-500 border-t border-gray-100 pt-3 max-h-32 overflow-auto">
+            In a world where anyone can generate a passable blog post in seconds, I find myself returning to the keyboard with renewed purpose...
+          </div>
+        </details>
+
+        <details open class="border border-violet-200 rounded-lg bg-violet-50/30">
+          <summary class="px-4 py-3 text-sm font-medium text-violet-800 cursor-pointer hover:bg-violet-50 flex items-center justify-between">
+            <span class="flex items-center gap-2">
+              <span class="px-1.5 py-0.5 text-[10px] bg-violet-100 text-violet-700 rounded">AI</span>
+              AI Interactions &mdash; Your prompts and AI responses will be public
+            </span>
+            <span class="text-xs text-violet-500">8 interactions</span>
+          </summary>
+          <div class="px-4 pb-3 border-t border-violet-200 pt-3 space-y-2">
+            <div class="text-xs bg-white rounded p-2 border border-violet-100">
+              <div class="text-violet-700 font-medium mb-0.5">You asked:</div>
+              <div class="text-gray-600">"Rephrase this paragraph to be more concise"</div>
+              <div class="text-violet-700 font-medium mt-2 mb-0.5">AI responded:</div>
+              <div class="text-gray-600">"Writing forces you to confront the gaps in your understanding..."</div>
+              <div class="mt-1 text-emerald-600 font-medium">Accepted</div>
+            </div>
+            <div class="text-xs text-gray-400 text-center">+ 7 more interactions</div>
+          </div>
+        </details>
+
+        <details class="border border-orange-200 rounded-lg bg-orange-50/30">
+          <summary class="px-4 py-3 text-sm font-medium text-orange-800 cursor-pointer hover:bg-orange-50 flex items-center justify-between">
+            <span class="flex items-center gap-2">
+              <span class="px-1.5 py-0.5 text-[10px] bg-orange-100 text-orange-700 rounded">PASTE</span>
+              Paste Events &mdash; Pasted content will be public
+            </span>
+            <span class="text-xs text-orange-500">1 event</span>
+          </summary>
+        </details>
+
+        <!-- Permanence note -->
+        <div class="text-xs text-gray-500 bg-gray-50 rounded-lg p-3 flex items-start gap-2">
+          <svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          This badge is permanent and cannot be modified after generation.
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center justify-between pt-2">
+          <button class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800">Cancel</button>
+          <button class="px-5 py-2.5 text-sm font-medium bg-provenance-600 text-white rounded-lg hover:bg-provenance-700 transition-colors">
+            Confirm & Generate Badge
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7. MOBILE VERIFICATION ============ -->
+<section id="mobile" class="mockup-section py-12">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="mb-6">
+      <span class="text-xs font-mono text-gray-400 uppercase tracking-wider">Mockup 7</span>
+      <h2 class="text-2xl font-bold mt-1">Mobile Verification Page</h2>
+      <p class="text-gray-500 mt-1 text-sm">Inspired by: Stripe receipts (hero stat), boarding passes (stat grid), Linear mobile (compact list)</p>
+    </div>
+
+    <!-- Phone frame -->
+    <div class="mx-auto bg-gray-900 rounded-[3rem] p-3 shadow-2xl" style="width: 390px;">
+      <div class="bg-white rounded-[2.4rem] overflow-hidden" style="height: 780px; overflow-y: auto;">
+        <!-- Status bar -->
+        <div class="bg-white px-8 pt-3 pb-1 flex items-center justify-between text-xs font-semibold">
+          <span>9:41</span>
+          <div class="flex items-center gap-1">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 18c3.31 0 6-2.69 6-6s-2.69-6-6-6-6 2.69-6 6 2.69 6 6 6zm0-10c2.21 0 4 1.79 4 4s-1.79 4-4 4-4-1.79-4-4 1.79-4 4-4z"></path></svg>
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><rect x="2" y="6" width="3" height="12" rx="1"></rect><rect x="7" y="4" width="3" height="14" rx="1"></rect><rect x="12" y="2" width="3" height="16" rx="1"></rect><rect x="17" y="1" width="3" height="17" rx="1"></rect></svg>
+            <div class="w-6 h-3 border border-current rounded-sm relative ml-0.5"><div class="absolute inset-0.5 bg-current rounded-sm" style="width: 70%"></div></div>
+          </div>
+        </div>
+
+        <!-- Sticky header -->
+        <div class="sticky top-0 bg-white/95 backdrop-blur-sm border-b border-gray-100 px-5 py-3 flex items-center justify-between z-10">
+          <div class="flex items-center gap-1.5">
+            <div class="w-4 h-4 bg-provenance-700 rotate-45"></div>
+            <span class="text-sm font-semibold">Provenance</span>
+          </div>
+          <span class="text-[10px] text-gray-400 font-mono">k8xYm2nP9qR</span>
+        </div>
+
+        <!-- Content -->
+        <div class="px-5 py-5 space-y-5">
+          <!-- Title -->
+          <h2 class="text-base font-bold text-gray-900 leading-tight">Why I Still Write My Own Blog Posts in the Age of AI</h2>
+
+          <!-- Hero stat -->
+          <div class="text-center py-6 bg-gradient-to-b from-emerald-50 to-white rounded-2xl border border-emerald-100">
+            <div class="text-5xl font-bold text-emerald-700">12%</div>
+            <div class="text-sm text-emerald-600 mt-1">AI-Generated</div>
+          </div>
+
+          <!-- Stat grid -->
+          <div class="grid grid-cols-2 gap-3">
+            <div class="bg-gray-50 rounded-xl p-4 text-center">
+              <div class="text-xs text-gray-400 mb-0.5">Sessions</div>
+              <div class="text-xl font-semibold text-gray-800">3</div>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4 text-center">
+              <div class="text-xs text-gray-400 mb-0.5">AI Chats</div>
+              <div class="text-xl font-semibold text-gray-800">8</div>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4 text-center">
+              <div class="text-xs text-gray-400 mb-0.5">Active Time</div>
+              <div class="text-xl font-semibold text-gray-800">2h 14m</div>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4 text-center">
+              <div class="text-xs text-gray-400 mb-0.5">Words</div>
+              <div class="text-xl font-semibold text-gray-800">2,847</div>
+            </div>
+          </div>
+
+          <!-- Scope -->
+          <details class="border border-gray-200 rounded-xl">
+            <summary class="px-4 py-3 text-sm font-medium text-gray-700">What this badge certifies</summary>
+            <div class="px-4 pb-3 text-xs text-gray-500 border-t border-gray-100 pt-2">
+              This badge certifies the writing process was conducted in Provenance with a complete, auditable record.
+            </div>
+          </details>
+
+          <!-- Timeline (compact for mobile) -->
+          <details class="border border-gray-200 rounded-xl">
+            <summary class="px-4 py-3 text-sm font-medium text-gray-700 flex items-center justify-between">
+              <span>Audit Timeline</span>
+              <span class="text-xs text-gray-400">14 events</span>
+            </summary>
+            <div class="px-4 pb-3 border-t border-gray-100 pt-3 space-y-2">
+              <div class="flex items-center gap-2 text-xs">
+                <span class="px-1.5 py-0.5 bg-violet-100 text-violet-700 rounded text-[10px] font-medium">AI</span>
+                <span class="text-gray-600 truncate">"Rephrase this paragraph..."</span>
+                <span class="text-emerald-600 text-[10px] flex-shrink-0">Accepted</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs">
+                <span class="px-1.5 py-0.5 bg-violet-100 text-violet-700 rounded text-[10px] font-medium">AI</span>
+                <span class="text-gray-600 truncate">"What are the latest statistics..."</span>
+                <span class="text-red-600 text-[10px] flex-shrink-0">Rejected</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs">
+                <span class="px-1.5 py-0.5 bg-orange-100 text-orange-700 rounded text-[10px] font-medium">PASTE</span>
+                <span class="text-gray-600 truncate">External paste &mdash; 127 chars</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs">
+                <span class="px-1.5 py-0.5 bg-violet-100 text-violet-700 rounded text-[10px] font-medium">AI</span>
+                <span class="text-gray-600 truncate">"Suggest a stronger conclusion..."</span>
+                <span class="text-amber-600 text-[10px] flex-shrink-0">Modified</span>
+              </div>
+              <div class="text-xs text-gray-400 text-center pt-1">+ 10 more events</div>
+            </div>
+          </details>
+
+          <!-- Document text -->
+          <details class="border border-gray-200 rounded-xl">
+            <summary class="px-4 py-3 text-sm font-medium text-gray-700 flex items-center justify-between">
+              <span>Full Document Text</span>
+              <span class="text-xs text-gray-400">2,847 words</span>
+            </summary>
+          </details>
+
+          <!-- Methodology -->
+          <details class="border border-gray-200 rounded-xl">
+            <summary class="px-4 py-3 text-sm font-medium text-gray-700">Methodology</summary>
+          </details>
+
+          <!-- Footer -->
+          <div class="text-center py-4 space-y-1">
+            <div class="text-[10px] text-gray-400">Badge generated Feb 16, 2026</div>
+            <div class="flex items-center justify-center gap-1.5 text-xs text-gray-400">
+              <div class="w-3 h-3 bg-provenance-700 rotate-45"></div>
+              Powered by Provenance
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8. BADGE IMAGE ============ -->
+<section class="py-12">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="mb-6">
+      <span class="text-xs font-mono text-gray-400 uppercase tracking-wider">Mockup 8</span>
+      <h2 class="text-2xl font-bold mt-1">Embeddable Badge Variations</h2>
+      <p class="text-gray-500 mt-1 text-sm">Inspired by: shields.io (two-section label+value), SSL indicators (trust at a glance)</p>
+    </div>
+
+    <div class="space-y-6">
+      <!-- Badge style 1: shields.io style -->
+      <div>
+        <p class="text-xs text-gray-500 mb-2">Style A: shields.io-style inline badge</p>
+        <div class="inline-flex items-center rounded overflow-hidden text-xs font-medium shadow-sm">
+          <span class="px-2.5 py-1 bg-gray-700 text-gray-100">Provenance</span>
+          <span class="px-2.5 py-1 bg-emerald-600 text-white">12% AI</span>
+        </div>
+      </div>
+
+      <!-- Badge style 2: Compact with diamond -->
+      <div>
+        <p class="text-xs text-gray-500 mb-2">Style B: Branded compact badge</p>
+        <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-gray-200 bg-white text-xs shadow-sm">
+          <div class="w-3 h-3 bg-provenance-700 rotate-45 flex-shrink-0"></div>
+          <span class="font-medium text-gray-700">Provenance</span>
+          <span class="text-gray-300">|</span>
+          <span class="font-semibold text-emerald-600">12% AI</span>
+        </div>
+      </div>
+
+      <!-- Badge style 3: Minimal -->
+      <div>
+        <p class="text-xs text-gray-500 mb-2">Style C: Minimal text badge</p>
+        <div class="inline-flex items-center gap-1 text-xs text-gray-500">
+          <div class="w-2.5 h-2.5 bg-provenance-700 rotate-45 flex-shrink-0"></div>
+          <span>Verified: 12% AI</span>
+        </div>
+      </div>
+
+      <!-- Badge at different AI percentages -->
+      <div>
+        <p class="text-xs text-gray-500 mb-2">Color scale across AI percentages</p>
+        <div class="flex items-center gap-3 flex-wrap">
+          <div class="inline-flex items-center rounded overflow-hidden text-xs font-medium shadow-sm">
+            <span class="px-2.5 py-1 bg-gray-700 text-gray-100">Provenance</span>
+            <span class="px-2.5 py-1 bg-emerald-600 text-white">0% AI</span>
+          </div>
+          <div class="inline-flex items-center rounded overflow-hidden text-xs font-medium shadow-sm">
+            <span class="px-2.5 py-1 bg-gray-700 text-gray-100">Provenance</span>
+            <span class="px-2.5 py-1 bg-emerald-600 text-white">12% AI</span>
+          </div>
+          <div class="inline-flex items-center rounded overflow-hidden text-xs font-medium shadow-sm">
+            <span class="px-2.5 py-1 bg-gray-700 text-gray-100">Provenance</span>
+            <span class="px-2.5 py-1 bg-amber-500 text-white">45% AI</span>
+          </div>
+          <div class="inline-flex items-center rounded overflow-hidden text-xs font-medium shadow-sm">
+            <span class="px-2.5 py-1 bg-gray-700 text-gray-100">Provenance</span>
+            <span class="px-2.5 py-1 bg-orange-500 text-white">73% AI</span>
+          </div>
+          <div class="inline-flex items-center rounded overflow-hidden text-xs font-medium shadow-sm">
+            <span class="px-2.5 py-1 bg-gray-700 text-gray-100">Provenance</span>
+            <span class="px-2.5 py-1 bg-red-500 text-white">95% AI</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="py-8 text-center text-sm text-gray-400 border-t border-gray-200 mt-8">
+  Provenance UI Mockups &middot; Generated Feb 21, 2026 &middot; Based on competitive research across 30+ tools
+</footer>
+
+</body>
+</html>

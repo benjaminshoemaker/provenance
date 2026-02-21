@@ -10,6 +10,8 @@ Workflow guidelines for AI agents executing tasks from EXECUTION_PLAN.md.
 
 **Dev Server:** `npm run dev` → `http://localhost:3000` (wait 5s for startup)
 
+**Design System:** All UI work must follow `DESIGN_SYSTEM.md` — colors, layout patterns, component patterns, and interaction models are defined there. Reference mockups live in `/mockups/ui-mockups.html`.
+
 ---
 
 ## Workflow
@@ -32,7 +34,7 @@ AGENT (Executor)
 
 ## Task Execution
 
-1. **Load context** — Read AGENTS.md, PRODUCT_SPEC.md, TECHNICAL_SPEC.md, and your task from EXECUTION_PLAN.md
+1. **Load context** — Read AGENTS.md, DESIGN_SYSTEM.md, PRODUCT_SPEC.md, TECHNICAL_SPEC.md, and your task from EXECUTION_PLAN.md
 2. **Check CLAUDE.md** — Read project root CLAUDE.md if it exists
 3. **Create branch** — If first task in phase, create branch: `git checkout -b phase-{N}`
 4. **Verify dependencies** — Confirm prior tasks are complete
@@ -48,7 +50,7 @@ AGENT (Executor)
 
 **Start fresh for each task.** Do not carry conversation history between tasks.
 
-Before starting any task, load: AGENTS.md, PRODUCT_SPEC.md, TECHNICAL_SPEC.md, your task from EXECUTION_PLAN.md.
+Before starting any task, load: AGENTS.md, DESIGN_SYSTEM.md, PRODUCT_SPEC.md, TECHNICAL_SPEC.md, your task from EXECUTION_PLAN.md.
 
 **Preserve context while debugging.** If tests fail within a task, continue in the same conversation until resolved.
 

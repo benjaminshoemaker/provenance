@@ -13,7 +13,7 @@ import { Toolbar } from "./Toolbar";
 import { InlineAI } from "./InlineAI";
 import { SidePanel } from "./SidePanel";
 import { FreeformAI } from "./FreeformAI";
-import { BadgeList } from "./BadgeList";
+import { PanelLayout } from "./PanelLayout";
 import NextLink from "next/link";
 
 interface EditorProps {
@@ -132,58 +132,67 @@ export function Editor({
     [editor, createAIRevision]
   );
 
-  return (
-    <div className="flex gap-4">
-      <div className="relative flex-1 rounded-lg border">
-        <div className="flex items-center border-b">
-          <div className="flex-1">
-            <Toolbar editor={editor} />
-          </div>
-          <NextLink
-            href={`/editor/${documentId}/preview`}
-            className="mr-2 shrink-0 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
-          >
-            Generate Badge
-          </NextLink>
+  const editorContent = (
+    <div className="relative flex h-full flex-col rounded-lg border">
+      <div className="flex items-center border-b">
+        <div className="flex-1">
+          <Toolbar editor={editor} />
         </div>
+        <NextLink
+          href={`/editor/${documentId}/preview`}
+          className="mr-2 shrink-0 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
+        >
+          Generate Badge
+        </NextLink>
+      </div>
+      <div className="flex-1 overflow-auto">
         <EditorContent
           editor={editor}
           className="prose prose-neutral dark:prose-invert max-w-none p-4 focus-within:outline-none [&_.tiptap]:min-h-[60vh] [&_.tiptap]:outline-none"
         />
-        {selection && editor && (
-          <InlineAI
-            editor={editor}
-            documentId={documentId}
-            provider={provider}
-            model={model}
-            selectedText={selection.text}
-            selectionFrom={selection.from}
-            selectionTo={selection.to}
-            onDismiss={handleDismissInlineAI}
-            onAIResponse={handleAIResponse}
-          />
-        )}
       </div>
-      <div className="flex w-80 flex-col gap-4">
-        <SidePanel
+      {selection && editor && (
+        <InlineAI
+          editor={editor}
           documentId={documentId}
           provider={provider}
           model={model}
-          getDocumentContent={getDocumentContent}
+          selectedText={selection.text}
+          selectionFrom={selection.from}
+          selectionTo={selection.to}
+          onDismiss={handleDismissInlineAI}
           onAIResponse={handleAIResponse}
-        />
-        <BadgeList documentId={documentId} />
-      </div>
-      {showFreeform && (
-        <FreeformAI
-          documentId={documentId}
-          provider={provider}
-          model={model}
-          getDocumentContent={getDocumentContent}
-          onAIResponse={handleAIResponse}
-          onClose={() => setShowFreeform(false)}
         />
       )}
     </div>
+  );
+
+  const aiChatContent = (
+    <SidePanel
+      documentId={documentId}
+      provider={provider}
+      model={model}
+      getDocumentContent={getDocumentContent}
+      onAIResponse={handleAIResponse}
+    />
+  );
+
+  const freeformContent = showFreeform ? (
+    <FreeformAI
+      documentId={documentId}
+      provider={provider}
+      model={model}
+      getDocumentContent={getDocumentContent}
+      onAIResponse={handleAIResponse}
+      onClose={() => setShowFreeform(false)}
+    />
+  ) : undefined;
+
+  return (
+    <PanelLayout
+      editorContent={editorContent}
+      aiChatContent={aiChatContent}
+      freeformContent={freeformContent}
+    />
   );
 }

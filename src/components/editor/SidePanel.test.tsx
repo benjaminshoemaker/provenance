@@ -48,7 +48,7 @@ describe("SidePanel", () => {
     Element.prototype.scrollIntoView = vi.fn();
   });
 
-  it("should render panel with chat interface and toggle button", () => {
+  it("should render chat interface always visible", () => {
     render(
       <SidePanel
         documentId="doc-1"
@@ -58,7 +58,8 @@ describe("SidePanel", () => {
       />
     );
 
-    expect(screen.getByRole("button", { name: /toggle/i })).toBeDefined();
+    expect(screen.getByText("AI Assistant")).toBeDefined();
+    expect(screen.getByPlaceholderText(/ask/i)).toBeDefined();
   });
 
   it("should display chat messages with user and AI bubbles", () => {
@@ -83,7 +84,6 @@ describe("SidePanel", () => {
         provider="openai"
         model="gpt-4o"
         getDocumentContent={() => ({ type: "doc", content: [] })}
-        defaultOpen
       />
     );
 
@@ -105,7 +105,6 @@ describe("SidePanel", () => {
         provider="anthropic"
         model="claude-sonnet-4-5-20250929"
         getDocumentContent={() => docContent}
-        defaultOpen
       />
     );
 
@@ -159,7 +158,6 @@ describe("SidePanel", () => {
         provider="anthropic"
         model="claude-sonnet-4-5-20250929"
         getDocumentContent={() => ({ type: "doc", content: [] })}
-        defaultOpen
       />
     );
 
@@ -178,7 +176,6 @@ describe("SidePanel", () => {
         provider="anthropic"
         model="claude-sonnet-4-5-20250929"
         getDocumentContent={() => ({ type: "doc", content: [] })}
-        defaultOpen
         onAIResponse={onAIResponse}
       />
     );

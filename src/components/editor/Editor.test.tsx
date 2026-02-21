@@ -113,8 +113,25 @@ vi.mock("next/link", () => ({
   ),
 }));
 
-vi.mock("./BadgeList", () => ({
-  BadgeList: () => <div data-testid="badge-list">Badge list</div>,
+// Mock PanelLayout to simplify Editor tests
+vi.mock("./PanelLayout", () => ({
+  PanelLayout: ({
+    editorContent,
+    aiChatContent,
+    freeformContent,
+  }: {
+    editorContent: React.ReactNode;
+    aiChatContent: React.ReactNode;
+    freeformContent?: React.ReactNode;
+  }) => (
+    <div data-testid="panel-layout">
+      <div data-testid="editor-panel">{editorContent}</div>
+      <div data-testid="ai-chat-panel">{aiChatContent}</div>
+      {freeformContent && (
+        <div data-testid="freeform-panel">{freeformContent}</div>
+      )}
+    </div>
+  ),
 }));
 
 import { Editor } from "./Editor";
@@ -123,6 +140,7 @@ import { useEditor } from "@tiptap/react";
 describe("Editor", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    Element.prototype.scrollIntoView = vi.fn();
   });
 
   it("should render without hydration errors in test environment", () => {
@@ -185,5 +203,19 @@ describe("Editor", () => {
         content,
       })
     );
+  });
+
+  it("should render content inside PanelLayout", () => {
+    render(
+      <Editor
+        content={{ type: "doc", content: [] }}
+        documentId="doc-1"
+        title="Test Document"
+      />
+    );
+
+    expect(screen.getByTestId("panel-layout")).toBeTruthy();
+    expect(screen.getByTestId("editor-panel")).toBeTruthy();
+    expect(screen.getByTestId("ai-chat-panel")).toBeTruthy();
   });
 });
