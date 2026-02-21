@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { generateBadge } from "@/app/actions/badges";
 import { Button } from "@/components/ui/button";
@@ -42,14 +42,17 @@ function PreviewContent({ params }: PreviewPageProps) {
   const router = useRouter();
 
   // Load data on mount
-  useState(() => {
+  useEffect(() => {
+    let cancelled = false;
     (async () => {
       const { id } = await params;
+      if (cancelled) return;
       setDocumentId(id);
 
       try {
         const res = await fetch(`/api/preview/${id}`);
-        if (res.status === 401 || res.status === 403) {
+        if (cancelled) return;
+        if (res.status === 401 || res.status === 404) {
           router.push("/dashboard");
           return;
         }
@@ -58,14 +61,16 @@ function PreviewContent({ params }: PreviewPageProps) {
           return;
         }
         const data = await res.json();
+        if (cancelled) return;
         setPreviewData(data);
       } catch {
-        router.push("/dashboard");
+        if (!cancelled) router.push("/dashboard");
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     })();
-  });
+    return () => { cancelled = true; };
+  }, [params, router]);
 
   const handleConfirm = async () => {
     if (!documentId) return;

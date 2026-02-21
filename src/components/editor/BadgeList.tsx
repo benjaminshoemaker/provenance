@@ -2,6 +2,10 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  generateBadgeHtml,
+  generateBadgeMarkdown,
+} from "@/lib/badge-snippets";
 
 interface Badge {
   id: string;
@@ -39,16 +43,11 @@ export function BadgeList({ documentId }: BadgeListProps) {
     fetchBadges();
   }, [fetchBadges]);
 
-  const copySnippet = async (verificationId: string, type: "html" | "md") => {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_APP_URL || "https://provenance.app";
-    const verifyUrl = `${baseUrl}/verify/${verificationId}`;
-    const imageUrl = `${baseUrl}/api/badges/${verificationId}/image`;
-
+  const copySnippet = async (verificationId: string, aiPercentage: number, type: "html" | "md") => {
     const snippet =
       type === "html"
-        ? `<a href="${verifyUrl}"><img src="${imageUrl}" alt="Provenance Verified" width="200" height="40" /></a>`
-        : `[![Provenance Verified](${imageUrl})](${verifyUrl})`;
+        ? generateBadgeHtml(verificationId, aiPercentage)
+        : generateBadgeMarkdown(verificationId, aiPercentage);
 
     await navigator.clipboard.writeText(snippet);
     setCopiedId(`${verificationId}-${type}`);
@@ -86,7 +85,7 @@ export function BadgeList({ documentId }: BadgeListProps) {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => copySnippet(badge.verificationId, "html")}
+              onClick={() => copySnippet(badge.verificationId, badge.stats?.ai_percentage ?? 0, "html")}
             >
               {copiedId === `${badge.verificationId}-html`
                 ? "Copied!"
@@ -95,7 +94,7 @@ export function BadgeList({ documentId }: BadgeListProps) {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => copySnippet(badge.verificationId, "md")}
+              onClick={() => copySnippet(badge.verificationId, badge.stats?.ai_percentage ?? 0, "md")}
             >
               {copiedId === `${badge.verificationId}-md`
                 ? "Copied!"

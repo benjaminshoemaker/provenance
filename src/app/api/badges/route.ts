@@ -4,6 +4,8 @@ import { badges, documents } from "@/lib/db/schema";
 import { eq, and, isNull, desc } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export async function GET(request: NextRequest) {
   const session = await auth();
 
@@ -13,7 +15,7 @@ export async function GET(request: NextRequest) {
 
   const documentId = request.nextUrl.searchParams.get("documentId");
 
-  if (!documentId) {
+  if (!documentId || !UUID_RE.test(documentId)) {
     return NextResponse.json(
       { error: "documentId required" },
       { status: 400 }

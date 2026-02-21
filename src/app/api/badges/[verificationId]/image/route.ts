@@ -20,7 +20,10 @@ export async function GET(
   }
 
   if (badge.isTakenDown) {
-    return new NextResponse("Gone", { status: 410 });
+    return new NextResponse("Gone", {
+      status: 410,
+      headers: { "Cache-Control": "no-store" },
+    });
   }
 
   const stats = badge.stats as { ai_percentage: number };
