@@ -3,6 +3,9 @@ import { auth } from "@/auth";
 import { getModel } from "@/lib/ai/providers";
 import { getSystemPrompt } from "@/lib/ai/system-prompts";
 import { checkRateLimit } from "@/lib/ai/rate-limit";
+import { db } from "@/lib/db";
+import { users } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 
 export const maxDuration = 30;
 
@@ -13,8 +16,18 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json();
-  const { messages, prompt, context, selectedText, mode, provider, model } =
-    body;
+  const { messages, prompt, context, selectedText, mode } = body;
+  let { provider, model } = body;
+
+  // Read user's aiProvider preference as fallback
+  if (!provider) {
+    const [userRow] = await db
+      .select({ aiProvider: users.aiProvider, aiModel: users.aiModel })
+      .from(users)
+      .where(eq(users.id, session.user.id));
+    provider = userRow?.aiProvider || "anthropic";
+    if (!model) model = userRow?.aiModel || undefined;
+  }
 
   if (!mode || !provider) {
     return Response.json(

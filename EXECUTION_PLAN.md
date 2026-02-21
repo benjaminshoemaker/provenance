@@ -633,13 +633,13 @@ Allow users to choose their AI provider (Anthropic or OpenAI) and preferred mode
 **Requirement:** REQ-012
 
 **Acceptance Criteria:**
-- [ ] (CODE) Settings UI for selecting AI provider and model
+- [x] (CODE) Settings UI for selecting AI provider and model
   - Verify: `grep -q 'provider\|model' src/components/settings/AISettings.tsx`
-- [ ] (TEST) updateUserPreferences() persists ai_provider and ai_model to users table
+- [x] (TEST) updateUserPreferences() persists ai_provider and ai_model to users table
   - Verify: `npx vitest run src/app/actions/user.test.ts`
-- [ ] (CODE) AI completion endpoint reads user's provider preference
+- [x] (CODE) AI completion endpoint reads user's provider preference
   - Verify: `grep -q 'ai_provider\|aiProvider' src/app/api/ai/complete/route.ts`
-- [ ] (CODE) Settings accessible from editor or dashboard
+- [x] (CODE) Settings accessible from editor or dashboard
   - Verify: `grep -q 'settings\|Settings' src/app/dashboard/page.tsx`
 
 **Files to Create:**

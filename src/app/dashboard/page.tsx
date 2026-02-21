@@ -29,15 +29,20 @@ export default async function DashboardPage() {
     <div className="mx-auto max-w-4xl px-4 py-8">
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-3xl font-bold">Documents</h1>
-        <form
-          action={async () => {
-            "use server";
-            const doc = await createDocument();
-            redirect(`/editor/${doc.id}`);
-          }}
-        >
-          <Button type="submit">New Document</Button>
-        </form>
+        <div className="flex items-center gap-2">
+          <Link href="/settings">
+            <Button variant="outline">Settings</Button>
+          </Link>
+          <form
+            action={async () => {
+              "use server";
+              const doc = await createDocument();
+              redirect(`/editor/${doc.id}`);
+            }}
+          >
+            <Button type="submit">New Document</Button>
+          </form>
+        </div>
       </div>
 
       {activeDocuments.length === 0 ? (

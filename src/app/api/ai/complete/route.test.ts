@@ -4,6 +4,9 @@ const mocks = vi.hoisted(() => {
   const mockToUIMessageStreamResponse = vi.fn(
     () => new Response("stream", { status: 200 })
   );
+  const mockDbWhere = vi.fn().mockResolvedValue([{ aiProvider: "anthropic", aiModel: null }]);
+  const mockDbFrom = vi.fn(() => ({ where: mockDbWhere }));
+  const mockDbSelect = vi.fn(() => ({ from: mockDbFrom }));
   return {
     mockAuth: vi.fn(),
     mockStreamText: vi.fn(() => ({
@@ -13,6 +16,9 @@ const mocks = vi.hoisted(() => {
     mockGetModel: vi.fn(() => "mock-model"),
     mockCheckRateLimit: vi.fn(),
     mockConvertToModelMessages: vi.fn((msgs: unknown) => msgs),
+    mockDbSelect,
+    mockDbFrom,
+    mockDbWhere,
   };
 });
 
@@ -45,6 +51,24 @@ vi.mock("@/lib/ai/providers", () => ({
 
 vi.mock("@/lib/ai/rate-limit", () => ({
   checkRateLimit: mocks.mockCheckRateLimit,
+}));
+
+vi.mock("@/lib/db", () => ({
+  db: {
+    select: mocks.mockDbSelect,
+  },
+}));
+
+vi.mock("@/lib/db/schema", () => ({
+  users: {
+    id: "id",
+    aiProvider: "ai_provider",
+    aiModel: "ai_model",
+  },
+}));
+
+vi.mock("drizzle-orm", () => ({
+  eq: vi.fn((_col, val) => ({ _eq: val })),
 }));
 
 import { POST } from "./route";
