@@ -8,6 +8,13 @@ vi.mock("@/app/actions/documents", () => ({
   updateDocument: (...args: unknown[]) => mockUpdateDocument(...args),
 }));
 
+const content = {
+  type: "doc",
+  content: [
+    { type: "paragraph", content: [{ type: "text", text: "Hello world" }] },
+  ],
+};
+
 describe("useAutoSave", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -19,29 +26,19 @@ describe("useAutoSave", () => {
     vi.useRealTimers();
   });
 
-  it("should debounce at 2 seconds and call updateDocument", async () => {
+  it("should debounce at 1 second and call updateDocument", async () => {
     const { result } = renderHook(() =>
       useAutoSave({ documentId: "doc-1", title: "Test" })
     );
 
-    const content = {
-      type: "doc",
-      content: [
-        { type: "paragraph", content: [{ type: "text", text: "Hello world" }] },
-      ],
-    };
-
-    // Trigger save
     act(() => {
       result.current.save(content);
     });
 
-    // Should not have called yet (debounce)
     expect(mockUpdateDocument).not.toHaveBeenCalled();
 
-    // Advance past debounce timeout (2 seconds)
     await act(async () => {
-      vi.advanceTimersByTime(2000);
+      vi.advanceTimersByTime(1000);
     });
 
     expect(mockUpdateDocument).toHaveBeenCalledWith("doc-1", {
@@ -56,26 +53,16 @@ describe("useAutoSave", () => {
       useAutoSave({ documentId: "doc-1", title: "Test" })
     );
 
-    // Initially idle
     expect(result.current.status).toBe("idle");
-
-    const content = {
-      type: "doc",
-      content: [
-        { type: "paragraph", content: [{ type: "text", text: "Hello" }] },
-      ],
-    };
 
     act(() => {
       result.current.save(content);
     });
 
-    // After triggering save, should be debouncing
     await act(async () => {
-      vi.advanceTimersByTime(2000);
+      vi.advanceTimersByTime(1000);
     });
 
-    // After updateDocument resolves, status should be "saved"
     await act(async () => {
       await vi.runAllTimersAsync();
     });
@@ -94,20 +81,12 @@ describe("useAutoSave", () => {
       useAutoSave({ documentId: "doc-1", title: "Test" })
     );
 
-    const content = {
-      type: "doc",
-      content: [
-        { type: "paragraph", content: [{ type: "text", text: "Hello" }] },
-      ],
-    };
-
     act(() => {
       result.current.save(content);
     });
 
-    // Trigger initial save
     await act(async () => {
-      vi.advanceTimersByTime(2000);
+      vi.advanceTimersByTime(1000);
     });
 
     // First retry after 1s
@@ -125,7 +104,6 @@ describe("useAutoSave", () => {
       vi.advanceTimersByTime(4000);
     });
 
-    // Should have attempted 4 calls total (1 initial + 3 retries)
     expect(mockUpdateDocument).toHaveBeenCalledTimes(4);
   });
 
@@ -136,20 +114,12 @@ describe("useAutoSave", () => {
       useAutoSave({ documentId: "doc-1", title: "Test" })
     );
 
-    const content = {
-      type: "doc",
-      content: [
-        { type: "paragraph", content: [{ type: "text", text: "Hello" }] },
-      ],
-    };
-
     act(() => {
       result.current.save(content);
     });
 
-    // Trigger initial + all retries
     await act(async () => {
-      vi.advanceTimersByTime(2000);
+      vi.advanceTimersByTime(1000);
     });
     await act(async () => {
       vi.advanceTimersByTime(1000);
@@ -169,7 +139,7 @@ describe("useAutoSave", () => {
       useAutoSave({ documentId: "doc-1", title: "My Title" })
     );
 
-    const content = {
+    const multiParagraph = {
       type: "doc",
       content: [
         {
@@ -184,17 +154,72 @@ describe("useAutoSave", () => {
     };
 
     act(() => {
-      result.current.save(content);
+      result.current.save(multiParagraph);
     });
 
     await act(async () => {
-      vi.advanceTimersByTime(2000);
+      vi.advanceTimersByTime(1000);
     });
 
     expect(mockUpdateDocument).toHaveBeenCalledWith("doc-1", {
       title: "My Title",
-      content,
+      content: multiParagraph,
       wordCount: 4,
+    });
+  });
+
+  it("should set isDirty when save is called and clear after save completes", async () => {
+    const { result } = renderHook(() =>
+      useAutoSave({ documentId: "doc-1", title: "Test" })
+    );
+
+    expect(result.current.isDirty).toBe(false);
+
+    act(() => {
+      result.current.save(content);
+    });
+
+    expect(result.current.isDirty).toBe(true);
+
+    await act(async () => {
+      vi.advanceTimersByTime(1000);
+    });
+
+    await act(async () => {
+      await vi.runAllTimersAsync();
+    });
+
+    expect(result.current.isDirty).toBe(false);
+  });
+
+  it("should trigger save when title changes and content exists", async () => {
+    const { result, rerender } = renderHook(
+      ({ title }) => useAutoSave({ documentId: "doc-1", title }),
+      { initialProps: { title: "Original" } }
+    );
+
+    // First, save some content so lastContentRef is populated
+    act(() => {
+      result.current.save(content);
+    });
+
+    await act(async () => {
+      vi.advanceTimersByTime(1000);
+    });
+
+    mockUpdateDocument.mockClear();
+
+    // Change the title
+    rerender({ title: "Updated Title" });
+
+    await act(async () => {
+      vi.advanceTimersByTime(1000);
+    });
+
+    expect(mockUpdateDocument).toHaveBeenCalledWith("doc-1", {
+      title: "Updated Title",
+      content,
+      wordCount: 2,
     });
   });
 });

@@ -30,15 +30,17 @@ function countWords(content: Record<string, unknown>): number {
 export function useAutoSave({
   documentId,
   title,
-  debounceMs = 2000,
+  debounceMs = 1000,
   maxRetries = 3,
 }: UseAutoSaveOptions) {
   const [status, setStatus] = useState<SaveStatus>("idle");
+  const [isDirty, setIsDirty] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const titleRef = useRef(title);
   const documentIdRef = useRef(documentId);
   const maxRetriesRef = useRef(maxRetries);
   const lastContentRef = useRef<Record<string, unknown> | null>(null);
+  const prevTitleRef = useRef(title);
 
   useEffect(() => {
     titleRef.current = title;
@@ -52,40 +54,59 @@ export function useAutoSave({
     maxRetriesRef.current = maxRetries;
   }, [maxRetries]);
 
+  const executeSave = useCallback(
+    (content: Record<string, unknown>) => {
+      const attemptSave = async (retriesLeft: number) => {
+        setStatus("saving");
+        try {
+          await updateDocument(documentIdRef.current, {
+            title: titleRef.current,
+            content,
+            wordCount: countWords(content),
+          });
+          setStatus("saved");
+          setIsDirty(false);
+        } catch {
+          if (retriesLeft > 0) {
+            const delay = Math.pow(2, maxRetriesRef.current - retriesLeft) * 1000;
+            setTimeout(() => {
+              attemptSave(retriesLeft - 1);
+            }, delay);
+          } else {
+            setStatus("error");
+          }
+        }
+      };
+
+      attemptSave(maxRetriesRef.current);
+    },
+    []
+  );
+
   const save = useCallback(
     (content: Record<string, unknown>) => {
       lastContentRef.current = content;
+      setIsDirty(true);
       if (timerRef.current) {
         clearTimeout(timerRef.current);
       }
 
       timerRef.current = setTimeout(() => {
-        const attemptSave = async (retriesLeft: number) => {
-          setStatus("saving");
-          try {
-            await updateDocument(documentIdRef.current, {
-              title: titleRef.current,
-              content,
-              wordCount: countWords(content),
-            });
-            setStatus("saved");
-          } catch {
-            if (retriesLeft > 0) {
-              const delay = Math.pow(2, maxRetriesRef.current - retriesLeft) * 1000;
-              setTimeout(() => {
-                attemptSave(retriesLeft - 1);
-              }, delay);
-            } else {
-              setStatus("error");
-            }
-          }
-        };
-
-        attemptSave(maxRetriesRef.current);
+        executeSave(content);
       }, debounceMs);
     },
-    [debounceMs]
+    [debounceMs, executeSave]
   );
+
+  // Trigger a save when only the title changes
+  useEffect(() => {
+    if (prevTitleRef.current !== title) {
+      prevTitleRef.current = title;
+      if (lastContentRef.current) {
+        save(lastContentRef.current);
+      }
+    }
+  }, [title, save]);
 
   const retry = useCallback(() => {
     if (lastContentRef.current && status === "error") {
@@ -93,5 +114,16 @@ export function useAutoSave({
     }
   }, [save, status]);
 
-  return { save, status, retry };
+  // beforeunload guard
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isDirty) {
+        e.preventDefault();
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [isDirty]);
+
+  return { save, status, retry, isDirty };
 }
