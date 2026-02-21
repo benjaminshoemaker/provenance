@@ -1,0 +1,14 @@
+{
+  "main": {
+    "current_phase": 1,
+    "phases": [
+      {
+        "phase": 1,
+        "status": "READY",
+        "started_at": null,
+        "completed_at": null,
+        "tasks": []
+      }
+    ]
+  }
+}
