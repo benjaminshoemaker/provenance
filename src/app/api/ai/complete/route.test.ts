@@ -293,4 +293,36 @@ describe("POST /api/ai/complete", () => {
       })
     );
   });
+
+  it("should handle useChat DefaultChatTransport format with parts instead of content", async () => {
+    // Exact format sent by useChat + DefaultChatTransport
+    const messages = [
+      {
+        id: "msg-1",
+        role: "user",
+        parts: [{ type: "text", text: "Hello, what is this document about?" }],
+        createdAt: "2026-02-21T12:00:00.000Z",
+      },
+    ];
+    const req = createRequest({
+      id: "chat-123",
+      messages,
+      mode: "side_panel",
+      provider: "anthropic",
+      context: JSON.stringify({ type: "doc", content: [] }),
+      trigger: "user",
+      messageId: "msg-1",
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+
+    expect(mocks.mockConvertToModelMessages).toHaveBeenCalledWith(
+      expect.arrayContaining([
+        expect.objectContaining({
+          role: "user",
+          parts: [{ type: "text", text: "Hello, what is this document about?" }],
+        }),
+      ])
+    );
+  });
 });

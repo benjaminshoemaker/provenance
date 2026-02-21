@@ -88,7 +88,7 @@ describe("logAIInteraction", () => {
         response: "Here is improved text",
         action: "accepted",
         provider: "anthropic",
-        model: "claude-sonnet-4-5-20250514",
+        model: "claude-sonnet-4-5-20250929",
       },
     ]);
 
@@ -106,7 +106,7 @@ describe("logAIInteraction", () => {
       response: "Here is improved text",
       action: "accepted",
       provider: "anthropic",
-      model: "claude-sonnet-4-5-20250514",
+      model: "claude-sonnet-4-5-20250929",
     });
 
     expect(mocks.mockRequireDocumentOwner).toHaveBeenCalledWith("doc-1");
@@ -120,7 +120,7 @@ describe("logAIInteraction", () => {
         response: "Here is improved text",
         action: "accepted",
         provider: "anthropic",
-        model: "claude-sonnet-4-5-20250514",
+        model: "claude-sonnet-4-5-20250929",
       })
     );
     expect(result).toHaveProperty("id", "ai-1");
@@ -138,7 +138,7 @@ describe("logAIInteraction", () => {
         response: "Here is improved text",
         action: "accepted",
         provider: "anthropic",
-        model: "claude-sonnet-4-5-20250514",
+        model: "claude-sonnet-4-5-20250929",
       })
     ).rejects.toThrow("Not found");
 

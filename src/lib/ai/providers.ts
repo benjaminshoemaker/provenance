@@ -6,9 +6,9 @@ export const providers: Record<string, AIProvider> = {
   anthropic: {
     id: "anthropic",
     name: "Anthropic",
-    defaultModel: "claude-sonnet-4-5-20250514",
+    defaultModel: "claude-sonnet-4-5-20250929",
     models: [
-      { id: "claude-sonnet-4-5-20250514", name: "Claude Sonnet 4.5", tier: "standard" },
+      { id: "claude-sonnet-4-5-20250929", name: "Claude Sonnet 4.5", tier: "standard" },
       { id: "claude-haiku-4-5-20251001", name: "Claude Haiku 4.5", tier: "fast" },
     ],
   },

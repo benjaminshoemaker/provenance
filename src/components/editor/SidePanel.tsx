@@ -27,7 +27,7 @@ export function SidePanel({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const lastPromptRef = useRef("");
 
-  const { messages, sendMessage, status, stop } = useChat({
+  const { messages, sendMessage, status, stop, error } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/ai/complete",
     }),
@@ -61,7 +61,7 @@ export function SidePanel({
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
-      if (!inputValue.trim() || status !== "ready") return;
+      if (!inputValue.trim() || (status !== "ready" && status !== "error")) return;
 
       const prompt = inputValue;
       lastPromptRef.current = prompt;
@@ -134,6 +134,12 @@ export function SidePanel({
             <div ref={messagesEndRef} />
           </div>
 
+          {error && (
+            <div className="mx-3 mb-2 rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+              Failed to get AI response. Please try again.
+            </div>
+          )}
+
           {/* Message input with send button */}
           <form onSubmit={handleSubmit} className="border-t p-2">
             <div className="flex gap-2">
@@ -142,12 +148,12 @@ export function SidePanel({
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Ask about your document..."
                 className="flex-1 rounded-md border px-2 py-1 text-sm"
-                disabled={status !== "ready"}
+                disabled={status !== "ready" && status !== "error"}
               />
               <button
                 type="submit"
                 disabled={
-                  !inputValue.trim() || status !== "ready"
+                  !inputValue.trim() || (status !== "ready" && status !== "error")
                 }
                 className="rounded-md bg-primary px-3 py-1 text-sm text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
               >

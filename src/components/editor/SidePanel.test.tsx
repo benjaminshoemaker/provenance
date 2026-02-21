@@ -53,7 +53,7 @@ describe("SidePanel", () => {
       <SidePanel
         documentId="doc-1"
         provider="anthropic"
-        model="claude-sonnet-4-5-20250514"
+        model="claude-sonnet-4-5-20250929"
         getDocumentContent={() => ({ type: "doc", content: [] })}
       />
     );
@@ -103,7 +103,7 @@ describe("SidePanel", () => {
       <SidePanel
         documentId="doc-1"
         provider="anthropic"
-        model="claude-sonnet-4-5-20250514"
+        model="claude-sonnet-4-5-20250929"
         getDocumentContent={() => docContent}
         defaultOpen
       />
@@ -132,7 +132,7 @@ describe("SidePanel", () => {
         body: expect.objectContaining({
           mode: "side_panel",
           provider: "anthropic",
-          model: "claude-sonnet-4-5-20250514",
+          model: "claude-sonnet-4-5-20250929",
           context: JSON.stringify(docContent),
         }),
       })
@@ -157,7 +157,7 @@ describe("SidePanel", () => {
       <SidePanel
         documentId="doc-1"
         provider="anthropic"
-        model="claude-sonnet-4-5-20250514"
+        model="claude-sonnet-4-5-20250929"
         getDocumentContent={() => ({ type: "doc", content: [] })}
         defaultOpen
       />
@@ -176,7 +176,7 @@ describe("SidePanel", () => {
       <SidePanel
         documentId="doc-1"
         provider="anthropic"
-        model="claude-sonnet-4-5-20250514"
+        model="claude-sonnet-4-5-20250929"
         getDocumentContent={() => ({ type: "doc", content: [] })}
         defaultOpen
         onAIResponse={onAIResponse}
@@ -211,7 +211,7 @@ describe("SidePanel", () => {
         response: "Sure, here is help",
         action: "received",
         provider: "anthropic",
-        model: "claude-sonnet-4-5-20250514",
+        model: "claude-sonnet-4-5-20250929",
       })
     );
 

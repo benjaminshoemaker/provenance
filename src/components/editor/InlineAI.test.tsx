@@ -60,7 +60,7 @@ describe("InlineAI", () => {
         editor={editor as never}
         documentId="doc-1"
         provider="anthropic"
-        model="claude-sonnet-4-5-20250514"
+        model="claude-sonnet-4-5-20250929"
         selectedText="some selected text"
         selectionFrom={10}
         selectionTo={28}
@@ -80,7 +80,7 @@ describe("InlineAI", () => {
         editor={editor as never}
         documentId="doc-1"
         provider="anthropic"
-        model="claude-sonnet-4-5-20250514"
+        model="claude-sonnet-4-5-20250929"
         selectedText="messy text"
         selectionFrom={0}
         selectionTo={10}
@@ -98,7 +98,7 @@ describe("InlineAI", () => {
           body: expect.objectContaining({
             mode: "inline",
             provider: "anthropic",
-            model: "claude-sonnet-4-5-20250514",
+            model: "claude-sonnet-4-5-20250929",
             selectedText: "messy text",
           }),
         })
@@ -114,7 +114,7 @@ describe("InlineAI", () => {
         editor={editor as never}
         documentId="doc-1"
         provider="anthropic"
-        model="claude-sonnet-4-5-20250514"
+        model="claude-sonnet-4-5-20250929"
         selectedText="original"
         selectionFrom={5}
         selectionTo={13}
@@ -139,7 +139,7 @@ describe("InlineAI", () => {
         editor={editor as never}
         documentId="doc-1"
         provider="anthropic"
-        model="claude-sonnet-4-5-20250514"
+        model="claude-sonnet-4-5-20250929"
         selectedText="original text"
         selectionFrom={10}
         selectionTo={23}
@@ -184,7 +184,7 @@ describe("InlineAI", () => {
         response: "improved AI text",
         action: "accepted",
         provider: "anthropic",
-        model: "claude-sonnet-4-5-20250514",
+        model: "claude-sonnet-4-5-20250929",
       })
     );
   });
@@ -199,7 +199,7 @@ describe("InlineAI", () => {
         editor={editor as never}
         documentId="doc-1"
         provider="anthropic"
-        model="claude-sonnet-4-5-20250514"
+        model="claude-sonnet-4-5-20250929"
         selectedText="text"
         selectionFrom={0}
         selectionTo={4}

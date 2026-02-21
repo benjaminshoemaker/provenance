@@ -58,19 +58,54 @@ export async function POST(req: Request) {
   const systemPrompt = getSystemPrompt(mode);
   const aiModel = getModel(provider, model);
 
-  // Build streamText options based on input type
-  if (messages) {
-    // Inject document context into system prompt for Side Panel mode
-    let system = systemPrompt;
+  try {
+    // Build streamText options based on input type
+    if (messages) {
+      // Inject document context into system prompt for Side Panel mode
+      let system = systemPrompt;
+      if (context) {
+        system = `${systemPrompt}\n\nDocument context:\n${context}`;
+      }
+
+      const result = streamText({
+        model: aiModel,
+        system,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        messages: await convertToModelMessages(messages as any),
+      });
+
+      return result.toUIMessageStreamResponse({
+        messageMetadata: ({
+          part,
+        }: {
+          part: { type: string; finishReason?: string };
+        }) => {
+          if (
+            part.type === "finish" &&
+            part.finishReason === "content-filter"
+          ) {
+            return {
+              blocked: true,
+              reason: "Content filtered by AI provider",
+            };
+          }
+        },
+      });
+    }
+
+    // Single prompt mode (inline/freeform)
+    let fullPrompt = prompt!;
+    if (selectedText) {
+      fullPrompt = `Selected text: "${selectedText}"\n\nInstruction: ${prompt}`;
+    }
     if (context) {
-      system = `${systemPrompt}\n\nDocument context:\n${context}`;
+      fullPrompt = `Document context:\n${context}\n\n${fullPrompt}`;
     }
 
     const result = streamText({
       model: aiModel,
-      system,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      messages: await convertToModelMessages(messages as any),
+      system: systemPrompt,
+      prompt: fullPrompt,
     });
 
     return result.toUIMessageStreamResponse({
@@ -90,38 +125,11 @@ export async function POST(req: Request) {
         }
       },
     });
+  } catch (error) {
+    console.error("[AI Complete] Error:", error);
+    return Response.json(
+      { error: error instanceof Error ? error.message : "Internal server error" },
+      { status: 500 }
+    );
   }
-
-  // Single prompt mode (inline/freeform)
-  let fullPrompt = prompt!;
-  if (selectedText) {
-    fullPrompt = `Selected text: "${selectedText}"\n\nInstruction: ${prompt}`;
-  }
-  if (context) {
-    fullPrompt = `Document context:\n${context}\n\n${fullPrompt}`;
-  }
-
-  const result = streamText({
-    model: aiModel,
-    system: systemPrompt,
-    prompt: fullPrompt,
-  });
-
-  return result.toUIMessageStreamResponse({
-    messageMetadata: ({
-      part,
-    }: {
-      part: { type: string; finishReason?: string };
-    }) => {
-      if (
-        part.type === "finish" &&
-        part.finishReason === "content-filter"
-      ) {
-        return {
-          blocked: true,
-          reason: "Content filtered by AI provider",
-        };
-      }
-    },
-  });
 }

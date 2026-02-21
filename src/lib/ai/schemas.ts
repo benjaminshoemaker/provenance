@@ -12,8 +12,9 @@ export const aiCompletionSchema = z
       .array(
         z.object({
           role: z.string(),
-          content: z.union([z.string(), z.array(z.any())]),
-        })
+          content: z.union([z.string(), z.array(z.any())]).optional(),
+          parts: z.array(z.any()).optional(),
+        }).passthrough()
       )
       .max(50)
       .optional(),

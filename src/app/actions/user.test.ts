@@ -99,7 +99,7 @@ describe("updateUserPreferences", () => {
     await expect(
       updateUserPreferences({
         aiProvider: "anthropic",
-        aiModel: "claude-sonnet-4-5-20250514",
+        aiModel: "claude-sonnet-4-5-20250929",
       })
     ).rejects.toThrow("Unauthorized");
 
