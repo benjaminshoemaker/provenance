@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import { OriginMark } from "@/extensions/origin-mark";
+import { PasteHandler } from "@/extensions/paste-handler";
+import { logPasteEvent } from "@/app/actions/paste-events";
 import { Toolbar } from "./Toolbar";
 import { InlineAI } from "./InlineAI";
 import { SidePanel } from "./SidePanel";
@@ -33,6 +35,19 @@ export function Editor({
 }: EditorProps) {
   const [selection, setSelection] = useState<TextSelection | null>(null);
   const [showFreeform, setShowFreeform] = useState(false);
+  const recentAIResponsesRef = useRef<string[]>([]);
+
+  const handleExternalPaste = useCallback(
+    (pastedContent: string, characterCount: number) => {
+      logPasteEvent({
+        documentId,
+        content: pastedContent,
+        sourceType: "external",
+        characterCount,
+      });
+    },
+    [documentId]
+  );
 
   const editor = useEditor({
     extensions: [
@@ -50,6 +65,11 @@ export function Editor({
         inline: false,
       }),
       OriginMark,
+      PasteHandler.configure({
+        documentId,
+        onExternalPaste: handleExternalPaste,
+        recentAIResponses: recentAIResponsesRef.current,
+      }),
     ],
     content,
     immediatelyRender: false,

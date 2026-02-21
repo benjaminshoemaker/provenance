@@ -62,6 +62,14 @@ vi.mock("@/extensions/origin-mark", () => ({
   OriginMark: {},
 }));
 
+vi.mock("@/extensions/paste-handler", () => ({
+  PasteHandler: { configure: vi.fn(() => ({})) },
+}));
+
+vi.mock("@/app/actions/paste-events", () => ({
+  logPasteEvent: vi.fn(),
+}));
+
 vi.mock("@ai-sdk/react", () => ({
   useCompletion: vi.fn(() => ({
     completion: "",

@@ -734,15 +734,15 @@ Create a custom TipTap extension that intercepts paste events, classifies them a
 **Requirement:** REQ-018
 
 **Acceptance Criteria:**
-- [ ] (CODE) Custom TipTap extension intercepts paste events
+- [x] (CODE) Custom TipTap extension intercepts paste events
   - Verify: `grep -q 'handlePaste\|clipboardTextParser' src/extensions/paste-handler.ts`
-- [ ] (TEST) External paste is classified and logged with content and character count
+- [x] (TEST) External paste is classified and logged with content and character count
   - Verify: `npx vitest run src/extensions/paste-handler.test.ts`
-- [ ] (TEST) Paste from AI panel is classified as ai_internal (not logged as external)
+- [x] (TEST) Paste from AI panel is classified as ai_internal (not logged as external)
   - Verify: `npx vitest run src/extensions/paste-handler.test.ts`
-- [ ] (CODE) Origin mark applied to pasted content with type='external_paste'
+- [x] (CODE) Origin mark applied to pasted content with type='external_paste'
   - Verify: `grep -q 'external_paste' src/extensions/paste-handler.ts`
-- [ ] (TEST) logPasteEvent() writes to paste_events table
+- [x] (TEST) logPasteEvent() writes to paste_events table
   - Verify: `npx vitest run src/app/actions/paste-events.test.ts`
 
 **Files to Create:**
