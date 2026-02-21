@@ -960,17 +960,17 @@ Build the SSR verification page at `/verify/[id]` that displays badge data publi
 **Requirement:** REQ-027, REQ-028, REQ-029, REQ-030, REQ-031, REQ-032, REQ-036, REQ-037, REQ-038, REQ-042, REQ-047, REQ-048, REQ-050, REQ-051
 
 **Acceptance Criteria:**
-- [ ] (CODE) SSR page at /verify/[id] with no auth required
+- [x] (CODE) SSR page at /verify/[id] with no auth required
   - Verify: `test -f src/app/verify/\[id\]/page.tsx && grep -q 'export default' src/app/verify/\[id\]/page.tsx`
-- [ ] (CODE) Summary stats: AI percentage (prominent), interactions, sessions, total time
+- [x] (CODE) Summary stats: AI percentage (prominent), interactions, sessions, total time
   - Verify: `grep -q 'ai_percentage\|aiPercentage' src/app/verify/\[id\]/page.tsx`
-- [ ] (CODE) Expandable audit timeline with AI interactions showing prompt/response
+- [x] (CODE) Expandable audit timeline with AI interactions showing prompt/response
   - Verify: `grep -q 'timeline\|Timeline' src/app/verify/\[id\]/page.tsx`
-- [ ] (CODE) Scope statement and methodology note displayed
+- [x] (CODE) Scope statement and methodology note displayed
   - Verify: `grep -q 'certif\|methodolog' src/app/verify/\[id\]/page.tsx`
-- [ ] (CODE) Taken-down badges show removal notice instead of content
+- [x] (CODE) Taken-down badges show removal notice instead of content
   - Verify: `grep -q 'taken.down\|takedown\|removed' src/app/verify/\[id\]/page.tsx`
-- [ ] (CODE) Full document text displayed with expandable sections for long documents
+- [x] (CODE) Full document text displayed with expandable sections for long documents
   - Verify: `grep -q 'documentText\|document_text' src/app/verify/\[id\]/page.tsx`
 
 **Files to Create:**
