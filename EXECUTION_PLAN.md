@@ -104,13 +104,13 @@ Set up Vitest for unit and integration testing. Configure test utilities, React 
 **Requirement:** None (infrastructure)
 
 **Acceptance Criteria:**
-- [ ] (CODE) Vitest configured with TypeScript and React support
+- [x] (CODE) Vitest configured with TypeScript and React support
   - Verify: `grep -q 'vitest' package.json`
-- [ ] (CODE) Test setup file configures jsdom environment
+- [x] (CODE) Test setup file configures jsdom environment
   - Verify: `test -f src/test/setup.ts`
-- [ ] (TEST) Sample test passes
+- [x] (TEST) Sample test passes
   - Verify: `npx vitest run --reporter=verbose 2>&1 | grep -q 'PASS\|pass'`
-- [ ] (CODE) Test script added to package.json
+- [x] (CODE) Test script added to package.json
   - Verify: `grep -q '"test"' package.json`
 
 **Files to Create:**
