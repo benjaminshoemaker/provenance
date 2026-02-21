@@ -17,8 +17,9 @@
 |-------|-----------|-----------|
 | **Framework** | Next.js 15 (App Router) | React ecosystem for TipTap, SSR for verification pages (REQ-051), API routes built in, Vercel-native |
 | **Language** | TypeScript | Type safety for complex data models (audit trails, origin maps), better IDE support for AI coding agents |
-| **Database** | PostgreSQL via Supabase | Relational model fits audit trail data, JSONB for flexible document storage, RLS for access control |
-| **Auth** | Supabase Auth | Built-in OAuth (Google + GitHub), session management, 50K MAU free tier covers beta (REQ-004, REQ-046) |
+| **Database** | Neon PostgreSQL (Vercel Marketplace) | Relational model fits audit trail data, JSONB for flexible document storage, serverless-native with auto-scaling |
+| **ORM** | Drizzle ORM | Type-safe schema definitions, auto-inferred TypeScript types, lightweight with no runtime overhead |
+| **Auth** | Auth.js v5 (NextAuth) | OAuth (Google + GitHub), JWT sessions, Drizzle adapter for user persistence (REQ-004, REQ-046) |
 | **Hosting** | Vercel | Native Next.js hosting, edge network for fast verification pages, free tier for beta |
 | **Editor** | TipTap v2 (ProseMirror) | Specified in REQ-007, extensible plugin system for origin tracking, headless/customizable |
 | **Styling** | Tailwind CSS + shadcn/ui | Rapid UI development, accessible components, consistent design system |
@@ -31,7 +32,9 @@
 |---------|---------|
 | `@tiptap/react`, `@tiptap/pm`, `@tiptap/starter-kit` | Rich text editor core |
 | `@tiptap/extension-*` | Individual formatting extensions (image, code-block, etc.) |
-| `@supabase/supabase-js`, `@supabase/ssr` | Database client and SSR auth helpers |
+| `drizzle-orm`, `@neondatabase/serverless` | Type-safe ORM and Neon serverless driver |
+| `drizzle-kit` | Schema migrations (generate + migrate) |
+| `next-auth`, `@auth/drizzle-adapter` | Auth.js v5 with Drizzle database adapter |
 | `@ai-sdk/anthropic` | Claude provider for Vercel AI SDK |
 | `@ai-sdk/openai` | OpenAI provider for Vercel AI SDK |
 | `@ai-sdk/react` | React hooks for AI SDK streaming (useChat, useCompletion) |
@@ -73,9 +76,9 @@ The following were decided based on strong confidence in fit:
           │                 │                    │
           ▼                 ▼                    ▼
 ┌──────────────────┐  ┌──────────┐  ┌────────────────────────┐
-│   Supabase       │  │ Supabase │  │   AI Providers         │
-│   PostgreSQL     │  │ Auth     │  │  ┌──────┐  ┌────────┐  │
-│   + Storage      │  │ (OAuth)  │  │  │Claude│  │ OpenAI │  │
+│   Neon           │  │ Auth.js  │  │   AI Providers         │
+│   PostgreSQL     │  │ v5       │  │  ┌──────┐  ┌────────┐  │
+│   (Drizzle ORM)  │  │ (OAuth)  │  │  │Claude│  │ OpenAI │  │
 └──────────────────┘  └──────────┘  │  └──────┘  └────────┘  │
                                     └────────────────────────┘
 ```
@@ -87,8 +90,8 @@ The following were decided based on strong confidence in fit:
 | **Next.js App (Client)** | TipTap editor, AI interaction UI, origin tracking, paste detection, session heartbeats, auto-save |
 | **Server Actions** | Document CRUD, revision creation, audit trail writes, badge generation |
 | **API Route Handlers** | AI streaming proxy, badge image serving |
-| **Supabase PostgreSQL** | All persistent data: documents, revisions, audit logs, badges |
-| **Supabase Auth** | OAuth flow, session management, JWT tokens |
+| **Neon PostgreSQL** | All persistent data: documents, revisions, audit logs, badges (via Drizzle ORM) |
+| **Auth.js v5** | OAuth flow (Google + GitHub), JWT session strategy, user management |
 | **@vercel/og** | Badge PNG generation on demand (no storage needed) |
 | **AI Proxy** | Routes AI requests to selected provider, streams responses, logs interactions |
 | **Verification Pages** | Server-rendered public pages, no auth required |
@@ -103,31 +106,87 @@ The following were decided based on strong confidence in fit:
 users 1──* documents 1──* revisions
                      1──* ai_interactions
                      1──* paste_events
-                     1──* sessions
+                     1──* writing_sessions
                      1──* badges
 ```
 
 ### Schema
 
-#### `profiles` (extends Supabase Auth users)
+All tables are defined as Drizzle `pgTable` definitions in `src/lib/db/schema.ts`. TypeScript types are auto-inferred using Drizzle's `$inferSelect` and `$inferInsert`.
 
-| Column | Type | Constraints | Notes |
-|--------|------|------------|-------|
-| `id` | `uuid` | PK, FK → `auth.users` | Supabase Auth user ID |
-| `display_name` | `text` | NOT NULL | From OAuth provider |
-| `email` | `text` | NOT NULL | From OAuth provider |
-| `avatar_url` | `text` | | From OAuth provider |
-| `ai_provider` | `text` | DEFAULT `'anthropic'` | `'anthropic'` or `'openai'` |
-| `ai_model` | `text` | | Preferred model, null = provider default |
-| `created_at` | `timestamptz` | DEFAULT `now()` | |
-| `updated_at` | `timestamptz` | DEFAULT `now()` | |
+#### Auth.js Managed Tables
 
-#### `documents`
+Auth.js requires specific tables for user management. These are defined with concrete Drizzle schemas (not auto-generated) so domain tables can reference them with proper FK relationships.
+
+##### `user` (Auth.js — extended with app columns)
+
+```typescript
+export const users = pgTable("user", {
+  id: text("id").primaryKey().$defaultFn(() => createId()), // cuid2
+  name: text("name"),
+  email: text("email").unique(),
+  emailVerified: timestamp("emailVerified", { mode: "date" }),
+  image: text("image"),
+  // App-specific extensions:
+  aiProvider: text("ai_provider").default("anthropic"), // 'anthropic' | 'openai'
+  aiModel: text("ai_model"), // null = provider default
+});
+```
+
+**Note:** `id` is `text` (cuid2, Auth.js default). All domain tables' `userId` FK columns use `text` to match.
+
+##### `account` (Auth.js)
+
+```typescript
+export const accounts = pgTable("account", {
+  userId: text("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
+  type: text("type").notNull(),
+  provider: text("provider").notNull(),
+  providerAccountId: text("providerAccountId").notNull(),
+  refresh_token: text("refresh_token"),
+  access_token: text("access_token"),
+  expires_at: integer("expires_at"),
+  token_type: text("token_type"),
+  scope: text("scope"),
+  id_token: text("id_token"),
+  session_state: text("session_state"),
+}, (account) => [
+  primaryKey({ columns: [account.provider, account.providerAccountId] }),
+]);
+```
+
+##### `session` (Auth.js)
+
+```typescript
+export const sessions = pgTable("session", {
+  sessionToken: text("sessionToken").primaryKey(),
+  userId: text("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
+  expires: timestamp("expires", { mode: "date" }).notNull(),
+});
+```
+
+**Note:** Although we use JWT strategy (no DB sessions at runtime), the table is defined for adapter compatibility.
+
+##### `verificationToken` (Auth.js)
+
+```typescript
+export const verificationTokens = pgTable("verificationToken", {
+  identifier: text("identifier").notNull(),
+  token: text("token").notNull(),
+  expires: timestamp("expires", { mode: "date" }).notNull(),
+}, (verificationToken) => [
+  primaryKey({ columns: [verificationToken.identifier, verificationToken.token] }),
+]);
+```
+
+#### Domain Tables
+
+##### `documents`
 
 | Column | Type | Constraints | Notes |
 |--------|------|------------|-------|
 | `id` | `uuid` | PK, DEFAULT `gen_random_uuid()` | |
-| `user_id` | `uuid` | FK → `profiles`, NOT NULL | Owner |
+| `user_id` | `text` | FK → `user`, NOT NULL | Owner (text to match Auth.js user.id) |
 | `title` | `text` | NOT NULL, DEFAULT `'Untitled'` | |
 | `content` | `jsonb` | NOT NULL, DEFAULT `'{"type":"doc","content":[{"type":"paragraph"}]}'` | TipTap JSON document (valid empty doc). Origin tracking data is embedded as marks within this JSON (see Content Origin Tracking). |
 | `word_count` | `integer` | DEFAULT `0` | Cached plain-text word count |
@@ -135,9 +194,9 @@ users 1──* documents 1──* revisions
 | `created_at` | `timestamptz` | DEFAULT `now()` | |
 | `updated_at` | `timestamptz` | DEFAULT `now()` | |
 
-**RLS Policy:** `user_id = auth.uid() AND deleted_at IS NULL` for all operations (REQ-041, REQ-044). Soft-deleted documents are invisible through normal queries but their `badges` FK references remain valid (REQ-039).
+**Authorization:** Application-level check via `requireDocumentOwner(documentId)` helper — verifies `user_id` matches the authenticated user and `deleted_at IS NULL` (REQ-041, REQ-044). Soft-deleted documents are invisible through normal queries but their `badges` FK references remain valid (REQ-039).
 
-#### `revisions`
+##### `revisions`
 
 | Column | Type | Constraints | Notes |
 |--------|------|------------|-------|
@@ -151,13 +210,13 @@ users 1──* documents 1──* revisions
 
 **Index:** `(document_id, created_at)` for chronological retrieval.
 
-#### `ai_interactions`
+##### `ai_interactions`
 
 | Column | Type | Constraints | Notes |
 |--------|------|------------|-------|
 | `id` | `uuid` | PK | |
 | `document_id` | `uuid` | FK → `documents`, NOT NULL | |
-| `session_id` | `uuid` | FK → `sessions` | |
+| `session_id` | `uuid` | FK → `writing_sessions` | |
 | `mode` | `text` | NOT NULL | `'inline'`, `'side_panel'`, `'freeform'` |
 | `prompt` | `text` | NOT NULL | User's request |
 | `selected_text` | `text` | | Text highlighted for inline mode |
@@ -169,33 +228,35 @@ users 1──* documents 1──* revisions
 | `model` | `text` | NOT NULL | Model ID used |
 | `created_at` | `timestamptz` | DEFAULT `now()` | |
 
-**RLS Policy:** Insert only when `document.user_id = auth.uid()`. Read via badge snapshot (public) or document owner.
+**Authorization:** Application-level — insert requires `requireDocumentOwner()`. Read via badge snapshot (public) or document owner query.
 
-#### `paste_events`
+##### `paste_events`
 
 | Column | Type | Constraints | Notes |
 |--------|------|------------|-------|
 | `id` | `uuid` | PK | |
 | `document_id` | `uuid` | FK → `documents`, NOT NULL | |
-| `session_id` | `uuid` | FK → `sessions` | |
+| `session_id` | `uuid` | FK → `writing_sessions` | |
 | `content` | `text` | NOT NULL | Pasted content |
 | `source_type` | `text` | NOT NULL | `'external'`, `'ai_internal'` |
 | `character_count` | `integer` | NOT NULL | |
 | `created_at` | `timestamptz` | DEFAULT `now()` | |
 
-#### `sessions`
+##### `writing_sessions`
 
 | Column | Type | Constraints | Notes |
 |--------|------|------------|-------|
 | `id` | `uuid` | PK | |
 | `document_id` | `uuid` | FK → `documents`, NOT NULL | |
-| `user_id` | `uuid` | FK → `profiles`, NOT NULL | |
+| `user_id` | `text` | FK → `user`, NOT NULL | Owner (text to match Auth.js user.id) |
 | `started_at` | `timestamptz` | NOT NULL | |
 | `ended_at` | `timestamptz` | | NULL while active |
 | `active_seconds` | `integer` | DEFAULT `0` | Accumulated active time (from heartbeats) |
 | `last_heartbeat` | `timestamptz` | | For session timeout detection |
 
-#### `badges`
+**Note:** Named `writing_sessions` to avoid collision with Auth.js `session` table.
+
+##### `badges`
 
 | Column | Type | Constraints | Notes |
 |--------|------|------------|-------|
@@ -205,16 +266,30 @@ users 1──* documents 1──* revisions
 | `document_title` | `text` | NOT NULL | Title at generation time |
 | `document_text` | `text` | NOT NULL | Plain text at generation time |
 | `document_content` | `jsonb` | NOT NULL | TipTap JSON at generation time |
-| `audit_trail` | `jsonb` | NOT NULL | Frozen: AI interactions, paste events, sessions, revisions |
+| `audit_trail` | `jsonb` | NOT NULL | Frozen: AI interactions, paste events, writing sessions, revisions |
 | `stats` | `jsonb` | NOT NULL | `{ ai_percentage, external_paste_percentage, interaction_count, session_count, total_active_seconds }` |
 | `image_url` | `text` | | Generated on demand via /api/badges/[verificationId]/image — cached at edge |
 | `is_taken_down` | `boolean` | DEFAULT `false` | REQ-050 |
 | `takedown_reason` | `text` | | |
 | `created_at` | `timestamptz` | DEFAULT `now()` | |
 
-**RLS Policy:** Owner can insert and read their own badges. **No public SELECT policy** — public verification data is served exclusively through server-side Route Handlers/Server Actions that query with the `service_role` key by exact `verification_id` match. This prevents badge enumeration (REQ-055) while allowing public access to individual verification pages.
+**Authorization:** Application-level — only document owner can insert (verified via `requireDocumentOwner()`). Public verification data is served exclusively through server-side Route Handlers/Server Actions that query by exact `verification_id` match. This prevents badge enumeration (REQ-055) while allowing public access to individual verification pages.
 
 **Index:** `UNIQUE(verification_id)` for O(1) verification page lookup.
+
+### Access Control
+
+Access control uses **application-level authorization** instead of database-level RLS. This is a deliberate choice (not a Neon limitation — Neon supports RLS). The approach centralizes auth logic in shared helpers that are easier to test and reason about.
+
+**Shared helpers** (`src/lib/auth/authorize.ts`):
+- `requireAuth()` — Returns authenticated user or throws 401. Wraps `await auth()` from `src/auth.ts`.
+- `requireDocumentOwner(documentId)` — Verifies the authenticated user owns the document and it is not soft-deleted. Throws 403 if not owner, 404 if not found.
+
+**Append-only tables** (`ai_interactions`, `paste_events`, `revisions`): Server Actions only expose insert operations — no update or delete functions exist (REQ-040).
+
+**Badges:** Insert-only from application code. No update or delete Server Actions (REQ-039).
+
+**Note:** If RLS becomes necessary post-MVP (e.g., for direct database access patterns), Neon fully supports it.
 
 ---
 
@@ -388,7 +463,7 @@ Each interaction mode has a tailored system prompt:
 
 ### Authentication
 
-All authenticated endpoints use Supabase session cookies (managed by `@supabase/ssr`). The middleware (`middleware.ts`) refreshes sessions and redirects unauthenticated users.
+All authenticated endpoints use Auth.js JWT session cookies. The middleware (`middleware.ts`) validates sessions using the Edge-safe auth config and redirects unauthenticated users. Server Actions and Route Handlers use `await auth()` from `src/auth.ts` to get the current session.
 
 ### Server Actions
 
@@ -407,7 +482,7 @@ Server Actions are used for all mutations to keep API surface minimal:
 #### `deleteDocument(documentId: string)`
 - **Auth:** Required, must be document owner
 - **Returns:** `{ success: boolean }`
-- **Soft-delete:** Sets `deleted_at = now()` on the document. Does NOT delete the row or cascade. Badges remain valid and publicly accessible (REQ-039). Revisions, interactions, paste events, and sessions are preserved for badge audit trails. The document disappears from the user's dashboard but its data persists for existing badges.
+- **Soft-delete:** Sets `deleted_at = now()` on the document. Does NOT delete the row or cascade. Badges remain valid and publicly accessible (REQ-039). Revisions, interactions, paste events, and writing sessions are preserved for badge audit trails. The document disappears from the user's dashboard but its data persists for existing badges.
 
 #### `createRevision(documentId: string, trigger: string)`
 - **Auth:** Required, must be document owner
@@ -516,7 +591,7 @@ Returns badge data for the verification page (used by SSR, but also available as
 |-------|------|------|-------------|
 | `/` | SSR | No | Landing page. Redirects to `/dashboard` if authenticated. |
 | `/login` | Client | No | OAuth login (Google + GitHub buttons) |
-| `/auth/callback` | Route Handler | No | Supabase OAuth callback |
+| `/api/auth/[...nextauth]` | Route Handler | No | Auth.js catch-all (OAuth callbacks, CSRF, etc.) |
 | `/dashboard` | SSR | Yes | Document list with create button (REQ-033) |
 | `/editor/[id]` | Client | Yes | TipTap editor with AI panel (REQ-007–015) |
 | `/editor/[id]/preview` | Client | Yes | Pre-publish badge preview (REQ-049) |
@@ -637,7 +712,7 @@ A custom TipTap extension intercepts the browser `paste` event:
 1. User clicks "Generate Badge" in the editor.
 2. **Pre-publish preview (REQ-049):**
    - Navigate to `/editor/[id]/preview`.
-   - Server fetches current document, all AI interactions, paste events, sessions.
+   - Server fetches current document, all AI interactions, paste events, writing sessions.
    - Display exactly what will become public: full text, all prompts/responses, paste content.
    - Show prominent warning: "Everything shown here will be publicly visible to anyone with the badge link."
    - User must click "Confirm & Generate" to proceed.
@@ -651,7 +726,7 @@ generateBadge(documentId):
   2. Fetch document (content, origin_map, title)
   3. Fetch all ai_interactions for this document
   4. Fetch all paste_events for this document
-  5. Fetch all sessions for this document
+  5. Fetch all writing sessions for this document
   6. Fetch all revisions for this document
   7. Extract plain text from TipTap JSON
   8. Calculate stats from origin_map (ai_percentage, external_paste_percentage)
@@ -693,29 +768,73 @@ Generated via `@vercel/og` (Satori):
 
 ## Authentication Flow
 
-### OAuth Setup (REQ-004)
+### Auth.js v5 Setup (REQ-004)
 
-1. Configure Google and GitHub OAuth providers in Supabase Dashboard.
-2. Set callback URL: `https://provenance.app/auth/callback`.
-3. Use `@supabase/ssr` for cookie-based sessions in Next.js App Router.
+Auth.js uses a **split-config pattern** for Edge compatibility:
+
+- **`src/auth.config.ts`** — Providers only (Google + GitHub). Edge-safe — imported by middleware.
+- **`src/auth.ts`** — Full config with DrizzleAdapter, session callbacks, and exported `auth()`, `signIn()`, `signOut()` helpers. Imported by Server Actions and Route Handlers.
+
+#### Configuration Files
+
+```typescript
+// src/auth.config.ts (Edge-safe — providers only)
+import Google from "next-auth/providers/google";
+import GitHub from "next-auth/providers/github";
+import type { NextAuthConfig } from "next-auth";
+
+export default {
+  providers: [Google, GitHub],
+} satisfies NextAuthConfig;
+```
+
+```typescript
+// src/auth.ts (Full config — NOT Edge-safe due to Drizzle adapter)
+import NextAuth from "next-auth";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import { db } from "@/lib/db";
+import authConfig from "@/auth.config";
+
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  adapter: DrizzleAdapter(db),
+  session: { strategy: "jwt" }, // JWT — no DB query per request, Edge-compatible
+  ...authConfig,
+});
+```
+
+**JWT session strategy:** Avoids Edge runtime issues with DB adapter in middleware. Session data is embedded in the JWT cookie — no database query per request, better performance in serverless.
+
+#### Catch-All Route
+
+```typescript
+// src/app/api/auth/[...nextauth]/route.ts
+import { handlers } from "@/auth";
+export const { GET, POST } = handlers;
+```
+
+**OAuth Callback URLs:**
+- Google: `https://provenance.app/api/auth/callback/google` (also add `http://localhost:3000/api/auth/callback/google`)
+- GitHub: `https://provenance.app/api/auth/callback/github` (GitHub allows one callback URL per app; create separate OAuth apps for dev/prod if needed)
 
 ### Middleware
 
 ```typescript
 // middleware.ts
-// 1. Refresh Supabase session on every request
+import { auth } from "@/auth.config"; // Edge-safe import — NOT from auth.ts
+// 1. Validate JWT session on every request
 // 2. Protected routes: /dashboard, /editor/* redirect to /login if no session
-// 3. Public routes: /, /login, /verify/*, /api/badges/*/image
+// 3. Public routes: /, /login, /verify/*, /api/auth/*, /api/badges/*/image
 ```
 
 ### Login Flow
 
 1. User visits `/login`.
 2. Clicks "Continue with Google" or "Continue with GitHub."
-3. Supabase redirects to OAuth provider.
-4. Provider redirects back to `/auth/callback`.
-5. Callback handler exchanges code for session, creates/updates `profiles` row.
-6. Redirect to `/dashboard`.
+3. Login page calls server-action `signIn("google")` or `signIn("github")` from `src/auth.ts`.
+4. Auth.js redirects to OAuth provider.
+5. Provider redirects back to `/api/auth/callback/{provider}`.
+6. Auth.js handles the callback internally — creates/updates `user` and `account` rows via DrizzleAdapter.
+7. Redirect to `/dashboard`.
 
 ---
 
@@ -724,15 +843,19 @@ Generated via `@vercel/og` (Satori):
 ### API Key Management (REQ-054)
 
 - AI provider API keys (Anthropic, OpenAI) stored as Vercel environment variables, never exposed to client.
-- Supabase keys: `anon` key used client-side (safe, enforces RLS), `service_role` key server-side only.
+- `DATABASE_URL` auto-injected by Vercel (Neon integration) — server-side only, never exposed to client.
+- No client-side database access — all DB queries go through Server Actions or Route Handlers.
 
-### Row Level Security
+### Application-Level Authorization
 
-All tables enforce RLS:
-- **Documents, revisions, AI interactions, paste events, sessions:** `user_id = auth.uid()` or `document.user_id = auth.uid()`
-- **Badges (write):** Only document owner can create
-- **Badges (read):** Owner can read their own badges. Public verification is served via server-side queries using `service_role` key — no public RLS policy on badges table (prevents enumeration, REQ-055)
-- **Profiles:** Users can only read/update their own profile
+All access control is enforced at the application level via shared helpers in `src/lib/auth/authorize.ts`:
+- **Documents, revisions, AI interactions, paste events, writing sessions:** `requireDocumentOwner(documentId)` verifies `user_id` matches `auth()` session user
+- **Badges (write):** Only document owner can create (verified via `requireDocumentOwner()`)
+- **Badges (read):** Owner queries scoped by `user_id`. Public verification served via server-side queries by exact `verification_id` match (prevents enumeration, REQ-055)
+- **Users:** Users can only read/update their own record (verified via `requireAuth()`)
+- **Append-only tables:** `ai_interactions`, `paste_events`, `revisions` have no update/delete Server Actions (REQ-040)
+
+**Note:** This is a deliberate architectural choice, not a platform limitation. Neon supports RLS if needed post-MVP.
 
 ### Rate Limiting
 
@@ -753,14 +876,14 @@ All tables enforce RLS:
 ### Phase 1: Foundation
 
 1. **Project scaffolding** — Next.js 15 (App Router), TypeScript, Tailwind, shadcn/ui
-2. **Supabase setup** — Project creation, database schema, RLS policies
-3. **Authentication** — Supabase Auth with Google + GitHub OAuth, middleware, login page
+2. **Database setup** — Drizzle ORM schema, Neon PostgreSQL client, migrations via drizzle-kit
+3. **Authentication** — Auth.js v5 with Google + GitHub OAuth, JWT sessions, middleware, login page
 4. **Document CRUD** — Dashboard page, create/list/delete documents, basic document page
 
 ### Phase 2: Editor
 
 5. **TipTap integration** — Editor component with all formatting extensions, `'use client'`, `immediatelyRender: false`
-6. **Auto-save** — Debounced save to Supabase, save indicator
+6. **Auto-save** — Debounced save to database, save indicator
 7. **Session tracking** — Start/end/heartbeat, active time calculation
 
 ### Phase 3: AI Assistant
@@ -803,14 +926,52 @@ All tables enforce RLS:
 
 ## Environment Variables
 
-| Variable | Source | Required |
-|----------|--------|----------|
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase Dashboard | Yes |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase Dashboard | Yes |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase Dashboard | Yes (server only) |
-| `ANTHROPIC_API_KEY` | Anthropic Console | Yes |
-| `OPENAI_API_KEY` | OpenAI Dashboard | Yes |
-| `NEXT_PUBLIC_APP_URL` | Deployment config | Yes |
+| Variable | Source | Required | Notes |
+|----------|--------|----------|-------|
+| `DATABASE_URL` | Vercel (auto-injected by Neon integration) | Yes | Pooled connection — used at runtime |
+| `DATABASE_URL_UNPOOLED` | Vercel (auto-injected by Neon integration) | Yes | Direct connection — used for migrations |
+| `AUTH_SECRET` | `npx auth secret` | Yes | Auth.js session encryption key |
+| `AUTH_TRUST_HOST` | Manual: `true` | Yes | Required for Vercel preview deployments |
+| `AUTH_GOOGLE_ID` | Google Cloud Console | Yes | Google OAuth client ID |
+| `AUTH_GOOGLE_SECRET` | Google Cloud Console | Yes | Google OAuth client secret |
+| `AUTH_GITHUB_ID` | GitHub Developer Settings | Yes | GitHub OAuth client ID |
+| `AUTH_GITHUB_SECRET` | GitHub Developer Settings | Yes | GitHub OAuth client secret |
+| `ANTHROPIC_API_KEY` | Anthropic Console | Yes | |
+| `OPENAI_API_KEY` | OpenAI Dashboard | Yes | |
+| `NEXT_PUBLIC_APP_URL` | Deployment config | Yes | |
+
+---
+
+## Migration Workflow
+
+Database migrations use Drizzle Kit with the `DATABASE_URL_UNPOOLED` connection (direct, not pooled):
+
+```typescript
+// drizzle.config.ts
+import { defineConfig } from "drizzle-kit";
+
+export default defineConfig({
+  schema: "./src/lib/db/schema.ts",
+  out: "./drizzle",
+  dialect: "postgresql",
+  dbCredentials: {
+    url: process.env.DATABASE_URL_UNPOOLED!,
+  },
+});
+```
+
+**Commands:**
+- `npx drizzle-kit generate` — Generates SQL migration files in `drizzle/` directory. Committed to git.
+- `npx drizzle-kit migrate` — Runs pending migrations against the database. Run locally or in CI.
+- `npx drizzle-kit studio` — Opens Drizzle Studio for visual database inspection.
+
+**Workflow:**
+1. Modify schema in `src/lib/db/schema.ts`
+2. Run `npx drizzle-kit generate` to create migration SQL
+3. Commit the generated migration files
+4. Run `npx drizzle-kit migrate` locally or in CI
+
+**Preview database branching:** Deferred to post-Phase 1. For MVP, preview deployments share the same database.
 
 ---
 
@@ -821,9 +982,9 @@ All tables enforce RLS:
 | REQ-001 | Next.js web app deployed on Vercel |
 | REQ-002 | Editor pages: desktop layout only, no responsive editor UI |
 | REQ-003 | Verification pages: mobile-first responsive design |
-| REQ-004 | Supabase Auth with Google + GitHub OAuth |
+| REQ-004 | Auth.js v5 with Google + GitHub OAuth, JWT session strategy, DrizzleAdapter |
 | REQ-005 | No email/password provider configured |
-| REQ-006 | `profiles` table with display_name, email from OAuth |
+| REQ-006 | Auth.js `user` table with name, email, image from OAuth + app-specific `ai_provider`, `ai_model` columns |
 | REQ-007 | TipTap v2 with ProseMirror |
 | REQ-008 | TipTap StarterKit + individual extensions (Heading, Image, Link, etc.) |
 | REQ-009 | Minimal extension set, no complex features |
@@ -836,7 +997,7 @@ All tables enforce RLS:
 | REQ-016 | Revision snapshots every 30s of active editing + on AI interactions |
 | REQ-017 | `ai_interactions` table with full prompt, response, action, diff, timestamp |
 | REQ-018 | Custom TipTap paste handler, source classification, `paste_events` table |
-| REQ-019 | `sessions` table with heartbeat-based active time tracking |
+| REQ-019 | `writing_sessions` table with heartbeat-based active time tracking |
 | REQ-020 | In-document origin marks with 20% modification threshold, classification algorithm |
 | REQ-021 | `generateBadge()` freezes document + audit trail into `badges` table |
 | REQ-022 | @vercel/og generates 200x40 PNG with Provenance branding + percentage |
@@ -851,17 +1012,17 @@ All tables enforce RLS:
 | REQ-031 | Mobile-first CSS with Tailwind responsive utilities |
 | REQ-032 | Static scope statement rendered on every verification page |
 | REQ-033 | `/dashboard` page listing user documents |
-| REQ-034 | Server Actions for create/update/delete with RLS |
+| REQ-034 | Server Actions for create/update/delete with application-level auth checks |
 | REQ-035 | Dashboard shows badge count per document, expandable badge list |
 | REQ-036 | Scope statement text on verification page |
 | REQ-037 | Limitation disclaimers on verification page |
 | REQ-038 | Prominent disclaimer section on verification page |
-| REQ-039 | Badges are insert-only (no update/delete RLS), soft-delete on documents preserves badges |
-| REQ-040 | `ai_interactions`, `paste_events`: insert-only RLS, no update/delete policies |
-| REQ-041 | RLS: `user_id = auth.uid()` on documents and related tables |
-| REQ-042 | Public verification via server-side Route Handler (no public RLS), prevents enumeration |
-| REQ-043 | Badge insert RLS: `document.user_id = auth.uid()` |
-| REQ-044 | Document update/delete RLS: `user_id = auth.uid()` |
+| REQ-039 | Badges are insert-only (no update/delete Server Actions), soft-delete on documents preserves badges |
+| REQ-040 | `ai_interactions`, `paste_events`: insert-only Server Actions, no update/delete functions |
+| REQ-041 | Application-level auth: `requireDocumentOwner()` on documents and related tables |
+| REQ-042 | Public verification via server-side Route Handler (query by `verification_id`), prevents enumeration |
+| REQ-043 | Badge insert authorization: `requireDocumentOwner()` check |
+| REQ-044 | Document update/delete authorization: `requireDocumentOwner()` check |
 | REQ-045 | No granular permission system — binary public/private only |
 | REQ-046 | No payment/subscription infrastructure |
 | REQ-047 | Server-side data storage, no cryptographic verification for MVP |
@@ -870,6 +1031,6 @@ All tables enforce RLS:
 | REQ-050 | `is_taken_down` + `takedown_reason` columns on badges table |
 | REQ-051 | SSR + edge caching (24h TTL, on-demand revalidation for takedowns), target < 2s TTFB |
 | REQ-052 | Client-side editor with minimal server round-trips, debounced saves |
-| REQ-053 | Supabase managed backups with point-in-time recovery |
-| REQ-054 | TLS via Vercel/Supabase, API keys in env vars, sessions in httpOnly cookies |
+| REQ-053 | Neon managed backups with point-in-time recovery (branching) |
+| REQ-054 | TLS via Vercel/Neon, API keys in env vars, Auth.js sessions in httpOnly cookies |
 | REQ-055 | `nanoid(21)` for verification IDs (~126 bits entropy) |

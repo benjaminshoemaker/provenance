@@ -36,14 +36,18 @@ Phase 1: Foundation
 
 ### Pre-Phase Setup
 Human must complete before starting:
-- [ ] Create Supabase project at https://supabase.com
-  - Verify: `test -n "$NEXT_PUBLIC_SUPABASE_URL"`
-- [ ] Enable Google OAuth provider in Supabase Dashboard (Authentication → Providers)
-  - Verify: `curl -sf "$NEXT_PUBLIC_SUPABASE_URL/auth/v1/" -o /dev/null`
-- [ ] Enable GitHub OAuth provider in Supabase Dashboard (Authentication → Providers)
-  - Verify: `curl -sf "$NEXT_PUBLIC_SUPABASE_URL/auth/v1/" -o /dev/null`
-- [ ] Set environment variables in `.env.local`: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_APP_URL`
-  - Verify: `grep -q "NEXT_PUBLIC_SUPABASE_URL" .env.local`
+- [ ] Create Vercel project and add Neon PostgreSQL from Vercel Marketplace
+  - Verify: `vercel env pull .env.local && grep -q "DATABASE_URL" .env.local`
+- [ ] Create Google OAuth app in Google Cloud Console (callback: `/api/auth/callback/google`)
+  - Note: Add both `http://localhost:3000/api/auth/callback/google` AND production callback URL
+  - Verify: `grep -q "AUTH_GOOGLE_ID" .env.local`
+- [ ] Create GitHub OAuth app in GitHub Developer Settings (callback: `/api/auth/callback/github`)
+  - Note: GitHub allows one callback URL per app; create separate OAuth apps for dev/prod if needed
+  - Verify: `grep -q "AUTH_GITHUB_ID" .env.local`
+- [ ] Generate Auth.js secret: `npx auth secret` and add to `.env.local`
+  - Verify: `grep -q "AUTH_SECRET" .env.local`
+- [ ] Set remaining environment variables in `.env.local`: `AUTH_TRUST_HOST=true`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET`, `NEXT_PUBLIC_APP_URL`
+  - Verify: `grep -q "AUTH_TRUST_HOST" .env.local && grep -q "DATABASE_URL" .env.local`
 
 ### Step 1.1: Project Scaffolding
 **Depends On:** None
@@ -130,75 +134,82 @@ Set up Vitest for unit and integration testing. Configure test utilities, React 
 
 ---
 
-#### Task 1.2.A: Supabase Client and Database Schema
+#### Task 1.2.A: Drizzle Schema and Database Client
 
 **Description:**
-Configure Supabase clients (browser + server) using `@supabase/ssr`. Create the full database schema with all 7 tables (profiles, documents, revisions, ai_interactions, paste_events, sessions, badges) and RLS policies. All tables are created upfront so foreign key relationships are correct from the start, even though some tables won't be populated until later phases.
+Configure Drizzle ORM with `@neondatabase/serverless` driver. Define the full database schema with all tables: Auth.js tables (`user`, `account`, `session`, `verificationToken`) with concrete `pgTable` definitions, and domain tables (`documents`, `revisions`, `ai_interactions`, `paste_events`, `writing_sessions`, `badges`). The `user` table is extended with `ai_provider` and `ai_model` columns. All tables are created upfront so foreign key relationships are correct from the start. Use `neon-http` driver for universal server-side compatibility. Configure `drizzle.config.ts` pointing to `DATABASE_URL_UNPOOLED`.
 
 **Requirement:** REQ-040, REQ-041, REQ-044, REQ-054
 
 **Acceptance Criteria:**
-- [ ] (CODE) Supabase browser client factory exists
-  - Verify: `grep -q 'createBrowserClient' src/lib/supabase/client.ts`
-- [ ] (CODE) Supabase server client factory exists
-  - Verify: `grep -q 'createServerClient' src/lib/supabase/server.ts`
-- [ ] (CODE) SQL migration creates all 7 tables with correct columns and types
-  - Verify: `grep -q 'CREATE TABLE.*profiles' supabase/migrations/*.sql`
-- [ ] (CODE) RLS policies enforce user_id = auth.uid() for documents
-  - Verify: `grep -q 'auth.uid()' supabase/migrations/*.sql`
-- [ ] (CODE) Audit trail tables (ai_interactions, paste_events, revisions) have insert-only RLS — no UPDATE or DELETE policies (REQ-040)
-  - Verify: `grep -q 'INSERT' supabase/migrations/*.sql && ! grep -qE 'FOR (UPDATE|DELETE).*(ai_interactions|paste_events|revisions)' supabase/migrations/*.sql`
-- [ ] (CODE) Badges table has no public/anon SELECT policy — only authenticated owner SELECT and INSERT
-  - Verify: `grep -q 'ENABLE ROW LEVEL SECURITY' supabase/migrations/*.sql && ! grep -qE 'anon.*SELECT.*badges' supabase/migrations/*.sql`
-- [ ] (CODE) TypeScript types generated or manually defined for all tables
-  - Verify: `grep -q 'Document' src/lib/supabase/types.ts`
+- [ ] (CODE) Drizzle database client instance exists using `drizzle-orm/neon-http`
+  - Verify: `grep -q 'drizzle' src/lib/db/index.ts && grep -q 'neon' src/lib/db/index.ts`
+- [ ] (CODE) Schema defines all Auth.js tables with concrete column definitions (user, account, session, verificationToken)
+  - Verify: `grep -q 'pgTable.*user' src/lib/db/schema.ts && grep -q 'pgTable.*account' src/lib/db/schema.ts`
+- [ ] (CODE) Auth.js `user` table extended with `ai_provider` and `ai_model` columns
+  - Verify: `grep -q 'ai_provider\|aiProvider' src/lib/db/schema.ts`
+- [ ] (CODE) All domain tables defined with correct columns, types, and FK relationships
+  - Verify: `grep -q 'documents' src/lib/db/schema.ts && grep -q 'writing_sessions' src/lib/db/schema.ts && grep -q 'badges' src/lib/db/schema.ts`
+- [ ] (CODE) `user.id` is `text` type (cuid2) and domain table FKs use `text` for `userId`
+  - Verify: `grep -q "text.*id" src/lib/db/schema.ts`
+- [ ] (CODE) `drizzle.config.ts` configured with `DATABASE_URL_UNPOOLED`
+  - Verify: `grep -q 'DATABASE_URL_UNPOOLED' drizzle.config.ts`
+- [ ] (CODE) TypeScript types auto-inferred via `$inferSelect` and `$inferInsert`
+  - Verify: `grep -q 'inferSelect\|inferInsert' src/lib/db/schema.ts`
 
 **Files to Create:**
-- `src/lib/supabase/client.ts` — Browser Supabase client
-- `src/lib/supabase/server.ts` — Server Supabase client (cookies-based)
-- `src/lib/supabase/types.ts` — TypeScript types for all tables
-- `supabase/migrations/00001_initial_schema.sql` — Full database schema
+- `src/lib/db/index.ts` — Drizzle client instance using `drizzle-orm/neon-http` with `@neondatabase/serverless`
+- `src/lib/db/schema.ts` — All table definitions (Auth.js + domain tables) with inferred types
+- `drizzle.config.ts` — Drizzle Kit configuration pointing to `DATABASE_URL_UNPOOLED`
 
 **Files to Modify:**
-- `package.json` — Add @supabase/supabase-js, @supabase/ssr
+- `package.json` — Add `drizzle-orm`, `@neondatabase/serverless`, `drizzle-kit` (dev)
 
 **Existing Code to Reference:** None
 
 **Dependencies:** Task 1.1.A
 
-**Spec Reference:** Data Model (TECHNICAL_SPEC.md)
+**Spec Reference:** Data Model, Migration Workflow (TECHNICAL_SPEC.md)
 
 ---
 
-#### Task 1.2.B: Authentication Flow
+#### Task 1.2.B: Auth.js v5 Authentication Flow
 
 **Description:**
-Implement OAuth authentication with Google and GitHub using Supabase Auth. Create login page, auth callback handler, and Next.js middleware for session refresh and route protection. Follow current Supabase SSR guidance (proxy-based token refresh or middleware approach — check latest `@supabase/ssr` docs during implementation). On first login, create a `profiles` row from OAuth data.
+Implement OAuth authentication with Google and GitHub using Auth.js v5. Use the split-config pattern: `src/auth.config.ts` (Edge-safe, providers only) and `src/auth.ts` (full config with DrizzleAdapter). Create the catch-all route at `src/app/api/auth/[...nextauth]/route.ts`. Create login page that uses server-action `signIn()` from `src/auth.ts` (not `next-auth/react`). Create middleware that imports from `src/auth.config.ts` for Edge compatibility. Use JWT session strategy. Create shared auth helpers (`requireAuth()`, `requireDocumentOwner()`) in `src/lib/auth/authorize.ts`.
 
 **Requirement:** REQ-004, REQ-005, REQ-006
 
 **Acceptance Criteria:**
-- [ ] (CODE) Login page with Google and GitHub OAuth buttons
-  - Verify: `grep -q 'Google\|GitHub' src/app/login/page.tsx`
-- [ ] (CODE) Auth callback route handler exchanges code for session
-  - Verify: `test -f src/app/auth/callback/route.ts`
-- [ ] (CODE) Session refresh via middleware or proxy (follow current @supabase/ssr docs), protected routes redirect unauthenticated users
-  - Verify: `test -f src/middleware.ts && grep -q 'dashboard\|editor' src/middleware.ts`
+- [ ] (CODE) Auth.js Edge-safe config with Google and GitHub providers
+  - Verify: `grep -q 'Google\|GitHub' src/auth.config.ts`
+- [ ] (CODE) Full Auth.js config with DrizzleAdapter and JWT session strategy
+  - Verify: `grep -q 'DrizzleAdapter' src/auth.ts && grep -q 'jwt' src/auth.ts`
+- [ ] (CODE) Catch-all Auth.js route handler
+  - Verify: `test -f src/app/api/auth/\\[...nextauth\\]/route.ts`
+- [ ] (CODE) Login page with Google and GitHub OAuth buttons using server-action signIn()
+  - Verify: `grep -q 'signIn' src/app/login/page.tsx && grep -q 'Google\|GitHub' src/app/login/page.tsx`
+- [ ] (CODE) Middleware imports from auth.config.ts (Edge-safe), protects /dashboard and /editor/* routes
+  - Verify: `test -f src/middleware.ts && grep -q 'auth.config\|authConfig' src/middleware.ts && grep -q 'dashboard\|editor' src/middleware.ts`
 - [ ] (TEST) Unauthenticated requests to protected routes are redirected to /login
   - Verify: `npx vitest run src/middleware.test.ts`
-- [ ] (CODE) Profile creation on first OAuth login (trigger or callback logic)
-  - Verify: `grep -q 'profiles' src/app/auth/callback/route.ts`
+- [ ] (CODE) Shared auth helpers: requireAuth() and requireDocumentOwner()
+  - Verify: `grep -q 'requireAuth' src/lib/auth/authorize.ts && grep -q 'requireDocumentOwner' src/lib/auth/authorize.ts`
 
 **Files to Create:**
-- `src/app/login/page.tsx` — Login page with OAuth buttons
-- `src/app/auth/callback/route.ts` — OAuth callback handler
-- `src/middleware.ts` — Session refresh and route protection
+- `src/auth.config.ts` — Edge-safe Auth.js config (providers only)
+- `src/auth.ts` — Full Auth.js config with DrizzleAdapter
+- `src/app/api/auth/[...nextauth]/route.ts` — Auth.js catch-all route
+- `src/app/login/page.tsx` — Login page with OAuth buttons (server-action signIn)
+- `src/middleware.ts` — Route protection (imports from auth.config.ts)
 - `src/middleware.test.ts` — Middleware tests
+- `src/lib/auth/authorize.ts` — Shared auth helpers (requireAuth, requireDocumentOwner)
 
 **Files to Modify:** None
 
 **Existing Code to Reference:**
-- `src/lib/supabase/server.ts` — Server client for auth operations
+- `src/lib/db/index.ts` — Drizzle client for DrizzleAdapter
+- `src/lib/db/schema.ts` — Auth.js table schemas
 
 **Dependencies:** Task 1.2.A
 
@@ -239,8 +250,9 @@ Implement document CRUD operations as Server Actions (create, update, soft-delet
 **Files to Modify:** None
 
 **Existing Code to Reference:**
-- `src/lib/supabase/server.ts` — Server client for DB queries
-- `src/lib/supabase/types.ts` — Document type
+- `src/lib/db/index.ts` — Drizzle client for DB queries
+- `src/lib/db/schema.ts` — Document table and inferred types
+- `src/lib/auth/authorize.ts` — requireAuth(), requireDocumentOwner()
 
 **Dependencies:** Task 1.2.B
 
@@ -273,7 +285,8 @@ Create the document editor page shell at `/editor/[id]`. Fetch and display docum
 
 **Existing Code to Reference:**
 - `src/app/actions/documents.ts` — updateDocument for saving
-- `src/lib/supabase/server.ts` — Server client for fetching
+- `src/lib/db/index.ts` — Drizzle client for fetching
+- `src/lib/auth/authorize.ts` — requireDocumentOwner()
 
 **Dependencies:** Task 1.3.A
 
@@ -300,8 +313,8 @@ Create the document editor page shell at `/editor/[id]`. Fetch and display docum
 
 ### Pre-Phase Setup
 Human must complete before starting:
-- [ ] No additional setup required (Supabase already configured in Phase 1)
-  - Verify: `grep -q "NEXT_PUBLIC_SUPABASE_URL" .env.local`
+- [ ] No additional setup required (Neon + Auth.js already configured in Phase 1)
+  - Verify: `grep -q "DATABASE_URL" .env.local`
 
 ### Step 2.1: TipTap Editor
 **Depends On:** None (within Phase 2)
@@ -387,12 +400,12 @@ Implement auto-save that triggers on TipTap's `onUpdate` callback with a 2-secon
 #### Task 2.2.B: Session Tracking
 
 **Description:**
-Implement session tracking with start/end/heartbeat lifecycle. Create Server Actions for session management. The editor starts a session on mount, sends heartbeats every 30 seconds while active, and ends the session on unmount/navigation.
+Implement writing session tracking with start/end/heartbeat lifecycle using the `writing_sessions` table (named to avoid collision with Auth.js `session` table). Create Server Actions for session management. The editor starts a session on mount, sends heartbeats every 30 seconds while active, and ends the session on unmount/navigation.
 
 **Requirement:** REQ-019
 
 **Acceptance Criteria:**
-- [ ] (TEST) startSession() creates a session record
+- [ ] (TEST) startSession() creates a writing_sessions record
   - Verify: `npx vitest run src/app/actions/sessions.test.ts`
 - [ ] (TEST) heartbeat() updates last_heartbeat and increments active_seconds
   - Verify: `npx vitest run src/app/actions/sessions.test.ts`
@@ -404,7 +417,7 @@ Implement session tracking with start/end/heartbeat lifecycle. Create Server Act
   - Verify: `grep -q 'lastActivity\|active' src/hooks/useSession.ts`
 
 **Files to Create:**
-- `src/app/actions/sessions.ts` — Server Actions: startSession, endSession, heartbeat
+- `src/app/actions/sessions.ts` — Server Actions: startSession, endSession, heartbeat (using `writing_sessions` table)
 - `src/app/actions/sessions.test.ts` — Session action tests
 - `src/hooks/useSession.ts` — Client-side session management hook
 - `src/hooks/useSession.test.ts` — Session hook tests
@@ -413,8 +426,8 @@ Implement session tracking with start/end/heartbeat lifecycle. Create Server Act
 - `src/components/editor/Editor.tsx` — Wire up session hook
 
 **Existing Code to Reference:**
-- `src/lib/supabase/server.ts` — Server client
-- `src/lib/supabase/types.ts` — Session type
+- `src/lib/db/index.ts` — Drizzle client
+- `src/lib/db/schema.ts` — `writing_sessions` table and inferred types
 
 **Dependencies:** Task 2.1.A
 
@@ -484,7 +497,8 @@ Create the AI provider abstraction layer with unified interfaces for Claude and 
 - `package.json` — Add `ai` (Vercel AI SDK 6), `@ai-sdk/react`, `@ai-sdk/anthropic`, `@ai-sdk/openai`
 
 **Existing Code to Reference:**
-- `src/lib/supabase/server.ts` — Auth validation pattern
+- `src/lib/auth/authorize.ts` — requireAuth() for auth validation
+- `src/auth.ts` — auth() session getter
 
 **Dependencies:** Phase 2 complete
 
@@ -597,7 +611,7 @@ Implement the freeform AI mode (command palette-style input) and the AI interact
 - `src/components/editor/SidePanel.tsx` — Wire up logAIInteraction
 
 **Existing Code to Reference:**
-- `src/lib/supabase/types.ts` — AIInteraction type
+- `src/lib/db/schema.ts` — `ai_interactions` table and inferred types
 - `src/app/actions/documents.ts` — Server Action patterns
 
 **Dependencies:** Task 3.2.A, Task 3.2.B
@@ -614,24 +628,24 @@ Implement the freeform AI mode (command palette-style input) and the AI interact
 #### Task 3.3.A: User AI Provider Preference
 
 **Description:**
-Allow users to choose their AI provider (Anthropic or OpenAI) and preferred model. Store the preference in the `profiles` table. The AI completion endpoint reads the user's preference to route requests to the correct provider.
+Allow users to choose their AI provider (Anthropic or OpenAI) and preferred model. Store the preference in the Auth.js `user` table (`ai_provider` and `ai_model` columns). The AI completion endpoint reads the user's preference to route requests to the correct provider.
 
 **Requirement:** REQ-012
 
 **Acceptance Criteria:**
 - [ ] (CODE) Settings UI for selecting AI provider and model
   - Verify: `grep -q 'provider\|model' src/components/settings/AISettings.tsx`
-- [ ] (TEST) updateProfile() persists ai_provider and ai_model
-  - Verify: `npx vitest run src/app/actions/profile.test.ts`
+- [ ] (TEST) updateUserPreferences() persists ai_provider and ai_model to users table
+  - Verify: `npx vitest run src/app/actions/user.test.ts`
 - [ ] (CODE) AI completion endpoint reads user's provider preference
-  - Verify: `grep -q 'ai_provider\|profile' src/app/api/ai/complete/route.ts`
+  - Verify: `grep -q 'ai_provider\|aiProvider' src/app/api/ai/complete/route.ts`
 - [ ] (CODE) Settings accessible from editor or dashboard
   - Verify: `grep -q 'settings\|Settings' src/app/dashboard/page.tsx`
 
 **Files to Create:**
 - `src/components/settings/AISettings.tsx` — Provider selection UI
-- `src/app/actions/profile.ts` — updateProfile Server Action
-- `src/app/actions/profile.test.ts` — Profile action tests
+- `src/app/actions/user.ts` — updateUserPreferences Server Action
+- `src/app/actions/user.test.ts` — User action tests
 
 **Files to Modify:**
 - `src/app/api/ai/complete/route.ts` — Read user preference
@@ -639,7 +653,7 @@ Allow users to choose their AI provider (Anthropic or OpenAI) and preferred mode
 
 **Existing Code to Reference:**
 - `src/lib/ai/providers.ts` — Provider configuration
-- `src/lib/supabase/types.ts` — Profile type
+- `src/lib/db/schema.ts` — `users` table with `ai_provider`, `ai_model` columns
 
 **Dependencies:** Task 3.1.A
 
@@ -859,7 +873,7 @@ Human must complete before starting:
 #### Task 5.1.A: Badge Generation Server Action
 
 **Description:**
-Implement the `generateBadge()` Server Action that freezes the document text, audit trail (AI interactions, paste events, sessions, revisions), and computed statistics into an immutable badge record. Generate a unique verification_id using nanoid(21). Badge PNG is generated on demand by the Route Handler (Task 5.2.C) using @vercel/og — no storage bucket needed.
+Implement the `generateBadge()` Server Action that freezes the document text, audit trail (AI interactions, paste events, writing sessions, revisions), and computed statistics into an immutable badge record. Generate a unique verification_id using nanoid(21). Badge PNG is generated on demand by the Route Handler (Task 5.2.C) using @vercel/og — no storage bucket needed.
 
 **Requirement:** REQ-021, REQ-022, REQ-023, REQ-026, REQ-039, REQ-043, REQ-055
 
@@ -969,8 +983,8 @@ Build the SSR verification page at `/verify/[id]` that displays badge data publi
 **Files to Modify:** None
 
 **Existing Code to Reference:**
-- `src/lib/supabase/server.ts` — Server client for data fetching (use service_role for badge reads)
-- `src/lib/supabase/types.ts` — Badge type
+- `src/lib/db/index.ts` — Drizzle client for data fetching
+- `src/lib/db/schema.ts` — Badge table and inferred types
 
 **Dependencies:** Task 5.1.A
 
@@ -1213,7 +1227,7 @@ Create the landing page at `/` that explains the Provenance product to new visit
 - `src/app/page.tsx` — Replace placeholder with landing page
 
 **Existing Code to Reference:**
-- `src/lib/supabase/server.ts` — Auth check for redirect
+- `src/auth.ts` — auth() session check for redirect
 
 **Dependencies:** None (within Phase 6)
 
@@ -1245,5 +1259,5 @@ These requirements are satisfied by technology choices and scope boundaries rath
 |-----|-------------|---------------|
 | REQ-045 | No granular verification page permissions in MVP | Not built — binary public/private only |
 | REQ-046 | Free during beta, no payment infrastructure | Not built — no payment code included |
-| REQ-053 | Audit data backup with point-in-time recovery | Supabase managed backups (enabled in dashboard) |
-| REQ-054 | TLS for all data in transit, secure credential storage | Vercel (TLS), Supabase (TLS), API keys in env vars, sessions in httpOnly cookies via @supabase/ssr |
+| REQ-053 | Audit data backup with point-in-time recovery | Neon managed backups with point-in-time recovery (branching) |
+| REQ-054 | TLS for all data in transit, secure credential storage | Vercel (TLS), Neon (TLS), API keys in env vars, Auth.js sessions in httpOnly cookies |
