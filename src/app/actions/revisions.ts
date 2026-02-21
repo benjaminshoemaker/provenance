@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { revisions } from "@/lib/db/schema";
-import { requireAuth } from "@/lib/auth/authorize";
+import { requireDocumentOwner } from "@/lib/auth/authorize";
 import { extractPlainText } from "@/lib/tiptap-utils";
 
 interface CreateRevisionData {
@@ -12,7 +12,7 @@ interface CreateRevisionData {
 }
 
 export async function createRevision(data: CreateRevisionData) {
-  await requireAuth();
+  await requireDocumentOwner(data.documentId);
 
   const plainText = extractPlainText(
     data.content as Parameters<typeof extractPlainText>[0]

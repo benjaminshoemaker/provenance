@@ -1,8 +1,9 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { pasteEvents } from "@/lib/db/schema";
-import { requireAuth } from "@/lib/auth/authorize";
+import { pasteEvents, writingSessions } from "@/lib/db/schema";
+import { requireDocumentOwner } from "@/lib/auth/authorize";
+import { and, eq } from "drizzle-orm";
 
 interface LogPasteEventData {
   documentId: string;
@@ -13,7 +14,24 @@ interface LogPasteEventData {
 }
 
 export async function logPasteEvent(data: LogPasteEventData) {
-  await requireAuth();
+  const { user } = await requireDocumentOwner(data.documentId);
+
+  if (data.sessionId) {
+    const [session] = await db
+      .select({ id: writingSessions.id })
+      .from(writingSessions)
+      .where(
+        and(
+          eq(writingSessions.id, data.sessionId),
+          eq(writingSessions.userId, user.id),
+          eq(writingSessions.documentId, data.documentId)
+        )
+      );
+
+    if (!session) {
+      throw new Error("Not found");
+    }
+  }
 
   const [event] = await db
     .insert(pasteEvents)

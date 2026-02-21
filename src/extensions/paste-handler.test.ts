@@ -80,7 +80,7 @@ describe("PasteHandler extension", () => {
         PasteHandler.configure({
           documentId: "doc-1",
           onExternalPaste,
-          recentAIResponses: [aiResponse],
+          recentAIResponses: [],
         }),
       ],
       content: {
@@ -89,10 +89,43 @@ describe("PasteHandler extension", () => {
       },
     });
 
+    editor.commands.addRecentAIResponse(aiResponse);
+
     // classifyPaste should return ai_internal — the handlePaste plugin
     // returns false and lets default paste handling proceed
-    const classification = classifyPaste(aiResponse, [aiResponse]);
+    const classification = classifyPaste(
+      aiResponse,
+      editor.storage.pasteHandler.recentAIResponses
+    );
     expect(classification).toBe("ai_internal");
     expect(onExternalPaste).not.toHaveBeenCalled();
+  });
+
+  it("should record recent AI responses in extension storage", () => {
+    editor = new Editor({
+      element: document.createElement("div"),
+      extensions: [
+        StarterKit,
+        OriginMark,
+        PasteHandler.configure({
+          documentId: "doc-1",
+          recentAIResponses: [],
+        }),
+      ],
+      content: {
+        type: "doc",
+        content: [{ type: "paragraph" }],
+      },
+    });
+
+    expect(editor.storage.pasteHandler.recentAIResponses).toEqual([]);
+
+    editor.commands.addRecentAIResponse("AI response 1");
+    editor.commands.addRecentAIResponse("AI response 2");
+
+    expect(editor.storage.pasteHandler.recentAIResponses).toEqual([
+      "AI response 2",
+      "AI response 1",
+    ]);
   });
 });

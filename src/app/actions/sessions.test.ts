@@ -54,7 +54,8 @@ vi.mock("@/lib/auth/authorize", () => ({
 }));
 
 vi.mock("drizzle-orm", () => ({
-  eq: vi.fn((_col, val) => ({ _eq: val })),
+  and: vi.fn((...conds: unknown[]) => ({ _and: conds })),
+  eq: vi.fn((col: unknown, val: unknown) => ({ _eq: { col, val } })),
   sql: vi.fn((strings: TemplateStringsArray, ...values: unknown[]) => ({
     _sql: strings.join("?"),
     _values: values,
@@ -67,10 +68,9 @@ describe("startSession", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    mocks.mockRequireAuth.mockResolvedValue({
-      id: "user-1",
-      name: "Test User",
-      email: "test@example.com",
+    mocks.mockRequireDocumentOwner.mockResolvedValue({
+      user: { id: "user-1" },
+      document: { id: "doc-1", userId: "user-1" },
     });
 
     mocks.mockInsert.mockReturnValue({ values: mocks.mockValues });
@@ -91,7 +91,7 @@ describe("startSession", () => {
   it("should create a writing_sessions record", async () => {
     const result = await startSession("doc-1");
 
-    expect(mocks.mockRequireAuth).toHaveBeenCalled();
+    expect(mocks.mockRequireDocumentOwner).toHaveBeenCalledWith("doc-1");
     expect(mocks.mockInsert).toHaveBeenCalled();
     expect(mocks.mockValues).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -100,6 +100,13 @@ describe("startSession", () => {
       })
     );
     expect(result).toHaveProperty("id", "session-1");
+  });
+
+  it("should require document ownership before creating a session", async () => {
+    mocks.mockRequireDocumentOwner.mockRejectedValue(new Error("Forbidden"));
+
+    await expect(startSession("doc-1")).rejects.toThrow("Forbidden");
+    expect(mocks.mockInsert).not.toHaveBeenCalled();
   });
 });
 
@@ -135,7 +142,21 @@ describe("heartbeat", () => {
         lastHeartbeat: expect.any(Date),
       })
     );
+    expect(mocks.mockWhere).toHaveBeenCalledWith(
+      expect.objectContaining({
+        _and: expect.arrayContaining([
+          { _eq: { col: "id", val: "session-1" } },
+          { _eq: { col: "user_id", val: "user-1" } },
+        ]),
+      })
+    );
     expect(result).toHaveProperty("id", "session-1");
+  });
+
+  it("should throw when session is not found or not owned by user", async () => {
+    mocks.mockReturning.mockResolvedValue([]);
+
+    await expect(heartbeat("session-1")).rejects.toThrow("Not found");
   });
 });
 
@@ -151,6 +172,8 @@ describe("endSession", () => {
 
     mocks.mockUpdate.mockReturnValue({ set: mocks.mockSet });
     mocks.mockSet.mockReturnValue({ where: mocks.mockWhere });
+    mocks.mockWhere.mockReturnValue({ returning: mocks.mockReturning });
+    mocks.mockReturning.mockResolvedValue([{ id: "session-1" }]);
   });
 
   it("should set ended_at timestamp", async () => {
@@ -163,5 +186,19 @@ describe("endSession", () => {
         endedAt: expect.any(Date),
       })
     );
+    expect(mocks.mockWhere).toHaveBeenCalledWith(
+      expect.objectContaining({
+        _and: expect.arrayContaining([
+          { _eq: { col: "id", val: "session-1" } },
+          { _eq: { col: "user_id", val: "user-1" } },
+        ]),
+      })
+    );
+  });
+
+  it("should throw when session is not found or not owned by user", async () => {
+    mocks.mockReturning.mockResolvedValue([]);
+
+    await expect(endSession("session-1")).rejects.toThrow("Not found");
   });
 });

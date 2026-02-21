@@ -21,7 +21,6 @@ npm-debug.log*
 
 # vercel
 .vercel
-.env*.local
 
 # Verification credentials (never commit)
 .env.verification

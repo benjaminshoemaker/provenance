@@ -10,12 +10,16 @@ interface EditorShellProps {
   documentId: string;
   initialTitle: string;
   initialContent: Record<string, unknown>;
+  aiProvider: string;
+  aiModel: string | null;
 }
 
 export function EditorShell({
   documentId,
   initialTitle,
   initialContent,
+  aiProvider,
+  aiModel,
 }: EditorShellProps) {
   const [title, setTitle] = useState(initialTitle);
   const { save, status, retry } = useAutoSave({ documentId, title });
@@ -45,6 +49,8 @@ export function EditorShell({
         content={initialContent}
         documentId={documentId}
         title={title}
+        provider={aiProvider}
+        model={aiModel ?? undefined}
         onUpdate={handleUpdate}
       />
     </div>

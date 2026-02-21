@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { documents } from "@/lib/db/schema";
+import { documents, users } from "@/lib/db/schema";
 import { eq, and, isNull } from "drizzle-orm";
 import { redirect, notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -32,6 +32,11 @@ export default async function EditorPage({
     redirect("/dashboard");
   }
 
+  const [prefs] = await db
+    .select({ aiProvider: users.aiProvider, aiModel: users.aiModel })
+    .from(users)
+    .where(eq(users.id, session.user.id));
+
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
       <div className="mb-6 flex items-center gap-4">
@@ -46,6 +51,8 @@ export default async function EditorPage({
         documentId={document.id}
         initialTitle={document.title}
         initialContent={document.content as Record<string, unknown>}
+        aiProvider={prefs?.aiProvider ?? "anthropic"}
+        aiModel={prefs?.aiModel ?? null}
       />
     </div>
   );

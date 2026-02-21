@@ -1,14 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 const mocks = vi.hoisted(() => ({
-  mockAuth: vi.fn(),
+  mockRequireDocumentOwner: vi.fn(),
   mockInsert: vi.fn(),
   mockValues: vi.fn(),
   mockReturning: vi.fn(),
 }));
 
 vi.mock("@/lib/auth/authorize", () => ({
-  requireAuth: mocks.mockAuth,
+  requireDocumentOwner: mocks.mockRequireDocumentOwner,
 }));
 
 vi.mock("@/lib/db", () => ({
@@ -26,7 +26,10 @@ import { createRevision } from "./revisions";
 describe("createRevision", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mocks.mockAuth.mockResolvedValue({ id: "user-1" });
+    mocks.mockRequireDocumentOwner.mockResolvedValue({
+      user: { id: "user-1" },
+      document: { id: "doc-1", userId: "user-1" },
+    });
     mocks.mockReturning.mockResolvedValue([
       {
         id: "rev-1",
@@ -94,7 +97,7 @@ describe("createRevision", () => {
   });
 
   it("should require authentication", async () => {
-    mocks.mockAuth.mockRejectedValue(new Error("Unauthorized"));
+    mocks.mockRequireDocumentOwner.mockRejectedValue(new Error("Unauthorized"));
 
     await expect(
       createRevision({

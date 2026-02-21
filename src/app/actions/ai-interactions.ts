@@ -1,8 +1,9 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { aiInteractions } from "@/lib/db/schema";
-import { requireAuth } from "@/lib/auth/authorize";
+import { aiInteractions, writingSessions } from "@/lib/db/schema";
+import { requireDocumentOwner } from "@/lib/auth/authorize";
+import { and, eq } from "drizzle-orm";
 
 interface LogAIInteractionData {
   documentId: string;
@@ -19,7 +20,24 @@ interface LogAIInteractionData {
 }
 
 export async function logAIInteraction(data: LogAIInteractionData) {
-  await requireAuth();
+  const { user } = await requireDocumentOwner(data.documentId);
+
+  if (data.sessionId) {
+    const [session] = await db
+      .select({ id: writingSessions.id })
+      .from(writingSessions)
+      .where(
+        and(
+          eq(writingSessions.id, data.sessionId),
+          eq(writingSessions.userId, user.id),
+          eq(writingSessions.documentId, data.documentId)
+        )
+      );
+
+    if (!session) {
+      throw new Error("Not found");
+    }
+  }
 
   const [interaction] = await db
     .insert(aiInteractions)
