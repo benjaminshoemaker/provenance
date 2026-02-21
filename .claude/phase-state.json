@@ -4,8 +4,8 @@
     "phases": [
       {
         "phase": 1,
-        "status": "READY",
-        "started_at": null,
+        "status": "IN_PROGRESS",
+        "started_at": "2026-02-20T12:00:00.000Z",
         "completed_at": null,
         "tasks": []
       }

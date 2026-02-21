@@ -62,15 +62,15 @@ Create a new Next.js 15 project with App Router, TypeScript, Tailwind CSS, and s
 **Requirement:** REQ-001
 
 **Acceptance Criteria:**
-- [ ] (CODE) Next.js 15 project created with App Router and TypeScript
+- [x] (CODE) Next.js 15 project created with App Router and TypeScript
   - Verify: `grep -q '"next":' package.json`
-- [ ] (CODE) Tailwind CSS configured with globals.css
+- [x] (CODE) Tailwind CSS configured with globals.css
   - Verify: `test -f tailwind.config.ts && grep -q '@tailwind' src/app/globals.css`
-- [ ] (CODE) shadcn/ui initialized with button and card components
+- [x] (CODE) shadcn/ui initialized with button and card components
   - Verify: `test -f components.json && test -d src/components/ui`
-- [ ] (BUILD) Project builds without errors
+- [x] (BUILD) Project builds without errors
   - Verify: `npm run build`
-- [ ] (CODE) Root layout.tsx with HTML structure and metadata
+- [x] (CODE) Root layout.tsx with HTML structure and metadata
   - Verify: `grep -q 'export default function RootLayout' src/app/layout.tsx`
 
 **Files to Create:**
