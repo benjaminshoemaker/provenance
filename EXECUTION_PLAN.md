@@ -844,14 +844,14 @@ Implement the `calculateMetrics()` function that walks TipTap JSON to compute AI
 ### Phase 4 Checkpoint
 
 **Automated Checks:**
-- [ ] All tests pass: `npx vitest run`
-- [ ] Type checking passes: `npx tsc --noEmit`
-- [ ] Build succeeds: `npm run build`
+- [x] All tests pass: `npx vitest run`
+- [x] Type checking passes: `npx tsc --noEmit`
+- [x] Build succeeds: `npm run build`
 
 **Regression Verification:**
-- [ ] AI interactions still work (inline, side panel, freeform)
-- [ ] Auto-save still works with origin marks in document JSON
-- [ ] Session tracking still works
+- [x] AI interactions still work (inline, side panel, freeform)
+- [x] Auto-save still works with origin marks in document JSON
+- [x] Session tracking still works
 
 ---
 
