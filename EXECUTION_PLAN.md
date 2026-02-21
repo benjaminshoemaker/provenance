@@ -878,19 +878,19 @@ Implement the `generateBadge()` Server Action that freezes the document text, au
 **Requirement:** REQ-021, REQ-022, REQ-023, REQ-026, REQ-039, REQ-043, REQ-055
 
 **Acceptance Criteria:**
-- [ ] (TEST) generateBadge() creates badge record with frozen document text and audit trail
+- [x] (TEST) generateBadge() creates badge record with frozen document text and audit trail
   - Verify: `npx vitest run src/app/actions/badges.test.ts`
-- [ ] (TEST) verification_id uses nanoid(21) — 21 characters, unguessable
+- [x] (TEST) verification_id uses nanoid(21) — 21 characters, unguessable
   - Verify: `npx vitest run src/app/actions/badges.test.ts`
-- [ ] (TEST) Stats include ai_percentage, external_paste_percentage, interaction_count, session_count, total_active_seconds
+- [x] (TEST) Stats include ai_percentage, external_paste_percentage, interaction_count, session_count, total_active_seconds
   - Verify: `npx vitest run src/app/actions/badges.test.ts`
-- [ ] (CODE) Badge PNG generated via @vercel/og with Provenance branding and percentage
+- [x] (CODE) Badge PNG generated via @vercel/og with Provenance branding and percentage
   - Verify: `grep -q 'ImageResponse\|vercel/og' src/lib/badge-image.ts`
-- [ ] (TEST) Badge is insert-only — no update or delete permitted
+- [x] (TEST) Badge is insert-only — no update or delete permitted
   - Verify: `npx vitest run src/app/actions/badges.test.ts`
-- [ ] (TEST) Only document owner can generate badges — non-owners get authorization error (REQ-043)
+- [x] (TEST) Only document owner can generate badges — non-owners get authorization error (REQ-043)
   - Verify: `npx vitest run src/app/actions/badges.test.ts`
-- [ ] (CODE) Returns verificationId, badgeHtml, and badgeMarkdown snippets
+- [x] (CODE) Returns verificationId, badgeHtml, and badgeMarkdown snippets
   - Verify: `grep -q 'badgeHtml\|badgeMarkdown' src/app/actions/badges.ts`
 
 **Files to Create:**
