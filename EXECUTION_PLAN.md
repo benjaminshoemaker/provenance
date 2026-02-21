@@ -230,15 +230,15 @@ Implement document CRUD operations as Server Actions (create, update, soft-delet
 **Requirement:** REQ-010, REQ-033, REQ-034
 
 **Acceptance Criteria:**
-- [ ] (TEST) createDocument() returns a new document ID
+- [x] (TEST) createDocument() returns a new document ID
   - Verify: `npx vitest run src/app/actions/documents.test.ts`
-- [ ] (TEST) deleteDocument() sets deleted_at (soft-delete) instead of row deletion
+- [x] (TEST) deleteDocument() sets deleted_at (soft-delete) instead of row deletion
   - Verify: `npx vitest run src/app/actions/documents.test.ts`
-- [ ] (CODE) Dashboard page lists user documents with title and last modified
+- [x] (CODE) Dashboard page lists user documents with title and last modified
   - Verify: `grep -q 'documents' src/app/dashboard/page.tsx`
-- [ ] (CODE) Dashboard has create document button that calls createDocument()
+- [x] (CODE) Dashboard has create document button that calls createDocument()
   - Verify: `grep -q 'createDocument' src/app/dashboard/page.tsx`
-- [ ] (TEST) updateDocument() updates title and content
+- [x] (TEST) updateDocument() updates title and content
   - Verify: `npx vitest run src/app/actions/documents.test.ts`
 
 **Files to Create:**
