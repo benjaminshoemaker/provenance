@@ -14,6 +14,7 @@ import { extractPlainText } from "@/lib/tiptap-utils";
 import { generateBadgeHtml, generateBadgeMarkdown } from "@/lib/badge-snippets";
 import { nanoid } from "nanoid";
 import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 export async function generateBadge(documentId: string) {
   const { document } = await requireDocumentOwner(documentId);
@@ -115,4 +116,27 @@ export async function generateBadge(documentId: string) {
     badgeHtml,
     badgeMarkdown,
   };
+}
+
+export async function takedownBadge(badgeId: string, reason?: string) {
+  const [badge] = await db
+    .select()
+    .from(badges)
+    .where(eq(badges.id, badgeId));
+
+  if (!badge) throw new Error("Badge not found");
+
+  // Verify ownership through document
+  await requireDocumentOwner(badge.documentId);
+
+  await db
+    .update(badges)
+    .set({
+      isTakenDown: true,
+      takedownReason: reason ?? null,
+    })
+    .where(eq(badges.id, badgeId));
+
+  // Trigger on-demand revalidation for the verification page
+  revalidatePath(`/verify/${badge.verificationId}`);
 }

@@ -1140,13 +1140,13 @@ Configure edge caching for verification pages and badge images. Verification pag
 **Requirement:** REQ-051
 
 **Acceptance Criteria:**
-- [ ] (CODE) Verification page uses Next.js caching with revalidation
+- [x] (CODE) Verification page uses Next.js caching with revalidation
   - Verify: `grep -q 'revalidate\|cache' src/app/verify/\[id\]/page.tsx`
-- [ ] (CODE) Badge image endpoint has Cache-Control headers (24h TTL)
+- [x] (CODE) Badge image endpoint has Cache-Control headers (24h TTL)
   - Verify: `grep -q 's-maxage' src/app/api/badges/\[verificationId\]/image/route.ts`
-- [ ] (CODE) Takedown triggers on-demand revalidation for the affected badge
+- [x] (CODE) Takedown triggers on-demand revalidation for the affected badge
   - Verify: `grep -q 'revalidate\|revalidatePath\|revalidateTag' src/app/actions/badges.ts`
-- [ ] (CODE) Badge image endpoint cache headers verified (already set in Task 5.2.C)
+- [x] (CODE) Badge image endpoint cache headers verified (already set in Task 5.2.C)
   - Verify: `grep -q 's-maxage' src/app/api/badges/\[verificationId\]/image/route.ts`
 
 **Files to Modify:**

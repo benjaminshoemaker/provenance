@@ -3,7 +3,7 @@ import { badges } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600; // Revalidate every hour; on-demand revalidation on takedown
 import { StatsSummary } from "@/components/verify/StatsSummary";
 import { AuditTimeline } from "@/components/verify/AuditTimeline";
 import { ScopeStatement } from "@/components/verify/ScopeStatement";
