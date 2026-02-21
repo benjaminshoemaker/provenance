@@ -43,15 +43,27 @@ export function InlineAI({
 }: InlineAIProps) {
   const [promptText, setPromptText] = useState("");
   const [lastPrompt, setLastPrompt] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const { completion, complete, isLoading, setCompletion, stop } =
     useCompletion({
       api: "/api/ai/complete",
+      onError: (err) => {
+        const message = err.message || "AI request failed";
+        if (message.includes("429") || message.includes("rate limit")) {
+          setError("Rate limit exceeded. Please wait a moment and retry.");
+        } else if (message.includes("502") || message.includes("503")) {
+          setError("AI provider is temporarily unavailable. Please retry.");
+        } else {
+          setError(message);
+        }
+      },
     });
 
   const handleSubmit = useCallback(
     async (prompt: string) => {
       setLastPrompt(prompt);
+      setError(null);
       await complete(prompt, {
         body: {
           mode: "inline",
@@ -165,6 +177,18 @@ export function InlineAI({
 
       {isLoading && !completion && (
         <div className="text-sm text-muted-foreground">Generating...</div>
+      )}
+
+      {error && !isLoading && (
+        <div className="mt-2 rounded-md bg-destructive/10 p-2 text-sm text-destructive">
+          <p>{error}</p>
+          <button
+            onClick={() => lastPrompt && handleSubmit(lastPrompt)}
+            className="mt-1 font-medium underline hover:no-underline"
+          >
+            Retry
+          </button>
+        </div>
       )}
 
       {completion && (

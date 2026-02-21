@@ -2,15 +2,16 @@
 
 interface SaveIndicatorProps {
   status: "idle" | "saving" | "saved" | "error";
+  onRetry?: () => void;
 }
 
-export function SaveIndicator({ status }: SaveIndicatorProps) {
+export function SaveIndicator({ status, onRetry }: SaveIndicatorProps) {
   if (status === "idle") return null;
 
   const labels = {
     saving: "Saving...",
     saved: "Saved",
-    error: "Error saving",
+    error: "Save failed",
   };
 
   const colors = {
@@ -22,6 +23,14 @@ export function SaveIndicator({ status }: SaveIndicatorProps) {
   return (
     <span className={`text-sm ${colors[status]}`}>
       {labels[status]}
+      {status === "error" && onRetry && (
+        <button
+          onClick={onRetry}
+          className="ml-1 font-medium underline hover:no-underline"
+        >
+          retry
+        </button>
+      )}
     </span>
   );
 }

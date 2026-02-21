@@ -1175,15 +1175,15 @@ Add robust error handling for AI failures (provider errors, rate limits, timeout
 **Requirement:** REQ-052
 
 **Acceptance Criteria:**
-- [ ] (CODE) AI failure shows user-friendly error message with retry option
+- [x] (CODE) AI failure shows user-friendly error message with retry option
   - Verify: `grep -q 'error\|Error\|retry' src/components/editor/InlineAI.tsx`
-- [ ] (CODE) Global error boundary at app level
+- [x] (CODE) Global error boundary at app level
   - Verify: `test -f src/app/error.tsx`
-- [ ] (CODE) Custom 404 page
+- [x] (CODE) Custom 404 page
   - Verify: `test -f src/app/not-found.tsx`
-- [ ] (CODE) Save failure indicator with retry in editor
+- [x] (CODE) Save failure indicator with retry in editor
   - Verify: `grep -q 'error\|retry\|failed' src/components/editor/SaveIndicator.tsx`
-- [ ] (TEST) AI endpoint returns appropriate error codes (429, 502)
+- [x] (TEST) AI endpoint returns appropriate error codes (429, 502)
   - Verify: `npx vitest run src/app/api/ai/complete/route.test.ts`
 
 **Files to Create:**
