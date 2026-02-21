@@ -151,7 +151,6 @@ describe("endSession", () => {
 
     mocks.mockUpdate.mockReturnValue({ set: mocks.mockSet });
     mocks.mockSet.mockReturnValue({ where: mocks.mockWhere });
-    mocks.mockWhere.mockResolvedValue(undefined);
   });
 
   it("should set ended_at timestamp", async () => {

@@ -19,7 +19,7 @@ export function useSession({
   activityTimeoutMs = 60000,
 }: UseSessionOptions) {
   const sessionIdRef = useRef<string | null>(null);
-  const lastActivity = useRef<number>(Date.now());
+  const lastActivity = useRef<number>(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const markActive = useCallback(() => {
@@ -28,6 +28,7 @@ export function useSession({
 
   useEffect(() => {
     let mounted = true;
+    lastActivity.current = Date.now();
 
     async function init() {
       try {

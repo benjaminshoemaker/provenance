@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback, useState } from "react";
+import { useRef, useCallback, useState, useEffect } from "react";
 import { updateDocument } from "@/app/actions/documents";
 
 type SaveStatus = "idle" | "saving" | "saved" | "error";
@@ -36,31 +36,20 @@ export function useAutoSave({
   const [status, setStatus] = useState<SaveStatus>("idle");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const titleRef = useRef(title);
-  titleRef.current = title;
+  const documentIdRef = useRef(documentId);
+  const maxRetriesRef = useRef(maxRetries);
 
-  const performSave = useCallback(
-    async (content: Record<string, unknown>, retriesLeft: number) => {
-      setStatus("saving");
-      try {
-        await updateDocument(documentId, {
-          title: titleRef.current,
-          content,
-          wordCount: countWords(content),
-        });
-        setStatus("saved");
-      } catch {
-        if (retriesLeft > 0) {
-          const delay = Math.pow(2, maxRetries - retriesLeft) * 1000;
-          setTimeout(() => {
-            performSave(content, retriesLeft - 1);
-          }, delay);
-        } else {
-          setStatus("error");
-        }
-      }
-    },
-    [documentId, maxRetries]
-  );
+  useEffect(() => {
+    titleRef.current = title;
+  }, [title]);
+
+  useEffect(() => {
+    documentIdRef.current = documentId;
+  }, [documentId]);
+
+  useEffect(() => {
+    maxRetriesRef.current = maxRetries;
+  }, [maxRetries]);
 
   const save = useCallback(
     (content: Record<string, unknown>) => {
@@ -69,10 +58,31 @@ export function useAutoSave({
       }
 
       timerRef.current = setTimeout(() => {
-        performSave(content, maxRetries);
+        const attemptSave = async (retriesLeft: number) => {
+          setStatus("saving");
+          try {
+            await updateDocument(documentIdRef.current, {
+              title: titleRef.current,
+              content,
+              wordCount: countWords(content),
+            });
+            setStatus("saved");
+          } catch {
+            if (retriesLeft > 0) {
+              const delay = Math.pow(2, maxRetriesRef.current - retriesLeft) * 1000;
+              setTimeout(() => {
+                attemptSave(retriesLeft - 1);
+              }, delay);
+            } else {
+              setStatus("error");
+            }
+          }
+        };
+
+        attemptSave(maxRetriesRef.current);
       }, debounceMs);
     },
-    [performSave, debounceMs, maxRetries]
+    [debounceMs]
   );
 
   return { save, status };
