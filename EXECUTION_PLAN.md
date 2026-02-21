@@ -181,19 +181,19 @@ Implement OAuth authentication with Google and GitHub using Auth.js v5. Use the 
 **Requirement:** REQ-004, REQ-005, REQ-006
 
 **Acceptance Criteria:**
-- [ ] (CODE) Auth.js Edge-safe config with Google and GitHub providers
+- [x] (CODE) Auth.js Edge-safe config with Google and GitHub providers
   - Verify: `grep -q 'Google\|GitHub' src/auth.config.ts`
-- [ ] (CODE) Full Auth.js config with DrizzleAdapter and JWT session strategy
+- [x] (CODE) Full Auth.js config with DrizzleAdapter and JWT session strategy
   - Verify: `grep -q 'DrizzleAdapter' src/auth.ts && grep -q 'jwt' src/auth.ts`
-- [ ] (CODE) Catch-all Auth.js route handler
+- [x] (CODE) Catch-all Auth.js route handler
   - Verify: `test -f src/app/api/auth/\\[...nextauth\\]/route.ts`
-- [ ] (CODE) Login page with Google and GitHub OAuth buttons using server-action signIn()
+- [x] (CODE) Login page with Google and GitHub OAuth buttons using server-action signIn()
   - Verify: `grep -q 'signIn' src/app/login/page.tsx && grep -q 'Google\|GitHub' src/app/login/page.tsx`
-- [ ] (CODE) Middleware imports from auth.config.ts (Edge-safe), protects /dashboard and /editor/* routes
+- [x] (CODE) Middleware imports from auth.config.ts (Edge-safe), protects /dashboard and /editor/* routes
   - Verify: `test -f src/middleware.ts && grep -q 'auth.config\|authConfig' src/middleware.ts && grep -q 'dashboard\|editor' src/middleware.ts`
-- [ ] (TEST) Unauthenticated requests to protected routes are redirected to /login
+- [x] (TEST) Unauthenticated requests to protected routes are redirected to /login
   - Verify: `npx vitest run src/middleware.test.ts`
-- [ ] (CODE) Shared auth helpers: requireAuth() and requireDocumentOwner()
+- [x] (CODE) Shared auth helpers: requireAuth() and requireDocumentOwner()
   - Verify: `grep -q 'requireAuth' src/lib/auth/authorize.ts && grep -q 'requireDocumentOwner' src/lib/auth/authorize.ts`
 
 **Files to Create:**
