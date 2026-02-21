@@ -1071,15 +1071,15 @@ Display badges on the dashboard (badge count per document) and on the document e
 ### Phase 5 Checkpoint
 
 **Automated Checks:**
-- [ ] All tests pass: `npx vitest run`
-- [ ] Type checking passes: `npx tsc --noEmit`
-- [ ] Build succeeds: `npm run build`
+- [x] All tests pass: `npx vitest run`
+- [x] Type checking passes: `npx tsc --noEmit`
+- [x] Build succeeds: `npm run build`
 
 **Regression Verification:**
-- [ ] Editor still works with all AI modes
-- [ ] Origin tracking still applies marks correctly
-- [ ] Auto-save still works with origin marks
-- [ ] Session tracking still works
+- [x] Editor still works with all AI modes
+- [x] Origin tracking still applies marks correctly
+- [x] Auto-save still works with origin marks
+- [x] Session tracking still works
 
 ---
 
