@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { documents } from "@/lib/db/schema";
 import { requireAuth, requireDocumentOwner } from "@/lib/auth/authorize";
 import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 export async function createDocument() {
   const user = await requireAuth();
@@ -42,4 +43,6 @@ export async function deleteDocument(documentId: string) {
     .update(documents)
     .set({ deletedAt: new Date() })
     .where(eq(documents.id, documentId));
+
+  revalidatePath("/dashboard");
 }

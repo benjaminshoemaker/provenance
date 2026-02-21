@@ -61,6 +61,11 @@ vi.mock("drizzle-orm", () => ({
   eq: vi.fn((_col, val) => ({ _eq: val })),
 }));
 
+const mockRevalidatePath = vi.fn();
+vi.mock("next/cache", () => ({
+  revalidatePath: (...args: unknown[]) => mockRevalidatePath(...args),
+}));
+
 import { createDocument, updateDocument, deleteDocument } from "./documents";
 
 describe("createDocument", () => {
@@ -164,5 +169,11 @@ describe("deleteDocument", () => {
         deletedAt: expect.any(Date),
       })
     );
+  });
+
+  it("should revalidate dashboard path after deletion", async () => {
+    await deleteDocument("doc-1");
+
+    expect(mockRevalidatePath).toHaveBeenCalledWith("/dashboard");
   });
 });
