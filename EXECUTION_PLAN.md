@@ -405,15 +405,15 @@ Implement writing session tracking with start/end/heartbeat lifecycle using the 
 **Requirement:** REQ-019
 
 **Acceptance Criteria:**
-- [ ] (TEST) startSession() creates a writing_sessions record
+- [x] (TEST) startSession() creates a writing_sessions record
   - Verify: `npx vitest run src/app/actions/sessions.test.ts`
-- [ ] (TEST) heartbeat() updates last_heartbeat and increments active_seconds
+- [x] (TEST) heartbeat() updates last_heartbeat and increments active_seconds
   - Verify: `npx vitest run src/app/actions/sessions.test.ts`
-- [ ] (TEST) endSession() sets ended_at timestamp
+- [x] (TEST) endSession() sets ended_at timestamp
   - Verify: `npx vitest run src/app/actions/sessions.test.ts`
-- [ ] (CODE) useSession hook starts session on mount, heartbeats every 30s, ends on unmount
+- [x] (CODE) useSession hook starts session on mount, heartbeats every 30s, ends on unmount
   - Verify: `grep -q 'setInterval\|heartbeat' src/hooks/useSession.ts`
-- [ ] (CODE) Activity detection based on recent input within 60 seconds
+- [x] (CODE) Activity detection based on recent input within 60 seconds
   - Verify: `grep -q 'lastActivity\|active' src/hooks/useSession.ts`
 
 **Files to Create:**

@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import { Editor } from "@/components/editor/Editor";
 import { useAutoSave } from "@/hooks/useAutoSave";
+import { useSession } from "@/hooks/useSession";
 import { SaveIndicator } from "@/components/editor/SaveIndicator";
 
 interface EditorShellProps {
@@ -18,12 +19,14 @@ export function EditorShell({
 }: EditorShellProps) {
   const [title, setTitle] = useState(initialTitle);
   const { save, status } = useAutoSave({ documentId, title });
+  const { markActive } = useSession({ documentId });
 
   const handleUpdate = useCallback(
     (json: Record<string, unknown>) => {
+      markActive();
       save(json);
     },
-    [save]
+    [save, markActive]
   );
 
   return (
