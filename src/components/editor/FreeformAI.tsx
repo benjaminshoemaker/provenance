@@ -8,14 +8,18 @@ import { logAIInteraction } from "@/app/actions/ai-interactions";
 interface FreeformAIProps {
   documentId: string;
   provider: string;
-  documentContent: Record<string, unknown>;
+  model?: string;
+  getDocumentContent: () => Record<string, unknown>;
+  onAIResponse?: (responseText: string) => void;
   onClose: () => void;
 }
 
 export function FreeformAI({
   documentId,
   provider,
-  documentContent,
+  model,
+  getDocumentContent,
+  onAIResponse,
   onClose,
 }: FreeformAIProps) {
   const [promptText, setPromptText] = useState("");
@@ -42,16 +46,17 @@ export function FreeformAI({
       e.preventDefault();
       if (!promptText.trim() || isLoading) return;
 
-      const context = JSON.stringify(documentContent);
+      const context = JSON.stringify(getDocumentContent());
       await complete(promptText, {
         body: {
           mode: "freeform",
           provider,
+          model,
           context,
         },
       });
     },
-    [promptText, isLoading, complete, provider, documentContent]
+    [promptText, isLoading, complete, provider, model, getDocumentContent]
   );
 
   const handleCopy = useCallback(async () => {
@@ -65,17 +70,40 @@ export function FreeformAI({
       response: completion,
       action: "accepted",
       provider,
-      model: "",
+      model: model ?? "",
     });
 
+    onAIResponse?.(completion);
+
     setCompletion("");
     onClose();
-  }, [completion, documentId, promptText, provider, setCompletion, onClose]);
+  }, [
+    completion,
+    documentId,
+    promptText,
+    provider,
+    model,
+    setCompletion,
+    onAIResponse,
+    onClose,
+  ]);
 
   const handleDismiss = useCallback(() => {
+    if (completion) {
+      void logAIInteraction({
+        documentId,
+        mode: "freeform",
+        prompt: promptText,
+        response: completion,
+        action: "dismissed",
+        provider,
+        model: model ?? "",
+      });
+    }
+
     setCompletion("");
     onClose();
-  }, [setCompletion, onClose]);
+  }, [completion, documentId, promptText, provider, model, setCompletion, onClose]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 pt-[20vh]">

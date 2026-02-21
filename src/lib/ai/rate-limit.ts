@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { aiInteractions, documents } from "@/lib/db/schema";
+import { aiRequestLog } from "@/lib/db/schema";
 import { eq, gte, and, sql } from "drizzle-orm";
 
 const RATE_LIMIT = 20;
@@ -10,16 +10,19 @@ export async function checkRateLimit(
 ): Promise<{ allowed: boolean }> {
   const windowStart = new Date(Date.now() - WINDOW_MS);
 
+  // Log this request
+  await db.insert(aiRequestLog).values({ userId });
+
+  // Count requests in the window
   const result = await db
     .select({ count: sql<number>`count(*)::int` })
-    .from(aiInteractions)
-    .innerJoin(documents, eq(aiInteractions.documentId, documents.id))
+    .from(aiRequestLog)
     .where(
       and(
-        eq(documents.userId, userId),
-        gte(aiInteractions.createdAt, windowStart)
+        eq(aiRequestLog.userId, userId),
+        gte(aiRequestLog.createdAt, windowStart)
       )
     );
 
-  return { allowed: (result[0]?.count ?? 0) < RATE_LIMIT };
+  return { allowed: (result[0]?.count ?? 0) <= RATE_LIMIT };
 }

@@ -5,7 +5,8 @@ import { nanoid } from "nanoid";
 export interface PasteHandlerOptions {
   documentId: string;
   onExternalPaste?: (content: string, characterCount: number) => void;
-  recentAIResponses: string[];
+  recentAIResponses?: string[];
+  maxRecentAIResponses?: number;
 }
 
 export function classifyPaste(
@@ -17,6 +18,15 @@ export function classifyPaste(
     : "external";
 }
 
+declare module "@tiptap/core" {
+  interface Commands<ReturnType> {
+    pasteHandler: {
+      addRecentAIResponse: (text: string) => ReturnType;
+      clearRecentAIResponses: () => ReturnType;
+    };
+  }
+}
+
 export const PasteHandler = Extension.create<PasteHandlerOptions>({
   name: "pasteHandler",
 
@@ -25,11 +35,54 @@ export const PasteHandler = Extension.create<PasteHandlerOptions>({
       documentId: "",
       onExternalPaste: undefined,
       recentAIResponses: [],
+      maxRecentAIResponses: 10,
+    };
+  },
+
+  addStorage() {
+    return {
+      recentAIResponses: [] as string[],
+    };
+  },
+
+  onCreate() {
+    const initial = this.options.recentAIResponses ?? [];
+    const max = this.options.maxRecentAIResponses ?? 10;
+
+    if (initial.length > 0) {
+      this.storage.recentAIResponses = [...initial].slice(0, max);
+    }
+  },
+
+  addCommands() {
+    return {
+      addRecentAIResponse:
+        (text: string) =>
+        () => {
+          const trimmed = text.trim();
+          if (!trimmed) return false;
+
+          const max = this.options.maxRecentAIResponses ?? 10;
+          const next = [
+            trimmed,
+            ...this.storage.recentAIResponses.filter((r: string) => r !== trimmed),
+          ];
+          this.storage.recentAIResponses = next.slice(0, max);
+          return true;
+        },
+
+      clearRecentAIResponses:
+        () =>
+        () => {
+          this.storage.recentAIResponses = [];
+          return true;
+        },
     };
   },
 
   addProseMirrorPlugins() {
-    const { onExternalPaste, recentAIResponses } = this.options;
+    const { onExternalPaste } = this.options;
+    const storage = this.storage;
 
     return [
       new Plugin({
@@ -42,7 +95,7 @@ export const PasteHandler = Extension.create<PasteHandlerOptions>({
 
             const classification = classifyPaste(
               clipboardText,
-              recentAIResponses
+              storage.recentAIResponses
             );
 
             if (classification === "ai_internal") {

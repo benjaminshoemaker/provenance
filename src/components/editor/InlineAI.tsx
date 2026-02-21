@@ -26,20 +26,24 @@ interface InlineAIProps {
   editor: Editor;
   documentId: string;
   provider: string;
+  model?: string;
   selectedText: string;
   selectionFrom: number;
   selectionTo: number;
   onDismiss: () => void;
+  onAIResponse?: (responseText: string) => void;
 }
 
 export function InlineAI({
   editor,
   documentId,
   provider,
+  model,
   selectedText,
   selectionFrom,
   selectionTo,
   onDismiss,
+  onAIResponse,
 }: InlineAIProps) {
   const [promptText, setPromptText] = useState("");
   const [lastPrompt, setLastPrompt] = useState("");
@@ -68,11 +72,12 @@ export function InlineAI({
         body: {
           mode: "inline",
           provider,
+          model,
           selectedText,
         },
       });
     },
-    [complete, provider, selectedText]
+    [complete, provider, model, selectedText]
   );
 
   const handleAccept = useCallback(async () => {
@@ -94,6 +99,7 @@ export function InlineAI({
                 type: "ai",
                 sourceId,
                 originalLength: completion.length,
+                originalText: completion,
               },
             },
           ],
@@ -109,10 +115,11 @@ export function InlineAI({
       response: completion,
       action: "accepted",
       provider,
-      model: "",
+      model: model ?? "",
       charactersInserted: completion.length,
     });
 
+    onAIResponse?.(completion);
     setCompletion("");
     onDismiss();
   }, [
@@ -124,6 +131,8 @@ export function InlineAI({
     lastPrompt,
     selectedText,
     provider,
+    model,
+    onAIResponse,
     setCompletion,
     onDismiss,
   ]);
@@ -131,9 +140,24 @@ export function InlineAI({
   // reject and dismiss the suggestion
   const handleReject = useCallback(() => {
     if (isLoading) stop();
+
+    if (completion) {
+      void logAIInteraction({
+        documentId,
+        mode: "inline",
+        prompt: lastPrompt,
+        selectedText,
+        response: completion,
+        action: "rejected",
+        provider,
+        model: model ?? "",
+        charactersInserted: 0,
+      });
+    }
+
     setCompletion("");
     onDismiss();
-  }, [isLoading, stop, setCompletion, onDismiss]);
+  }, [isLoading, stop, completion, documentId, lastPrompt, selectedText, provider, model, setCompletion, onDismiss]);
 
   return (
     // floating selection toolbar

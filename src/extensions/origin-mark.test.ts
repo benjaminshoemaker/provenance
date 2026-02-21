@@ -55,6 +55,7 @@ describe("OriginMark", () => {
           type: "ai",
           sourceId: "interaction-123",
           originalLength: 17,
+          originalText: null,
         },
       },
     ]);

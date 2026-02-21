@@ -60,6 +60,7 @@ describe("InlineAI", () => {
         editor={editor as never}
         documentId="doc-1"
         provider="anthropic"
+        model="claude-sonnet-4-5-20250514"
         selectedText="some selected text"
         selectionFrom={10}
         selectionTo={28}
@@ -79,6 +80,7 @@ describe("InlineAI", () => {
         editor={editor as never}
         documentId="doc-1"
         provider="anthropic"
+        model="claude-sonnet-4-5-20250514"
         selectedText="messy text"
         selectionFrom={0}
         selectionTo={10}
@@ -92,14 +94,15 @@ describe("InlineAI", () => {
 
     expect(mocks.mockComplete).toHaveBeenCalledWith(
       expect.stringContaining("Improve"),
-      expect.objectContaining({
-        body: expect.objectContaining({
-          mode: "inline",
-          provider: "anthropic",
-          selectedText: "messy text",
-        }),
-      })
-    );
+        expect.objectContaining({
+          body: expect.objectContaining({
+            mode: "inline",
+            provider: "anthropic",
+            model: "claude-sonnet-4-5-20250514",
+            selectedText: "messy text",
+          }),
+        })
+      );
   });
 
   it("should show accept and reject buttons when completion exists", () => {
@@ -111,6 +114,7 @@ describe("InlineAI", () => {
         editor={editor as never}
         documentId="doc-1"
         provider="anthropic"
+        model="claude-sonnet-4-5-20250514"
         selectedText="original"
         selectionFrom={5}
         selectionTo={13}
@@ -135,6 +139,7 @@ describe("InlineAI", () => {
         editor={editor as never}
         documentId="doc-1"
         provider="anthropic"
+        model="claude-sonnet-4-5-20250514"
         selectedText="original text"
         selectionFrom={10}
         selectionTo={23}
@@ -162,6 +167,7 @@ describe("InlineAI", () => {
                 type: "ai",
                 sourceId: "mock-nanoid-123",
                 originalLength: 16,
+                originalText: "improved AI text",
               },
             },
           ],
@@ -178,6 +184,7 @@ describe("InlineAI", () => {
         response: "improved AI text",
         action: "accepted",
         provider: "anthropic",
+        model: "claude-sonnet-4-5-20250514",
       })
     );
   });
@@ -192,6 +199,7 @@ describe("InlineAI", () => {
         editor={editor as never}
         documentId="doc-1"
         provider="anthropic"
+        model="claude-sonnet-4-5-20250514"
         selectedText="text"
         selectionFrom={0}
         selectionTo={4}

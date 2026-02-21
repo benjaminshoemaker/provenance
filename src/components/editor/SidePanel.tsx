@@ -8,31 +8,28 @@ import { logAIInteraction } from "@/app/actions/ai-interactions";
 interface SidePanelProps {
   documentId: string;
   provider: string;
-  documentContent: Record<string, unknown>;
+  model?: string;
+  getDocumentContent: () => Record<string, unknown>;
   defaultOpen?: boolean;
+  onAIResponse?: (responseText: string) => void;
 }
 
 export function SidePanel({
   documentId,
   provider,
-  documentContent,
+  model,
+  getDocumentContent,
   defaultOpen = false,
+  onAIResponse,
 }: SidePanelProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  // Full document content sent as context with each chat message
-  const contextPayload = JSON.stringify(documentContent);
+  const lastPromptRef = useRef("");
 
   const { messages, sendMessage, status, stop } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/ai/complete",
-      body: {
-        mode: "side_panel",
-        provider,
-        context: contextPayload,
-      },
     }),
     onFinish: ({ message }) => {
       const responseText = message.parts
@@ -40,15 +37,20 @@ export function SidePanel({
         .map((p) => p.text)
         .join("");
 
-      logAIInteraction({
+      const prompt = lastPromptRef.current;
+      lastPromptRef.current = "";
+
+      void logAIInteraction({
         documentId,
         mode: "side_panel",
-        prompt: "",
+        prompt,
         response: responseText,
-        action: "accepted",
+        action: "received",
         provider,
-        model: "",
+        model: model ?? "",
       });
+
+      onAIResponse?.(responseText);
     },
   });
 
@@ -61,10 +63,23 @@ export function SidePanel({
       e.preventDefault();
       if (!inputValue.trim() || status !== "ready") return;
 
-      sendMessage({ text: inputValue });
+      const prompt = inputValue;
+      lastPromptRef.current = prompt;
+
+      sendMessage(
+        { text: prompt },
+        {
+          body: {
+            mode: "side_panel",
+            provider,
+            model,
+            context: JSON.stringify(getDocumentContent()),
+          },
+        }
+      );
       setInputValue("");
     },
-    [inputValue, status, sendMessage]
+    [inputValue, status, sendMessage, provider, model, getDocumentContent]
   );
 
   // panel sidebar with toggle

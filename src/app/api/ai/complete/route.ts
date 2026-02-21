@@ -51,6 +51,15 @@ export async function POST(req: Request) {
     return Response.json({ error: "Invalid provider" }, { status: 400 });
   }
 
+  // Validate model against allowlist if specified
+  if (model) {
+    const { providers } = await import("@/lib/ai/providers");
+    const providerConfig = providers[provider];
+    if (providerConfig && !providerConfig.models.some((m) => m.id === model)) {
+      return Response.json({ error: "Invalid model for provider" }, { status: 400 });
+    }
+  }
+
   // Rate limit check (database-backed, serverless-safe)
   const { allowed } = await checkRateLimit(session.user.id);
   if (!allowed) {

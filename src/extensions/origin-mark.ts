@@ -8,6 +8,7 @@ export const OriginMark = Mark.create({
       type: { default: "human" },
       sourceId: { default: null },
       originalLength: { default: null },
+      originalText: { default: null },
     };
   },
 

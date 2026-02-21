@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
@@ -21,6 +21,7 @@ interface EditorProps {
   documentId: string;
   title: string;
   provider?: string;
+  model?: string;
   onUpdate?: (json: Record<string, unknown>) => void;
 }
 
@@ -35,11 +36,14 @@ export function Editor({
   documentId,
   onUpdate,
   provider = "anthropic",
+  model,
 }: EditorProps) {
   const [selection, setSelection] = useState<TextSelection | null>(null);
   const [showFreeform, setShowFreeform] = useState(false);
-  const [recentAIResponses] = useState<string[]>(() => []);
-  const { updateContent } = useRevisions({ documentId });
+  const { updateContent, createAIRevision } = useRevisions({ documentId });
+  const contentRef = useRef<Record<string, unknown>>(content);
+
+  const getDocumentContent = useCallback(() => contentRef.current, []);
 
   const handleExternalPaste = useCallback(
     (pastedContent: string, characterCount: number) => {
@@ -72,13 +76,13 @@ export function Editor({
       PasteHandler.configure({
         documentId,
         onExternalPaste: handleExternalPaste,
-        recentAIResponses,
       }),
     ],
     content,
     immediatelyRender: false,
     onUpdate: ({ editor }) => {
       const json = editor.getJSON();
+      contentRef.current = json;
       onUpdate?.(json);
       updateContent(json);
     },
@@ -118,6 +122,16 @@ export function Editor({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  const handleAIResponse = useCallback(
+    (responseText: string) => {
+      if (!editor) return;
+      if (!responseText.trim()) return;
+      editor.commands.addRecentAIResponse?.(responseText);
+      void createAIRevision();
+    },
+    [editor, createAIRevision]
+  );
+
   return (
     <div className="flex gap-4">
       <div className="relative flex-1 rounded-lg border">
@@ -141,10 +155,12 @@ export function Editor({
             editor={editor}
             documentId={documentId}
             provider={provider}
+            model={model}
             selectedText={selection.text}
             selectionFrom={selection.from}
             selectionTo={selection.to}
             onDismiss={handleDismissInlineAI}
+            onAIResponse={handleAIResponse}
           />
         )}
       </div>
@@ -152,7 +168,9 @@ export function Editor({
         <SidePanel
           documentId={documentId}
           provider={provider}
-          documentContent={content}
+          model={model}
+          getDocumentContent={getDocumentContent}
+          onAIResponse={handleAIResponse}
         />
         <BadgeList documentId={documentId} />
       </div>
@@ -160,7 +178,9 @@ export function Editor({
         <FreeformAI
           documentId={documentId}
           provider={provider}
-          documentContent={content}
+          model={model}
+          getDocumentContent={getDocumentContent}
+          onAIResponse={handleAIResponse}
           onClose={() => setShowFreeform(false)}
         />
       )}

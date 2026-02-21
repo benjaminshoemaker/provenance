@@ -162,6 +162,14 @@ export const badges = pgTable("badges", {
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
+export const aiRequestLog = pgTable("ai_request_log", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+});
+
 // ─── Relations ──────────────────────────────────────────────────────────────
 
 export const usersRelations = relations(users, ({ many }) => ({

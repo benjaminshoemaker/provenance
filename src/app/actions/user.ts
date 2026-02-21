@@ -4,12 +4,23 @@ import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { requireAuth } from "@/lib/auth/authorize";
 import { eq } from "drizzle-orm";
+import { providers } from "@/lib/ai/providers";
+
+function validateProviderModel(providerId: string, modelId: string): boolean {
+  const provider = providers[providerId];
+  if (!provider) return false;
+  return provider.models.some((m) => m.id === modelId);
+}
 
 export async function updateUserPreferences(data: {
   aiProvider: string;
   aiModel: string;
 }) {
   const user = await requireAuth();
+
+  if (!validateProviderModel(data.aiProvider, data.aiModel)) {
+    throw new Error("Invalid provider/model combination");
+  }
 
   const [updated] = await db
     .update(users)
