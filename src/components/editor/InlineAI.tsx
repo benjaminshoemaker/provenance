@@ -55,7 +55,7 @@ export function InlineAI({
         } else if (message.includes("502") || message.includes("503")) {
           setError("AI provider is temporarily unavailable. Please retry.");
         } else {
-          setError(message);
+          setError("Something went wrong. Please try again.");
         }
       },
     });

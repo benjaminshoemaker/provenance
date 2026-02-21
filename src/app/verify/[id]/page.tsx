@@ -3,7 +3,7 @@ import { badges } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 
-export const revalidate = 3600; // Revalidate every hour; on-demand revalidation on takedown
+export const revalidate = 86400; // 24h cache — badge data is immutable; takedown triggers on-demand revalidation
 import { StatsSummary } from "@/components/verify/StatsSummary";
 import { AuditTimeline } from "@/components/verify/AuditTimeline";
 import { ScopeStatement } from "@/components/verify/ScopeStatement";

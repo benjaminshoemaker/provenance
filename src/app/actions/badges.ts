@@ -137,6 +137,7 @@ export async function takedownBadge(badgeId: string, reason?: string) {
     })
     .where(eq(badges.id, badgeId));
 
-  // Trigger on-demand revalidation for the verification page
+  // Trigger on-demand revalidation for the verification page and badge image
   revalidatePath(`/verify/${badge.verificationId}`);
+  revalidatePath(`/api/badges/${badge.verificationId}/image`);
 }

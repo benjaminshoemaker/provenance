@@ -128,7 +128,7 @@ export function AuditTimeline(props: AuditTimelineProps) {
             }
           >
             <span className="shrink-0">{typeIcons[entry.type]}</span>
-            <span className="min-w-0 truncate font-medium sm:truncate-none">{typeLabels[entry.type]}</span>
+            <span className="min-w-0 truncate font-medium sm:overflow-visible sm:text-clip sm:whitespace-normal">{typeLabels[entry.type]}</span>
             <span className="ml-auto shrink-0 text-xs text-muted-foreground">
               {formatTimestamp(entry.timestamp)}
             </span>

@@ -38,6 +38,7 @@ export function useAutoSave({
   const titleRef = useRef(title);
   const documentIdRef = useRef(documentId);
   const maxRetriesRef = useRef(maxRetries);
+  const lastContentRef = useRef<Record<string, unknown> | null>(null);
 
   useEffect(() => {
     titleRef.current = title;
@@ -53,6 +54,7 @@ export function useAutoSave({
 
   const save = useCallback(
     (content: Record<string, unknown>) => {
+      lastContentRef.current = content;
       if (timerRef.current) {
         clearTimeout(timerRef.current);
       }
@@ -85,5 +87,11 @@ export function useAutoSave({
     [debounceMs]
   );
 
-  return { save, status };
+  const retry = useCallback(() => {
+    if (lastContentRef.current && status === "error") {
+      save(lastContentRef.current);
+    }
+  }, [save, status]);
+
+  return { save, status, retry };
 }

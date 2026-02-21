@@ -18,7 +18,7 @@ export function EditorShell({
   initialContent,
 }: EditorShellProps) {
   const [title, setTitle] = useState(initialTitle);
-  const { save, status } = useAutoSave({ documentId, title });
+  const { save, status, retry } = useAutoSave({ documentId, title });
   const { markActive } = useSession({ documentId });
 
   const handleUpdate = useCallback(
@@ -38,7 +38,7 @@ export function EditorShell({
           className="flex-1 border-b border-transparent bg-transparent text-3xl font-bold outline-none focus:border-border"
           placeholder="Untitled"
         />
-        <SaveIndicator status={status} />
+        <SaveIndicator status={status} onRetry={retry} />
       </div>
 
       <Editor

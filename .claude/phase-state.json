@@ -171,10 +171,10 @@
         "completed_at": null,
         "checkpoint": null,
         "tasks": [
-          { "id": "6.1.A", "status": "PENDING", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
-          { "id": "6.1.B", "status": "PENDING", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
-          { "id": "6.2.A", "status": "PENDING", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
-          { "id": "6.2.B", "status": "PENDING", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } }
+          { "id": "6.1.A", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "6.1.B", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "6.2.A", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "6.2.B", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } }
         ]
       }
     ]
