@@ -297,12 +297,12 @@ Create the document editor page shell at `/editor/[id]`. Fetch and display docum
 ### Phase 1 Checkpoint
 
 **Automated Checks:**
-- [ ] All tests pass: `npx vitest run`
-- [ ] Type checking passes: `npx tsc --noEmit`
-- [ ] Build succeeds: `npm run build`
+- [x] All tests pass: `npx vitest run`
+- [x] Type checking passes: `npx tsc --noEmit`
+- [x] Build succeeds: `npm run build`
 
 **Regression Verification:**
-- [ ] N/A (greenfield — no existing functionality)
+- [x] N/A (greenfield — no existing functionality)
 
 ---
 
