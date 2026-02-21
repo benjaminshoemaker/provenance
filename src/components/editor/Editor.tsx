@@ -8,6 +8,7 @@ import Image from "@tiptap/extension-image";
 import { OriginMark } from "@/extensions/origin-mark";
 import { PasteHandler } from "@/extensions/paste-handler";
 import { logPasteEvent } from "@/app/actions/paste-events";
+import { useRevisions } from "@/hooks/useRevisions";
 import { Toolbar } from "./Toolbar";
 import { InlineAI } from "./InlineAI";
 import { SidePanel } from "./SidePanel";
@@ -36,6 +37,7 @@ export function Editor({
   const [selection, setSelection] = useState<TextSelection | null>(null);
   const [showFreeform, setShowFreeform] = useState(false);
   const recentAIResponsesRef = useRef<string[]>([]);
+  const { updateContent } = useRevisions({ documentId });
 
   const handleExternalPaste = useCallback(
     (pastedContent: string, characterCount: number) => {
@@ -74,7 +76,9 @@ export function Editor({
     content,
     immediatelyRender: false,
     onUpdate: ({ editor }) => {
-      onUpdate?.(editor.getJSON());
+      const json = editor.getJSON();
+      onUpdate?.(json);
+      updateContent(json);
     },
   });
 

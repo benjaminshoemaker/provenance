@@ -777,13 +777,13 @@ Implement revision snapshot creation at 30-second intervals during active editin
 **Requirement:** REQ-016
 
 **Acceptance Criteria:**
-- [ ] (TEST) createRevision() snapshots current content with plain text extraction
+- [x] (TEST) createRevision() snapshots current content with plain text extraction
   - Verify: `npx vitest run src/app/actions/revisions.test.ts`
-- [ ] (CODE) Interval-based revision creation every 30 seconds of active editing
+- [x] (CODE) Interval-based revision creation every 30 seconds of active editing
   - Verify: `grep -q '30\|interval' src/hooks/useRevisions.ts`
-- [ ] (CODE) Event-based revision created after AI interaction changes document
+- [x] (CODE) Event-based revision created after AI interaction changes document
   - Verify: `grep -q 'ai_interaction' src/hooks/useRevisions.ts`
-- [ ] (TEST) Plain text extraction from TipTap JSON works correctly
+- [x] (TEST) Plain text extraction from TipTap JSON works correctly
   - Verify: `npx vitest run src/lib/tiptap-utils.test.ts`
 
 **Files to Create:**

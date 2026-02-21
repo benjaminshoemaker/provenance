@@ -70,6 +70,13 @@ vi.mock("@/app/actions/paste-events", () => ({
   logPasteEvent: vi.fn(),
 }));
 
+vi.mock("@/hooks/useRevisions", () => ({
+  useRevisions: vi.fn(() => ({
+    updateContent: vi.fn(),
+    createAIRevision: vi.fn(),
+  })),
+}));
+
 vi.mock("@ai-sdk/react", () => ({
   useCompletion: vi.fn(() => ({
     completion: "",
