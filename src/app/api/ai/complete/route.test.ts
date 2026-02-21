@@ -161,12 +161,12 @@ describe("POST /api/ai/complete", () => {
     });
     await POST(req);
 
-    const callArgs =
-      mocks.mockToUIMessageStreamResponse.mock.calls[0][0];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const callArgs = (mocks.mockToUIMessageStreamResponse.mock.calls as any[][])[0]?.[0] as Record<string, (...args: unknown[]) => unknown> | undefined;
     expect(callArgs).toHaveProperty("messageMetadata");
 
     // Simulate a content-filter finish event
-    const metadata = callArgs.messageMetadata({
+    const metadata = callArgs!.messageMetadata({
       part: { type: "finish", finishReason: "content-filter" },
     });
     expect(metadata).toEqual(
@@ -174,7 +174,7 @@ describe("POST /api/ai/complete", () => {
     );
 
     // Normal finish should not return blocked metadata
-    const normalMetadata = callArgs.messageMetadata({
+    const normalMetadata = callArgs!.messageMetadata({
       part: { type: "finish", finishReason: "stop" },
     });
     expect(normalMetadata).toBeUndefined();
