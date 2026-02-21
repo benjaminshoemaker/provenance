@@ -18,31 +18,31 @@ export function StatsSummary({ stats }: StatsSummaryProps) {
     hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
 
   return (
-    <div className="rounded-lg border bg-card p-6">
+    <div className="rounded-lg border bg-card p-4 sm:p-6">
       <div className="mb-4 text-center">
-        <div className="text-5xl font-bold tabular-nums">
+        <div className="text-4xl font-bold tabular-nums sm:text-5xl">
           {stats.ai_percentage}%
         </div>
         <div className="mt-1 text-sm text-muted-foreground">AI-generated</div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 border-t pt-4 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 border-t pt-4 sm:grid-cols-4 sm:gap-4">
         <div className="text-center">
-          <div className="text-lg font-semibold">{humanPercentage}%</div>
+          <div className="text-base font-semibold sm:text-lg">{humanPercentage}%</div>
           <div className="text-xs text-muted-foreground">Human-written</div>
         </div>
         <div className="text-center">
-          <div className="text-lg font-semibold">
+          <div className="text-base font-semibold sm:text-lg">
             {stats.interaction_count}
           </div>
           <div className="text-xs text-muted-foreground">AI interactions</div>
         </div>
         <div className="text-center">
-          <div className="text-lg font-semibold">{stats.session_count}</div>
+          <div className="text-base font-semibold sm:text-lg">{stats.session_count}</div>
           <div className="text-xs text-muted-foreground">Sessions</div>
         </div>
         <div className="text-center">
-          <div className="text-lg font-semibold">{timeDisplay}</div>
+          <div className="text-base font-semibold sm:text-lg">{timeDisplay}</div>
           <div className="text-xs text-muted-foreground">Total time</div>
         </div>
       </div>

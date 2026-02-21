@@ -122,14 +122,14 @@ export function AuditTimeline(props: AuditTimelineProps) {
       {timeline.map((entry, i) => (
         <div key={i} className="rounded-lg border">
           <button
-            className="flex w-full items-center gap-3 p-3 text-left text-sm hover:bg-muted/50"
+            className="flex w-full items-center gap-2 p-3 text-left text-sm hover:bg-muted/50 sm:gap-3"
             onClick={() =>
               setExpandedIndex(expandedIndex === i ? null : i)
             }
           >
-            <span>{typeIcons[entry.type]}</span>
-            <span className="font-medium">{typeLabels[entry.type]}</span>
-            <span className="ml-auto text-xs text-muted-foreground">
+            <span className="shrink-0">{typeIcons[entry.type]}</span>
+            <span className="min-w-0 truncate font-medium sm:truncate-none">{typeLabels[entry.type]}</span>
+            <span className="ml-auto shrink-0 text-xs text-muted-foreground">
               {formatTimestamp(entry.timestamp)}
             </span>
           </button>
@@ -142,13 +142,13 @@ export function AuditTimeline(props: AuditTimelineProps) {
               </div>
               <div className="mb-2">
                 <span className="font-medium">Prompt:</span>{" "}
-                <span className="text-muted-foreground">
+                <span className="break-words text-muted-foreground">
                   {String(entry.data.prompt)}
                 </span>
               </div>
               <div>
                 <span className="font-medium">Response:</span>{" "}
-                <span className="text-muted-foreground">
+                <span className="break-words text-muted-foreground">
                   {String(entry.data.response)}
                 </span>
               </div>

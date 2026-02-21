@@ -1,6 +1,6 @@
 {
   "main": {
-    "current_phase": 5,
+    "current_phase": 6,
     "phases": [
       {
         "phase": 1,
@@ -162,6 +162,19 @@
           { "id": "5.2.B", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
           { "id": "5.2.C", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
           { "id": "5.3.A", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } }
+        ]
+      },
+      {
+        "phase": 6,
+        "status": "IN_PROGRESS",
+        "started_at": "2026-02-21T02:15:00.000Z",
+        "completed_at": null,
+        "checkpoint": null,
+        "tasks": [
+          { "id": "6.1.A", "status": "PENDING", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "6.1.B", "status": "PENDING", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "6.2.A", "status": "PENDING", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "6.2.B", "status": "PENDING", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } }
         ]
       }
     ]

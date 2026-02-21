@@ -1106,13 +1106,13 @@ Ensure verification pages are fully responsive and optimized for mobile. The ver
 **Requirement:** REQ-003, REQ-031, REQ-051
 
 **Acceptance Criteria:**
-- [ ] (CODE) Mobile-first responsive design with Tailwind breakpoints
+- [x] (CODE) Mobile-first responsive design with Tailwind breakpoints
   - Verify: `grep -q 'sm:\|md:\|lg:' src/app/verify/\[id\]/page.tsx`
-- [ ] (CODE) Audit timeline entries are readable and expandable on mobile
+- [x] (CODE) Audit timeline entries are readable and expandable on mobile
   - Verify: `grep -q 'sm:\|md:' src/components/verify/AuditTimeline.tsx`
-- [ ] (CODE) Stats summary card adapts to mobile layout
+- [x] (CODE) Stats summary card adapts to mobile layout
   - Verify: `grep -q 'sm:\|md:' src/components/verify/StatsSummary.tsx`
-- [ ] (CODE) Long document text has expand/collapse with sensible mobile default
+- [x] (CODE) Long document text has expand/collapse with sensible mobile default
   - Verify: `grep -q 'expand\|collapse\|truncat' src/components/verify/DocumentText.tsx`
 
 **Files to Create:** None

@@ -80,18 +80,18 @@ export default async function VerifyPage({
   const auditTrail = badge.auditTrail as AuditTrail;
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8">
-      <header className="mb-8 text-center">
+    <div className="mx-auto max-w-3xl px-4 py-6 sm:py-8">
+      <header className="mb-6 text-center sm:mb-8">
         <div className="mb-2 text-sm font-medium text-primary">
           ◆ Provenance
         </div>
-        <h1 className="text-2xl font-bold">Verified Writing Process</h1>
+        <h1 className="text-xl font-bold sm:text-2xl">Verified Writing Process</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           {badge.documentTitle}
         </p>
       </header>
 
-      <section className="mb-8">
+      <section className="mb-6 sm:mb-8">
         <StatsSummary
           stats={{
             ai_percentage: stats.ai_percentage ?? stats.aiPercentage ?? 0,
@@ -104,12 +104,12 @@ export default async function VerifyPage({
         />
       </section>
 
-      <section className="mb-8">
+      <section className="mb-6 sm:mb-8">
         {/* Scope certification and methodology */}
         <ScopeStatement />
       </section>
 
-      <section className="mb-8">
+      <section className="mb-6 sm:mb-8">
         <h2 className="mb-3 text-lg font-semibold">Document</h2>
         <DocumentText
           title={badge.documentTitle}
@@ -117,7 +117,7 @@ export default async function VerifyPage({
         />
       </section>
 
-      <section className="mb-8">
+      <section className="mb-6 sm:mb-8">
         <h2 className="mb-3 text-lg font-semibold">Audit Timeline</h2>
         <AuditTimeline
           interactions={auditTrail.ai_interactions ?? []}
