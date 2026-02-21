@@ -555,15 +555,15 @@ Implement the side panel chat interface for research, brainstorming, and freefor
 **Requirement:** REQ-013
 
 **Acceptance Criteria:**
-- [ ] (CODE) Side panel component with toggle button
+- [x] (CODE) Side panel component with toggle button
   - Verify: `grep -q 'panel\|sidebar' src/components/editor/SidePanel.tsx`
-- [ ] (CODE) Chat-style message list with user/AI message bubbles
+- [x] (CODE) Chat-style message list with user/AI message bubbles
   - Verify: `grep -q 'message\|chat' src/components/editor/SidePanel.tsx`
-- [ ] (CODE) Message input with send button, streams AI response via `@ai-sdk/react` hooks
+- [x] (CODE) Message input with send button, streams AI response via `@ai-sdk/react` hooks
   - Verify: `grep -q 'useChat\|@ai-sdk/react' src/components/editor/SidePanel.tsx`
-- [ ] (TEST) Messages are persisted as ai_interactions with mode 'side_panel'
+- [x] (TEST) Messages are persisted as ai_interactions with mode 'side_panel'
   - Verify: `npx vitest run src/components/editor/SidePanel.test.tsx`
-- [ ] (CODE) Full document content sent as context with each request
+- [x] (CODE) Full document content sent as context with each request
   - Verify: `grep -q 'context\|content' src/components/editor/SidePanel.tsx`
 
 **Files to Create:**

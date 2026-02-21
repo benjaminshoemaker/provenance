@@ -70,6 +70,15 @@ vi.mock("@ai-sdk/react", () => ({
     handleInputChange: vi.fn(),
     handleSubmit: vi.fn(),
   })),
+  useChat: vi.fn(() => ({
+    messages: [],
+    sendMessage: vi.fn(),
+    status: "ready",
+    stop: vi.fn(),
+    setMessages: vi.fn(),
+    error: null,
+  })),
+  DefaultChatTransport: vi.fn().mockImplementation(function (this: Record<string, unknown>, opts: Record<string, unknown>) { Object.assign(this, opts); }),
 }));
 
 vi.mock("@/app/actions/ai-interactions", () => ({

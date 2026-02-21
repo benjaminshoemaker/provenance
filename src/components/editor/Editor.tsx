@@ -7,6 +7,7 @@ import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import { Toolbar } from "./Toolbar";
 import { InlineAI } from "./InlineAI";
+import { SidePanel } from "./SidePanel";
 
 interface EditorProps {
   content: Record<string, unknown>;
@@ -77,23 +78,30 @@ export function Editor({
   }, []);
 
   return (
-    <div className="relative rounded-lg border">
-      <Toolbar editor={editor} />
-      <EditorContent
-        editor={editor}
-        className="prose prose-neutral dark:prose-invert max-w-none p-4 focus-within:outline-none [&_.tiptap]:min-h-[60vh] [&_.tiptap]:outline-none"
-      />
-      {selection && editor && (
-        <InlineAI
+    <div className="flex gap-4">
+      <div className="relative flex-1 rounded-lg border">
+        <Toolbar editor={editor} />
+        <EditorContent
           editor={editor}
-          documentId={documentId}
-          provider={provider}
-          selectedText={selection.text}
-          selectionFrom={selection.from}
-          selectionTo={selection.to}
-          onDismiss={handleDismissInlineAI}
+          className="prose prose-neutral dark:prose-invert max-w-none p-4 focus-within:outline-none [&_.tiptap]:min-h-[60vh] [&_.tiptap]:outline-none"
         />
-      )}
+        {selection && editor && (
+          <InlineAI
+            editor={editor}
+            documentId={documentId}
+            provider={provider}
+            selectedText={selection.text}
+            selectionFrom={selection.from}
+            selectionTo={selection.to}
+            onDismiss={handleDismissInlineAI}
+          />
+        )}
+      </div>
+      <SidePanel
+        documentId={documentId}
+        provider={provider}
+        documentContent={content}
+      />
     </div>
   );
 }
