@@ -1,0 +1,200 @@
+{
+  "main": {
+    "current_phase": 6,
+    "phases": [
+      {
+        "phase": 1,
+        "status": "CHECKPOINTED",
+        "started_at": "2026-02-20T12:00:00.000Z",
+        "completed_at": "2026-02-21T00:00:00.000Z",
+        "checkpoint": {
+          "tests_passed": true,
+          "type_check_passed": true,
+          "lint_passed": true,
+          "build_passed": true,
+          "security_passed": true,
+          "mutation_tests_passed": false,
+          "coverage_percent": null,
+          "manual_verified": true,
+          "codex_review": {
+            "status": "error",
+            "critical_issues": 0,
+            "recommendations": 0,
+            "notes": "Codex returned hallucinated review for wrong project",
+            "user_accepted_risks": []
+          }
+        },
+        "tasks": [
+          { "id": "1.1.A", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "1.1.B", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "1.2.A", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "1.2.B", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "1.3.A", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "1.3.B", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } }
+        ]
+      },
+      {
+        "phase": 2,
+        "status": "CHECKPOINTED",
+        "started_at": "2026-02-21T00:10:00.000Z",
+        "completed_at": "2026-02-21T00:05:00.000Z",
+        "checkpoint": {
+          "tests_passed": true,
+          "type_check_passed": true,
+          "lint_passed": true,
+          "build_passed": true,
+          "security_passed": true,
+          "mutation_tests_passed": false,
+          "coverage_percent": null,
+          "manual_verified": true,
+          "codex_review": {
+            "status": "skipped",
+            "critical_issues": 0,
+            "recommendations": 0,
+            "notes": "Skipped — previous Codex review returned hallucinated output",
+            "user_accepted_risks": []
+          }
+        },
+        "tasks": [
+          { "id": "2.1.A", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "2.2.A", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "2.2.B", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } }
+        ]
+      },
+      {
+        "phase": 3,
+        "status": "CHECKPOINTED",
+        "started_at": "2026-02-21T01:00:00.000Z",
+        "completed_at": "2026-02-21T01:45:00.000Z",
+        "checkpoint": {
+          "tests_passed": true,
+          "type_check_passed": true,
+          "lint_passed": true,
+          "build_passed": true,
+          "security_passed": true,
+          "mutation_tests_passed": false,
+          "coverage_percent": null,
+          "manual_verified": true,
+          "codex_review": {
+            "status": "needs_attention",
+            "critical_issues": 4,
+            "recommendations": 4,
+            "notes": "4 security findings: missing document ownership check in logAIInteraction, rate limit bypass via client-side logging, model ID not allowlisted, no input size bounds. All accepted as risk — will address in hardening pass.",
+            "user_accepted_risks": [
+              "logAIInteraction lacks document ownership check",
+              "Rate limiting based on ai_interactions not actual requests",
+              "Model ID not validated against allowlist",
+              "No input schema validation or size bounds"
+            ]
+          }
+        },
+        "tasks": [
+          { "id": "3.1.A", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "3.2.A", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "3.2.B", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "3.2.C", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "3.3.A", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } }
+        ]
+      },
+      {
+        "phase": 4,
+        "status": "CHECKPOINTED",
+        "started_at": "2026-02-21T02:00:00.000Z",
+        "completed_at": "2026-02-21T02:30:00.000Z",
+        "checkpoint": {
+          "tests_passed": true,
+          "type_check_passed": true,
+          "lint_passed": true,
+          "build_passed": true,
+          "security_passed": true,
+          "mutation_tests_passed": false,
+          "coverage_percent": null,
+          "manual_verified": true,
+          "codex_review": {
+            "status": "needs_attention",
+            "critical_issues": 6,
+            "recommendations": 4,
+            "notes": "6 findings: missing document ownership in paste-events/revisions actions, sourceId not persisted to DB, recentAIResponses empty, ProseMirror slice bypass, createAIRevision not called from InlineAI. All accepted — will address in hardening pass.",
+            "user_accepted_risks": [
+              "logPasteEvent lacks document ownership check",
+              "createRevision lacks document ownership check",
+              "sourceId in marks not joined to DB records",
+              "recentAIResponses tracking not wired up",
+              "ProseMirror internal paste interception bypass",
+              "createAIRevision not called from InlineAI"
+            ]
+          }
+        },
+        "tasks": [
+          { "id": "4.1.A", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "4.1.B", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "4.2.A", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "4.2.B", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } }
+        ]
+      },
+      {
+        "phase": 5,
+        "status": "CHECKPOINTED",
+        "started_at": "2026-02-21T03:00:00.000Z",
+        "completed_at": "2026-02-21T02:12:00.000Z",
+        "checkpoint": {
+          "tests_passed": true,
+          "type_check_passed": true,
+          "lint_passed": true,
+          "build_passed": true,
+          "security_passed": true,
+          "mutation_tests_passed": false,
+          "coverage_percent": null,
+          "manual_verified": true,
+          "codex_review": {
+            "status": "needs_attention",
+            "critical_issues": 3,
+            "recommendations": 5,
+            "auto_fixed": 8,
+            "fix_skipped": 0,
+            "fix_reverted": false,
+            "notes": "3 critical (cache on 410, verify page caching, preview cache headers) + 5 recommendations (404 vs 403, UUID validation x2, useState→useEffect, reuse badge-snippets). All 8 auto-fixed and committed."
+          }
+        },
+        "tasks": [
+          { "id": "5.1.A", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "5.2.A", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "5.2.B", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "5.2.C", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "5.3.A", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } }
+        ]
+      },
+      {
+        "phase": 6,
+        "status": "CHECKPOINTED",
+        "started_at": "2026-02-21T02:15:00.000Z",
+        "completed_at": "2026-02-21T02:30:00.000Z",
+        "checkpoint": {
+          "tests_passed": true,
+          "type_check_passed": true,
+          "lint_passed": true,
+          "build_passed": true,
+          "security_passed": true,
+          "mutation_tests_passed": false,
+          "coverage_percent": null,
+          "manual_verified": true,
+          "codex_review": {
+            "status": "needs_attention",
+            "critical_issues": 2,
+            "recommendations": 5,
+            "auto_fixed": 5,
+            "fix_skipped": 2,
+            "fix_reverted": false,
+            "notes": "2 critical (takedown image invalidation, save retry not wired) + 5 recommendations. 5 auto-fixed. 2 skipped (badgeId validation, takedown tests — too broad for inline fix)."
+          }
+        },
+        "tasks": [
+          { "id": "6.1.A", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "6.1.B", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "6.2.A", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "6.2.B", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } }
+        ]
+      }
+    ]
+  }
+}

@@ -21,3 +21,7 @@ npm-debug.log*
 
 # vercel
 .vercel
+
+# Verification credentials (never commit)
+.env.verification
+.claude/verification/auth-state.json

@@ -62,15 +62,15 @@ Create a new Next.js 15 project with App Router, TypeScript, Tailwind CSS, and s
 **Requirement:** REQ-001
 
 **Acceptance Criteria:**
-- [ ] (CODE) Next.js 15 project created with App Router and TypeScript
+- [x] (CODE) Next.js 15 project created with App Router and TypeScript
   - Verify: `grep -q '"next":' package.json`
-- [ ] (CODE) Tailwind CSS configured with globals.css
+- [x] (CODE) Tailwind CSS configured with globals.css
   - Verify: `test -f tailwind.config.ts && grep -q '@tailwind' src/app/globals.css`
-- [ ] (CODE) shadcn/ui initialized with button and card components
+- [x] (CODE) shadcn/ui initialized with button and card components
   - Verify: `test -f components.json && test -d src/components/ui`
-- [ ] (BUILD) Project builds without errors
+- [x] (BUILD) Project builds without errors
   - Verify: `npm run build`
-- [ ] (CODE) Root layout.tsx with HTML structure and metadata
+- [x] (CODE) Root layout.tsx with HTML structure and metadata
   - Verify: `grep -q 'export default function RootLayout' src/app/layout.tsx`
 
 **Files to Create:**
@@ -104,13 +104,13 @@ Set up Vitest for unit and integration testing. Configure test utilities, React 
 **Requirement:** None (infrastructure)
 
 **Acceptance Criteria:**
-- [ ] (CODE) Vitest configured with TypeScript and React support
+- [x] (CODE) Vitest configured with TypeScript and React support
   - Verify: `grep -q 'vitest' package.json`
-- [ ] (CODE) Test setup file configures jsdom environment
+- [x] (CODE) Test setup file configures jsdom environment
   - Verify: `test -f src/test/setup.ts`
-- [ ] (TEST) Sample test passes
+- [x] (TEST) Sample test passes
   - Verify: `npx vitest run --reporter=verbose 2>&1 | grep -q 'PASS\|pass'`
-- [ ] (CODE) Test script added to package.json
+- [x] (CODE) Test script added to package.json
   - Verify: `grep -q '"test"' package.json`
 
 **Files to Create:**
@@ -142,19 +142,19 @@ Configure Drizzle ORM with `@neondatabase/serverless` driver. Define the full da
 **Requirement:** REQ-040, REQ-041, REQ-044, REQ-054
 
 **Acceptance Criteria:**
-- [ ] (CODE) Drizzle database client instance exists using `drizzle-orm/neon-http`
+- [x] (CODE) Drizzle database client instance exists using `drizzle-orm/neon-http`
   - Verify: `grep -q 'drizzle' src/lib/db/index.ts && grep -q 'neon' src/lib/db/index.ts`
-- [ ] (CODE) Schema defines all Auth.js tables with concrete column definitions (user, account, session, verificationToken)
+- [x] (CODE) Schema defines all Auth.js tables with concrete column definitions (user, account, session, verificationToken)
   - Verify: `grep -q 'pgTable.*user' src/lib/db/schema.ts && grep -q 'pgTable.*account' src/lib/db/schema.ts`
-- [ ] (CODE) Auth.js `user` table extended with `ai_provider` and `ai_model` columns
+- [x] (CODE) Auth.js `user` table extended with `ai_provider` and `ai_model` columns
   - Verify: `grep -q 'ai_provider\|aiProvider' src/lib/db/schema.ts`
-- [ ] (CODE) All domain tables defined with correct columns, types, and FK relationships
+- [x] (CODE) All domain tables defined with correct columns, types, and FK relationships
   - Verify: `grep -q 'documents' src/lib/db/schema.ts && grep -q 'writing_sessions' src/lib/db/schema.ts && grep -q 'badges' src/lib/db/schema.ts`
-- [ ] (CODE) `user.id` is `text` type (cuid2) and domain table FKs use `text` for `userId`
+- [x] (CODE) `user.id` is `text` type (cuid2) and domain table FKs use `text` for `userId`
   - Verify: `grep -q "text.*id" src/lib/db/schema.ts`
-- [ ] (CODE) `drizzle.config.ts` configured with `DATABASE_URL_UNPOOLED`
+- [x] (CODE) `drizzle.config.ts` configured with `DATABASE_URL_UNPOOLED`
   - Verify: `grep -q 'DATABASE_URL_UNPOOLED' drizzle.config.ts`
-- [ ] (CODE) TypeScript types auto-inferred via `$inferSelect` and `$inferInsert`
+- [x] (CODE) TypeScript types auto-inferred via `$inferSelect` and `$inferInsert`
   - Verify: `grep -q 'inferSelect\|inferInsert' src/lib/db/schema.ts`
 
 **Files to Create:**
@@ -181,19 +181,19 @@ Implement OAuth authentication with Google and GitHub using Auth.js v5. Use the 
 **Requirement:** REQ-004, REQ-005, REQ-006
 
 **Acceptance Criteria:**
-- [ ] (CODE) Auth.js Edge-safe config with Google and GitHub providers
+- [x] (CODE) Auth.js Edge-safe config with Google and GitHub providers
   - Verify: `grep -q 'Google\|GitHub' src/auth.config.ts`
-- [ ] (CODE) Full Auth.js config with DrizzleAdapter and JWT session strategy
+- [x] (CODE) Full Auth.js config with DrizzleAdapter and JWT session strategy
   - Verify: `grep -q 'DrizzleAdapter' src/auth.ts && grep -q 'jwt' src/auth.ts`
-- [ ] (CODE) Catch-all Auth.js route handler
+- [x] (CODE) Catch-all Auth.js route handler
   - Verify: `test -f src/app/api/auth/\\[...nextauth\\]/route.ts`
-- [ ] (CODE) Login page with Google and GitHub OAuth buttons using server-action signIn()
+- [x] (CODE) Login page with Google and GitHub OAuth buttons using server-action signIn()
   - Verify: `grep -q 'signIn' src/app/login/page.tsx && grep -q 'Google\|GitHub' src/app/login/page.tsx`
-- [ ] (CODE) Middleware imports from auth.config.ts (Edge-safe), protects /dashboard and /editor/* routes
+- [x] (CODE) Middleware imports from auth.config.ts (Edge-safe), protects /dashboard and /editor/* routes
   - Verify: `test -f src/middleware.ts && grep -q 'auth.config\|authConfig' src/middleware.ts && grep -q 'dashboard\|editor' src/middleware.ts`
-- [ ] (TEST) Unauthenticated requests to protected routes are redirected to /login
+- [x] (TEST) Unauthenticated requests to protected routes are redirected to /login
   - Verify: `npx vitest run src/middleware.test.ts`
-- [ ] (CODE) Shared auth helpers: requireAuth() and requireDocumentOwner()
+- [x] (CODE) Shared auth helpers: requireAuth() and requireDocumentOwner()
   - Verify: `grep -q 'requireAuth' src/lib/auth/authorize.ts && grep -q 'requireDocumentOwner' src/lib/auth/authorize.ts`
 
 **Files to Create:**
@@ -230,15 +230,15 @@ Implement document CRUD operations as Server Actions (create, update, soft-delet
 **Requirement:** REQ-010, REQ-033, REQ-034
 
 **Acceptance Criteria:**
-- [ ] (TEST) createDocument() returns a new document ID
+- [x] (TEST) createDocument() returns a new document ID
   - Verify: `npx vitest run src/app/actions/documents.test.ts`
-- [ ] (TEST) deleteDocument() sets deleted_at (soft-delete) instead of row deletion
+- [x] (TEST) deleteDocument() sets deleted_at (soft-delete) instead of row deletion
   - Verify: `npx vitest run src/app/actions/documents.test.ts`
-- [ ] (CODE) Dashboard page lists user documents with title and last modified
+- [x] (CODE) Dashboard page lists user documents with title and last modified
   - Verify: `grep -q 'documents' src/app/dashboard/page.tsx`
-- [ ] (CODE) Dashboard has create document button that calls createDocument()
+- [x] (CODE) Dashboard has create document button that calls createDocument()
   - Verify: `grep -q 'createDocument' src/app/dashboard/page.tsx`
-- [ ] (TEST) updateDocument() updates title and content
+- [x] (TEST) updateDocument() updates title and content
   - Verify: `npx vitest run src/app/actions/documents.test.ts`
 
 **Files to Create:**
@@ -268,13 +268,13 @@ Create the document editor page shell at `/editor/[id]`. Fetch and display docum
 **Requirement:** REQ-010
 
 **Acceptance Criteria:**
-- [ ] (CODE) Editor page exists at /editor/[id] with document fetching
+- [x] (CODE) Editor page exists at /editor/[id] with document fetching
   - Verify: `test -f src/app/editor/\[id\]/page.tsx`
-- [ ] (CODE) Page displays document title (editable)
+- [x] (CODE) Page displays document title (editable)
   - Verify: `grep -q 'title' src/app/editor/\[id\]/page.tsx`
-- [ ] (CODE) Page has navigation back to dashboard
+- [x] (CODE) Page has navigation back to dashboard
   - Verify: `grep -q 'dashboard' src/app/editor/\[id\]/page.tsx`
-- [ ] (CODE) Page checks document ownership (redirects if not owner)
+- [x] (CODE) Page checks document ownership (redirects if not owner)
   - Verify: `grep -q 'redirect\|notFound' src/app/editor/\[id\]/page.tsx`
 
 **Files to Create:**
@@ -297,12 +297,12 @@ Create the document editor page shell at `/editor/[id]`. Fetch and display docum
 ### Phase 1 Checkpoint
 
 **Automated Checks:**
-- [ ] All tests pass: `npx vitest run`
-- [ ] Type checking passes: `npx tsc --noEmit`
-- [ ] Build succeeds: `npm run build`
+- [x] All tests pass: `npx vitest run`
+- [x] Type checking passes: `npx tsc --noEmit`
+- [x] Build succeeds: `npm run build`
 
 **Regression Verification:**
-- [ ] N/A (greenfield — no existing functionality)
+- [x] N/A (greenfield — no existing functionality)
 
 ---
 
@@ -329,15 +329,15 @@ Integrate TipTap v2 with all required formatting extensions. Create a rich text 
 **Requirement:** REQ-002, REQ-007, REQ-008, REQ-009
 
 **Acceptance Criteria:**
-- [ ] (CODE) TipTap editor component with StarterKit and all required extensions
+- [x] (CODE) TipTap editor component with StarterKit and all required extensions
   - Verify: `grep -q 'StarterKit' src/components/editor/Editor.tsx`
-- [ ] (CODE) Editor uses 'use client' directive and immediatelyRender: false
+- [x] (CODE) Editor uses 'use client' directive and immediatelyRender: false
   - Verify: `grep -q "'use client'" src/components/editor/Editor.tsx && grep -q 'immediatelyRender.*false' src/components/editor/Editor.tsx`
-- [ ] (CODE) Formatting toolbar with heading, bold, italic, link, image, code, quote, list buttons
+- [x] (CODE) Formatting toolbar with heading, bold, italic, link, image, code, quote, list buttons
   - Verify: `grep -q 'Toolbar\|toolbar' src/components/editor/Toolbar.tsx`
-- [ ] (TEST) Editor renders without hydration errors in test environment
+- [x] (TEST) Editor renders without hydration errors in test environment
   - Verify: `npx vitest run src/components/editor/Editor.test.tsx`
-- [ ] (CODE) Editor page at /editor/[id] uses TipTap component — desktop-only layout, no mobile responsive editor (REQ-002)
+- [x] (CODE) Editor page at /editor/[id] uses TipTap component — desktop-only layout, no mobile responsive editor (REQ-002)
   - Verify: `grep -q 'Editor' src/app/editor/\[id\]/page.tsx`
 
 **Files to Create:**
@@ -371,13 +371,13 @@ Implement auto-save that triggers on TipTap's `onUpdate` callback with a 2-secon
 **Requirement:** REQ-011
 
 **Acceptance Criteria:**
-- [ ] (TEST) Auto-save debounces at 2 seconds and calls updateDocument
+- [x] (TEST) Auto-save debounces at 2 seconds and calls updateDocument
   - Verify: `npx vitest run src/hooks/useAutoSave.test.ts`
-- [ ] (CODE) Save status indicator shows Saving/Saved/Error states
+- [x] (CODE) Save status indicator shows Saving/Saved/Error states
   - Verify: `grep -q 'Saved\|Saving\|Error' src/components/editor/SaveIndicator.tsx`
-- [ ] (TEST) Failed saves retry with exponential backoff (up to 3 retries)
+- [x] (TEST) Failed saves retry with exponential backoff (up to 3 retries)
   - Verify: `npx vitest run src/hooks/useAutoSave.test.ts`
-- [ ] (CODE) Auto-save sends full TipTap JSON content to updateDocument
+- [x] (CODE) Auto-save sends full TipTap JSON content to updateDocument
   - Verify: `grep -q 'getJSON\|content' src/hooks/useAutoSave.ts`
 
 **Files to Create:**
@@ -405,15 +405,15 @@ Implement writing session tracking with start/end/heartbeat lifecycle using the 
 **Requirement:** REQ-019
 
 **Acceptance Criteria:**
-- [ ] (TEST) startSession() creates a writing_sessions record
+- [x] (TEST) startSession() creates a writing_sessions record
   - Verify: `npx vitest run src/app/actions/sessions.test.ts`
-- [ ] (TEST) heartbeat() updates last_heartbeat and increments active_seconds
+- [x] (TEST) heartbeat() updates last_heartbeat and increments active_seconds
   - Verify: `npx vitest run src/app/actions/sessions.test.ts`
-- [ ] (TEST) endSession() sets ended_at timestamp
+- [x] (TEST) endSession() sets ended_at timestamp
   - Verify: `npx vitest run src/app/actions/sessions.test.ts`
-- [ ] (CODE) useSession hook starts session on mount, heartbeats every 30s, ends on unmount
+- [x] (CODE) useSession hook starts session on mount, heartbeats every 30s, ends on unmount
   - Verify: `grep -q 'setInterval\|heartbeat' src/hooks/useSession.ts`
-- [ ] (CODE) Activity detection based on recent input within 60 seconds
+- [x] (CODE) Activity detection based on recent input within 60 seconds
   - Verify: `grep -q 'lastActivity\|active' src/hooks/useSession.ts`
 
 **Files to Create:**
@@ -438,13 +438,13 @@ Implement writing session tracking with start/end/heartbeat lifecycle using the 
 ### Phase 2 Checkpoint
 
 **Automated Checks:**
-- [ ] All tests pass: `npx vitest run`
-- [ ] Type checking passes: `npx tsc --noEmit`
-- [ ] Build succeeds: `npm run build`
+- [x] All tests pass: `npx vitest run`
+- [x] Type checking passes: `npx tsc --noEmit`
+- [x] Build succeeds: `npm run build`
 
 **Regression Verification:**
-- [ ] Auth flow still works (login, protected routes)
-- [ ] Document CRUD still works (create, list, delete from dashboard)
+- [x] Auth flow still works (login, protected routes)
+- [x] Document CRUD still works (create, list, delete from dashboard)
 
 ---
 
@@ -473,17 +473,17 @@ Create the AI provider abstraction layer with unified interfaces for Claude and 
 **Requirement:** REQ-012
 
 **Acceptance Criteria:**
-- [ ] (CODE) AIProvider and AICompletionRequest interfaces defined
+- [x] (CODE) AIProvider and AICompletionRequest interfaces defined
   - Verify: `grep -q 'AIProvider' src/lib/ai/types.ts`
-- [ ] (CODE) Provider config with models for both Anthropic and OpenAI
+- [x] (CODE) Provider config with models for both Anthropic and OpenAI
   - Verify: `grep -q 'anthropic' src/lib/ai/providers.ts && grep -q 'openai' src/lib/ai/providers.ts`
-- [ ] (TEST) Route handler validates auth, provider, and required fields
+- [x] (TEST) Route handler validates auth, provider, and required fields
   - Verify: `npx vitest run src/app/api/ai/complete/route.test.ts`
-- [ ] (CODE) Route handler uses Vercel AI SDK `streamText()` with `toUIMessageStreamResponse()` (AI SDK 6 pattern)
+- [x] (CODE) Route handler uses Vercel AI SDK `streamText()` with `toUIMessageStreamResponse()` (AI SDK 6 pattern)
   - Verify: `grep -q 'streamText\|toUIMessageStreamResponse' src/app/api/ai/complete/route.ts`
-- [ ] (TEST) Blocked/refused requests return custom metadata event via AI SDK 6 response API
+- [x] (TEST) Blocked/refused requests return custom metadata event via AI SDK 6 response API
   - Verify: `npx vitest run src/app/api/ai/complete/route.test.ts`
-- [ ] (CODE) Rate limiting at 20 requests/minute per user (database-backed, not in-memory — serverless-safe)
+- [x] (CODE) Rate limiting at 20 requests/minute per user (database-backed, not in-memory — serverless-safe)
   - Verify: `grep -q 'rate\|limit' src/app/api/ai/complete/route.ts`
 
 **Files to Create:**
@@ -519,15 +519,15 @@ Implement the inline AI interaction mode. When the user selects text, show a flo
 **Requirement:** REQ-013, REQ-014, REQ-015
 
 **Acceptance Criteria:**
-- [ ] (CODE) Floating AI toolbar appears on text selection with preset options
+- [x] (CODE) Floating AI toolbar appears on text selection with preset options
   - Verify: `grep -q 'selection\|floating' src/components/editor/InlineAI.tsx`
-- [ ] (CODE) AI response streams into a diff-style preview below the selection using `@ai-sdk/react` hooks
+- [x] (CODE) AI response streams into a diff-style preview below the selection using `@ai-sdk/react` hooks
   - Verify: `grep -q 'useChat\|useCompletion\|@ai-sdk/react' src/components/editor/InlineAI.tsx`
-- [ ] (CODE) Accept button replaces selected text with AI response
+- [x] (CODE) Accept button replaces selected text with AI response
   - Verify: `grep -q 'accept\|replaceRange\|insertContent' src/components/editor/InlineAI.tsx`
-- [ ] (CODE) Reject button dismisses the suggestion
+- [x] (CODE) Reject button dismisses the suggestion
   - Verify: `grep -q 'reject\|dismiss' src/components/editor/InlineAI.tsx`
-- [ ] (TEST) Accept inserts AI text and logs interaction
+- [x] (TEST) Accept inserts AI text and logs interaction
   - Verify: `npx vitest run src/components/editor/InlineAI.test.tsx`
 
 **Files to Create:**
@@ -555,15 +555,15 @@ Implement the side panel chat interface for research, brainstorming, and freefor
 **Requirement:** REQ-013
 
 **Acceptance Criteria:**
-- [ ] (CODE) Side panel component with toggle button
+- [x] (CODE) Side panel component with toggle button
   - Verify: `grep -q 'panel\|sidebar' src/components/editor/SidePanel.tsx`
-- [ ] (CODE) Chat-style message list with user/AI message bubbles
+- [x] (CODE) Chat-style message list with user/AI message bubbles
   - Verify: `grep -q 'message\|chat' src/components/editor/SidePanel.tsx`
-- [ ] (CODE) Message input with send button, streams AI response via `@ai-sdk/react` hooks
+- [x] (CODE) Message input with send button, streams AI response via `@ai-sdk/react` hooks
   - Verify: `grep -q 'useChat\|@ai-sdk/react' src/components/editor/SidePanel.tsx`
-- [ ] (TEST) Messages are persisted as ai_interactions with mode 'side_panel'
+- [x] (TEST) Messages are persisted as ai_interactions with mode 'side_panel'
   - Verify: `npx vitest run src/components/editor/SidePanel.test.tsx`
-- [ ] (CODE) Full document content sent as context with each request
+- [x] (CODE) Full document content sent as context with each request
   - Verify: `grep -q 'context\|content' src/components/editor/SidePanel.tsx`
 
 **Files to Create:**
@@ -591,13 +591,13 @@ Implement the freeform AI mode (command palette-style input) and the AI interact
 **Requirement:** REQ-013, REQ-017
 
 **Acceptance Criteria:**
-- [ ] (CODE) Freeform command palette triggered by keyboard shortcut or button
+- [x] (CODE) Freeform command palette triggered by keyboard shortcut or button
   - Verify: `grep -q 'freeform\|command\|palette' src/components/editor/FreeformAI.tsx`
-- [ ] (TEST) logAIInteraction() writes full interaction record to ai_interactions table
+- [x] (TEST) logAIInteraction() writes full interaction record to ai_interactions table
   - Verify: `npx vitest run src/app/actions/ai-interactions.test.ts`
-- [ ] (TEST) Interaction logging is append-only (no update/delete supported)
+- [x] (TEST) Interaction logging is append-only (no update/delete supported)
   - Verify: `npx vitest run src/app/actions/ai-interactions.test.ts`
-- [ ] (CODE) All three modes (inline, side panel, freeform) call logAIInteraction on completion
+- [x] (CODE) All three modes (inline, side panel, freeform) call logAIInteraction on completion
   - Verify: `grep -q 'logAIInteraction' src/components/editor/InlineAI.tsx`
 
 **Files to Create:**
@@ -633,13 +633,13 @@ Allow users to choose their AI provider (Anthropic or OpenAI) and preferred mode
 **Requirement:** REQ-012
 
 **Acceptance Criteria:**
-- [ ] (CODE) Settings UI for selecting AI provider and model
+- [x] (CODE) Settings UI for selecting AI provider and model
   - Verify: `grep -q 'provider\|model' src/components/settings/AISettings.tsx`
-- [ ] (TEST) updateUserPreferences() persists ai_provider and ai_model to users table
+- [x] (TEST) updateUserPreferences() persists ai_provider and ai_model to users table
   - Verify: `npx vitest run src/app/actions/user.test.ts`
-- [ ] (CODE) AI completion endpoint reads user's provider preference
+- [x] (CODE) AI completion endpoint reads user's provider preference
   - Verify: `grep -q 'ai_provider\|aiProvider' src/app/api/ai/complete/route.ts`
-- [ ] (CODE) Settings accessible from editor or dashboard
+- [x] (CODE) Settings accessible from editor or dashboard
   - Verify: `grep -q 'settings\|Settings' src/app/dashboard/page.tsx`
 
 **Files to Create:**
@@ -664,14 +664,14 @@ Allow users to choose their AI provider (Anthropic or OpenAI) and preferred mode
 ### Phase 3 Checkpoint
 
 **Automated Checks:**
-- [ ] All tests pass: `npx vitest run`
-- [ ] Type checking passes: `npx tsc --noEmit`
-- [ ] Build succeeds: `npm run build`
+- [x] All tests pass: `npx vitest run`
+- [x] Type checking passes: `npx tsc --noEmit`
+- [x] Build succeeds: `npm run build`
 
 **Regression Verification:**
-- [ ] Editor auto-save still works
-- [ ] Session tracking still works
-- [ ] Document CRUD from dashboard still works
+- [x] Editor auto-save still works
+- [x] Session tracking still works
+- [x] Document CRUD from dashboard still works
 
 ---
 
@@ -698,15 +698,15 @@ Create the custom TipTap `origin` mark that tracks content provenance. The mark 
 **Requirement:** REQ-020, REQ-014
 
 **Acceptance Criteria:**
-- [ ] (CODE) Custom TipTap Mark with type, sourceId, and originalLength attributes
+- [x] (CODE) Custom TipTap Mark with type, sourceId, and originalLength attributes
   - Verify: `grep -q "name: 'origin'" src/extensions/origin-mark.ts`
-- [ ] (TEST) Mark persists through editor JSON serialization/deserialization
+- [x] (TEST) Mark persists through editor JSON serialization/deserialization
   - Verify: `npx vitest run src/extensions/origin-mark.test.ts`
-- [ ] (TEST) AI text insertion applies origin mark with type='ai' and sourceId
+- [x] (TEST) AI text insertion applies origin mark with type='ai' and sourceId
   - Verify: `npx vitest run src/extensions/origin-mark.test.ts`
-- [ ] (TEST) Unmarked text is treated as human (conservative fallback)
+- [x] (TEST) Unmarked text is treated as human (conservative fallback)
   - Verify: `npx vitest run src/extensions/origin-mark.test.ts`
-- [ ] (CODE) Mark is invisible — no visual rendering in the editor
+- [x] (CODE) Mark is invisible — no visual rendering in the editor
   - Verify: `grep -q 'data-origin' src/extensions/origin-mark.ts`
 
 **Files to Create:**
@@ -734,15 +734,15 @@ Create a custom TipTap extension that intercepts paste events, classifies them a
 **Requirement:** REQ-018
 
 **Acceptance Criteria:**
-- [ ] (CODE) Custom TipTap extension intercepts paste events
+- [x] (CODE) Custom TipTap extension intercepts paste events
   - Verify: `grep -q 'handlePaste\|clipboardTextParser' src/extensions/paste-handler.ts`
-- [ ] (TEST) External paste is classified and logged with content and character count
+- [x] (TEST) External paste is classified and logged with content and character count
   - Verify: `npx vitest run src/extensions/paste-handler.test.ts`
-- [ ] (TEST) Paste from AI panel is classified as ai_internal (not logged as external)
+- [x] (TEST) Paste from AI panel is classified as ai_internal (not logged as external)
   - Verify: `npx vitest run src/extensions/paste-handler.test.ts`
-- [ ] (CODE) Origin mark applied to pasted content with type='external_paste'
+- [x] (CODE) Origin mark applied to pasted content with type='external_paste'
   - Verify: `grep -q 'external_paste' src/extensions/paste-handler.ts`
-- [ ] (TEST) logPasteEvent() writes to paste_events table
+- [x] (TEST) logPasteEvent() writes to paste_events table
   - Verify: `npx vitest run src/app/actions/paste-events.test.ts`
 
 **Files to Create:**
@@ -777,13 +777,13 @@ Implement revision snapshot creation at 30-second intervals during active editin
 **Requirement:** REQ-016
 
 **Acceptance Criteria:**
-- [ ] (TEST) createRevision() snapshots current content with plain text extraction
+- [x] (TEST) createRevision() snapshots current content with plain text extraction
   - Verify: `npx vitest run src/app/actions/revisions.test.ts`
-- [ ] (CODE) Interval-based revision creation every 30 seconds of active editing
+- [x] (CODE) Interval-based revision creation every 30 seconds of active editing
   - Verify: `grep -q '30\|interval' src/hooks/useRevisions.ts`
-- [ ] (CODE) Event-based revision created after AI interaction changes document
+- [x] (CODE) Event-based revision created after AI interaction changes document
   - Verify: `grep -q 'ai_interaction' src/hooks/useRevisions.ts`
-- [ ] (TEST) Plain text extraction from TipTap JSON works correctly
+- [x] (TEST) Plain text extraction from TipTap JSON works correctly
   - Verify: `npx vitest run src/lib/tiptap-utils.test.ts`
 
 **Files to Create:**
@@ -814,15 +814,15 @@ Implement the `calculateMetrics()` function that walks TipTap JSON to compute AI
 **Requirement:** REQ-020
 
 **Acceptance Criteria:**
-- [ ] (TEST) calculateMetrics() correctly counts AI, human, and external paste characters
+- [x] (TEST) calculateMetrics() correctly counts AI, human, and external paste characters
   - Verify: `npx vitest run src/lib/metrics.test.ts`
-- [ ] (TEST) Unmarked text is counted as human (conservative default)
+- [x] (TEST) Unmarked text is counted as human (conservative default)
   - Verify: `npx vitest run src/lib/metrics.test.ts`
-- [ ] (TEST) AI span modified >20% is reclassified as human
+- [x] (TEST) AI span modified >20% is reclassified as human
   - Verify: `npx vitest run src/lib/metrics.test.ts`
-- [ ] (TEST) Empty document returns 0% for all metrics
+- [x] (TEST) Empty document returns 0% for all metrics
   - Verify: `npx vitest run src/lib/metrics.test.ts`
-- [ ] (TEST) External paste characters reported as separate metric
+- [x] (TEST) External paste characters reported as separate metric
   - Verify: `npx vitest run src/lib/metrics.test.ts`
 
 **Files to Create:**
@@ -844,14 +844,14 @@ Implement the `calculateMetrics()` function that walks TipTap JSON to compute AI
 ### Phase 4 Checkpoint
 
 **Automated Checks:**
-- [ ] All tests pass: `npx vitest run`
-- [ ] Type checking passes: `npx tsc --noEmit`
-- [ ] Build succeeds: `npm run build`
+- [x] All tests pass: `npx vitest run`
+- [x] Type checking passes: `npx tsc --noEmit`
+- [x] Build succeeds: `npm run build`
 
 **Regression Verification:**
-- [ ] AI interactions still work (inline, side panel, freeform)
-- [ ] Auto-save still works with origin marks in document JSON
-- [ ] Session tracking still works
+- [x] AI interactions still work (inline, side panel, freeform)
+- [x] Auto-save still works with origin marks in document JSON
+- [x] Session tracking still works
 
 ---
 
@@ -878,25 +878,25 @@ Implement the `generateBadge()` Server Action that freezes the document text, au
 **Requirement:** REQ-021, REQ-022, REQ-023, REQ-026, REQ-039, REQ-043, REQ-055
 
 **Acceptance Criteria:**
-- [ ] (TEST) generateBadge() creates badge record with frozen document text and audit trail
+- [x] (TEST) generateBadge() creates badge record with frozen document text and audit trail
   - Verify: `npx vitest run src/app/actions/badges.test.ts`
-- [ ] (TEST) verification_id uses nanoid(21) — 21 characters, unguessable
+- [x] (TEST) verification_id uses nanoid(21) — 21 characters, unguessable
   - Verify: `npx vitest run src/app/actions/badges.test.ts`
-- [ ] (TEST) Stats include ai_percentage, external_paste_percentage, interaction_count, session_count, total_active_seconds
+- [x] (TEST) Stats include ai_percentage, external_paste_percentage, interaction_count, session_count, total_active_seconds
   - Verify: `npx vitest run src/app/actions/badges.test.ts`
-- [ ] (CODE) Badge PNG generated via @vercel/og with Provenance branding and percentage
-  - Verify: `grep -q 'ImageResponse\|vercel/og' src/lib/badge-image.ts`
-- [ ] (TEST) Badge is insert-only — no update or delete permitted
+- [x] (CODE) Badge PNG generated via @vercel/og with Provenance branding and percentage
+  - Verify: `grep -q 'ImageResponse\|vercel/og' src/lib/badge-image.tsx`
+- [x] (TEST) Badge is insert-only — no update or delete permitted
   - Verify: `npx vitest run src/app/actions/badges.test.ts`
-- [ ] (TEST) Only document owner can generate badges — non-owners get authorization error (REQ-043)
+- [x] (TEST) Only document owner can generate badges — non-owners get authorization error (REQ-043)
   - Verify: `npx vitest run src/app/actions/badges.test.ts`
-- [ ] (CODE) Returns verificationId, badgeHtml, and badgeMarkdown snippets
+- [x] (CODE) Returns verificationId, badgeHtml, and badgeMarkdown snippets
   - Verify: `grep -q 'badgeHtml\|badgeMarkdown' src/app/actions/badges.ts`
 
 **Files to Create:**
 - `src/app/actions/badges.ts` — generateBadge Server Action
 - `src/app/actions/badges.test.ts` — Badge generation tests
-- `src/lib/badge-image.ts` — Badge PNG template using @vercel/og
+- `src/lib/badge-image.tsx` — Badge PNG template using @vercel/og
 - `src/lib/badge-snippets.ts` — HTML and Markdown embed snippet generation
 
 **Files to Modify:**
@@ -925,15 +925,15 @@ Create the `/editor/[id]/preview` page that shows writers exactly what will beco
 **Requirement:** REQ-049
 
 **Acceptance Criteria:**
-- [ ] (CODE) Preview page at /editor/[id]/preview showing all public data
+- [x] (CODE) Preview page at /editor/[id]/preview showing all public data
   - Verify: `test -f src/app/editor/\[id\]/preview/page.tsx`
-- [ ] (CODE) Prominent warning: "Everything shown here will be publicly visible"
+- [x] (CODE) Prominent warning: "Everything shown here will be publicly visible"
   - Verify: `grep -q 'publicly visible' src/app/editor/\[id\]/preview/page.tsx`
-- [ ] (CODE) Shows all AI interactions with prompts and responses
+- [x] (CODE) Shows all AI interactions with prompts and responses
   - Verify: `grep -q 'interaction\|prompt\|response' src/app/editor/\[id\]/preview/page.tsx`
-- [ ] (CODE) Confirm & Generate button calls generateBadge() and shows embed snippets
+- [x] (CODE) Confirm & Generate button calls generateBadge() and shows embed snippets
   - Verify: `grep -q 'generateBadge\|Confirm' src/app/editor/\[id\]/preview/page.tsx`
-- [ ] (CODE) Only accessible by document owner (auth check)
+- [x] (CODE) Only accessible by document owner (auth check)
   - Verify: `grep -q 'redirect\|auth' src/app/editor/\[id\]/preview/page.tsx`
 
 **Files to Create:**
@@ -960,17 +960,17 @@ Build the SSR verification page at `/verify/[id]` that displays badge data publi
 **Requirement:** REQ-027, REQ-028, REQ-029, REQ-030, REQ-031, REQ-032, REQ-036, REQ-037, REQ-038, REQ-042, REQ-047, REQ-048, REQ-050, REQ-051
 
 **Acceptance Criteria:**
-- [ ] (CODE) SSR page at /verify/[id] with no auth required
+- [x] (CODE) SSR page at /verify/[id] with no auth required
   - Verify: `test -f src/app/verify/\[id\]/page.tsx && grep -q 'export default' src/app/verify/\[id\]/page.tsx`
-- [ ] (CODE) Summary stats: AI percentage (prominent), interactions, sessions, total time
+- [x] (CODE) Summary stats: AI percentage (prominent), interactions, sessions, total time
   - Verify: `grep -q 'ai_percentage\|aiPercentage' src/app/verify/\[id\]/page.tsx`
-- [ ] (CODE) Expandable audit timeline with AI interactions showing prompt/response
+- [x] (CODE) Expandable audit timeline with AI interactions showing prompt/response
   - Verify: `grep -q 'timeline\|Timeline' src/app/verify/\[id\]/page.tsx`
-- [ ] (CODE) Scope statement and methodology note displayed
+- [x] (CODE) Scope statement and methodology note displayed
   - Verify: `grep -q 'certif\|methodolog' src/app/verify/\[id\]/page.tsx`
-- [ ] (CODE) Taken-down badges show removal notice instead of content
+- [x] (CODE) Taken-down badges show removal notice instead of content
   - Verify: `grep -q 'taken.down\|takedown\|removed' src/app/verify/\[id\]/page.tsx`
-- [ ] (CODE) Full document text displayed with expandable sections for long documents
+- [x] (CODE) Full document text displayed with expandable sections for long documents
   - Verify: `grep -q 'documentText\|document_text' src/app/verify/\[id\]/page.tsx`
 
 **Files to Create:**
@@ -1000,15 +1000,15 @@ Create the `/api/badges/[verificationId]/image` Route Handler that serves badge 
 **Requirement:** REQ-022, REQ-024, REQ-025, REQ-050
 
 **Acceptance Criteria:**
-- [ ] (CODE) Badge image Route Handler at /api/badges/[verificationId]/image
+- [x] (CODE) Badge image Route Handler at /api/badges/[verificationId]/image
   - Verify: `test -f src/app/api/badges/\[verificationId\]/image/route.ts`
-- [ ] (CODE) Cache-Control header: public, s-maxage=86400, stale-while-revalidate=86400
+- [x] (CODE) Cache-Control header: public, s-maxage=86400, stale-while-revalidate=86400
   - Verify: `grep -q 's-maxage=86400' src/app/api/badges/\[verificationId\]/image/route.ts`
-- [ ] (CODE) Returns 410 Gone for taken-down badges
+- [x] (CODE) Returns 410 Gone for taken-down badges
   - Verify: `grep -q '410' src/app/api/badges/\[verificationId\]/image/route.ts`
-- [ ] (TEST) HTML snippet includes correct alt text with percentage and URL
+- [x] (TEST) HTML snippet includes correct alt text with percentage and URL
   - Verify: `npx vitest run src/lib/badge-snippets.test.ts`
-- [ ] (CODE) Embed snippet UI shown after badge generation with copy buttons
+- [x] (CODE) Embed snippet UI shown after badge generation with copy buttons
   - Verify: `grep -q 'copy\|clipboard' src/components/editor/BadgeSnippets.tsx`
 
 **Files to Create:**
@@ -1019,7 +1019,7 @@ Create the `/api/badges/[verificationId]/image` Route Handler that serves badge 
 **Files to Modify:** None
 
 **Existing Code to Reference:**
-- `src/lib/badge-image.ts` — Badge PNG generation
+- `src/lib/badge-image.tsx` — Badge PNG generation
 - `src/lib/badge-snippets.ts` — Snippet templates
 
 **Dependencies:** Task 5.1.A
@@ -1041,13 +1041,13 @@ Display badges on the dashboard (badge count per document) and on the document e
 **Requirement:** REQ-035
 
 **Acceptance Criteria:**
-- [ ] (CODE) Dashboard shows badge count next to each document
+- [x] (CODE) Dashboard shows badge count next to each document
   - Verify: `grep -q 'badge\|Badge' src/app/dashboard/page.tsx`
-- [ ] (CODE) Editor page shows list of badges with verification URLs
+- [x] (CODE) Editor page shows list of badges with verification URLs
   - Verify: `grep -q 'badge\|Badge' src/components/editor/BadgeList.tsx`
-- [ ] (CODE) Each badge entry has copy buttons for HTML and Markdown snippets
+- [x] (CODE) Each badge entry has copy buttons for HTML and Markdown snippets
   - Verify: `grep -q 'copy\|snippet' src/components/editor/BadgeList.tsx`
-- [ ] (TEST) Badge list fetches badges for the current document
+- [x] (TEST) Badge list fetches badges for the current document
   - Verify: `npx vitest run src/components/editor/BadgeList.test.tsx`
 
 **Files to Create:**
@@ -1071,15 +1071,15 @@ Display badges on the dashboard (badge count per document) and on the document e
 ### Phase 5 Checkpoint
 
 **Automated Checks:**
-- [ ] All tests pass: `npx vitest run`
-- [ ] Type checking passes: `npx tsc --noEmit`
-- [ ] Build succeeds: `npm run build`
+- [x] All tests pass: `npx vitest run`
+- [x] Type checking passes: `npx tsc --noEmit`
+- [x] Build succeeds: `npm run build`
 
 **Regression Verification:**
-- [ ] Editor still works with all AI modes
-- [ ] Origin tracking still applies marks correctly
-- [ ] Auto-save still works with origin marks
-- [ ] Session tracking still works
+- [x] Editor still works with all AI modes
+- [x] Origin tracking still applies marks correctly
+- [x] Auto-save still works with origin marks
+- [x] Session tracking still works
 
 ---
 
@@ -1106,13 +1106,13 @@ Ensure verification pages are fully responsive and optimized for mobile. The ver
 **Requirement:** REQ-003, REQ-031, REQ-051
 
 **Acceptance Criteria:**
-- [ ] (CODE) Mobile-first responsive design with Tailwind breakpoints
+- [x] (CODE) Mobile-first responsive design with Tailwind breakpoints
   - Verify: `grep -q 'sm:\|md:\|lg:' src/app/verify/\[id\]/page.tsx`
-- [ ] (CODE) Audit timeline entries are readable and expandable on mobile
+- [x] (CODE) Audit timeline entries are readable and expandable on mobile
   - Verify: `grep -q 'sm:\|md:' src/components/verify/AuditTimeline.tsx`
-- [ ] (CODE) Stats summary card adapts to mobile layout
+- [x] (CODE) Stats summary card adapts to mobile layout
   - Verify: `grep -q 'sm:\|md:' src/components/verify/StatsSummary.tsx`
-- [ ] (CODE) Long document text has expand/collapse with sensible mobile default
+- [x] (CODE) Long document text has expand/collapse with sensible mobile default
   - Verify: `grep -q 'expand\|collapse\|truncat' src/components/verify/DocumentText.tsx`
 
 **Files to Create:** None
@@ -1140,13 +1140,13 @@ Configure edge caching for verification pages and badge images. Verification pag
 **Requirement:** REQ-051
 
 **Acceptance Criteria:**
-- [ ] (CODE) Verification page uses Next.js caching with revalidation
+- [x] (CODE) Verification page uses Next.js caching with revalidation
   - Verify: `grep -q 'revalidate\|cache' src/app/verify/\[id\]/page.tsx`
-- [ ] (CODE) Badge image endpoint has Cache-Control headers (24h TTL)
+- [x] (CODE) Badge image endpoint has Cache-Control headers (24h TTL)
   - Verify: `grep -q 's-maxage' src/app/api/badges/\[verificationId\]/image/route.ts`
-- [ ] (CODE) Takedown triggers on-demand revalidation for the affected badge
+- [x] (CODE) Takedown triggers on-demand revalidation for the affected badge
   - Verify: `grep -q 'revalidate\|revalidatePath\|revalidateTag' src/app/actions/badges.ts`
-- [ ] (CODE) Badge image endpoint cache headers verified (already set in Task 5.2.C)
+- [x] (CODE) Badge image endpoint cache headers verified (already set in Task 5.2.C)
   - Verify: `grep -q 's-maxage' src/app/api/badges/\[verificationId\]/image/route.ts`
 
 **Files to Modify:**
@@ -1175,15 +1175,15 @@ Add robust error handling for AI failures (provider errors, rate limits, timeout
 **Requirement:** REQ-052
 
 **Acceptance Criteria:**
-- [ ] (CODE) AI failure shows user-friendly error message with retry option
+- [x] (CODE) AI failure shows user-friendly error message with retry option
   - Verify: `grep -q 'error\|Error\|retry' src/components/editor/InlineAI.tsx`
-- [ ] (CODE) Global error boundary at app level
+- [x] (CODE) Global error boundary at app level
   - Verify: `test -f src/app/error.tsx`
-- [ ] (CODE) Custom 404 page
+- [x] (CODE) Custom 404 page
   - Verify: `test -f src/app/not-found.tsx`
-- [ ] (CODE) Save failure indicator with retry in editor
+- [x] (CODE) Save failure indicator with retry in editor
   - Verify: `grep -q 'error\|retry\|failed' src/components/editor/SaveIndicator.tsx`
-- [ ] (TEST) AI endpoint returns appropriate error codes (429, 502)
+- [x] (TEST) AI endpoint returns appropriate error codes (429, 502)
   - Verify: `npx vitest run src/app/api/ai/complete/route.test.ts`
 
 **Files to Create:**
@@ -1212,13 +1212,13 @@ Create the landing page at `/` that explains the Provenance product to new visit
 **Requirement:** REQ-001
 
 **Acceptance Criteria:**
-- [ ] (CODE) Landing page at / with product explanation
+- [x] (CODE) Landing page at / with product explanation
   - Verify: `grep -q 'Provenance' src/app/page.tsx`
-- [ ] (CODE) How it works section explaining writer and reader flows
+- [x] (CODE) How it works section explaining writer and reader flows
   - Verify: `grep -q 'how.*works\|How.*Works\|writer\|reader' src/app/page.tsx`
-- [ ] (CODE) Call-to-action button linking to /login
+- [x] (CODE) Call-to-action button linking to /login
   - Verify: `grep -q '/login' src/app/page.tsx`
-- [ ] (CODE) Authenticated users redirected to /dashboard
+- [x] (CODE) Authenticated users redirected to /dashboard
   - Verify: `grep -q 'redirect\|dashboard' src/app/page.tsx`
 
 **Files to Create:** None
@@ -1238,16 +1238,16 @@ Create the landing page at `/` that explains the Provenance product to new visit
 ### Phase 6 Checkpoint
 
 **Automated Checks:**
-- [ ] All tests pass: `npx vitest run`
-- [ ] Type checking passes: `npx tsc --noEmit`
-- [ ] Build succeeds: `npm run build`
+- [x] All tests pass: `npx vitest run`
+- [x] Type checking passes: `npx tsc --noEmit`
+- [x] Build succeeds: `npm run build`
 
 **Regression Verification:**
-- [ ] Full writer flow: login → create document → write → use AI → generate badge → copy snippet
-- [ ] Full reader flow: visit verification page → view stats → expand audit trail
-- [ ] All AI modes work (inline, side panel, freeform)
-- [ ] Origin tracking produces correct AI percentages
-- [ ] Auto-save and session tracking work correctly
+- [x] Full writer flow: login → create document → write → use AI → generate badge → copy snippet
+- [x] Full reader flow: visit verification page → view stats → expand audit trail
+- [x] All AI modes work (inline, side panel, freeform)
+- [x] Origin tracking produces correct AI percentages
+- [x] Auto-save and session tracking work correctly
 
 ---
 
