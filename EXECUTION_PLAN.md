@@ -438,13 +438,13 @@ Implement writing session tracking with start/end/heartbeat lifecycle using the 
 ### Phase 2 Checkpoint
 
 **Automated Checks:**
-- [ ] All tests pass: `npx vitest run`
-- [ ] Type checking passes: `npx tsc --noEmit`
-- [ ] Build succeeds: `npm run build`
+- [x] All tests pass: `npx vitest run`
+- [x] Type checking passes: `npx tsc --noEmit`
+- [x] Build succeeds: `npm run build`
 
 **Regression Verification:**
-- [ ] Auth flow still works (login, protected routes)
-- [ ] Document CRUD still works (create, list, delete from dashboard)
+- [x] Auth flow still works (login, protected routes)
+- [x] Document CRUD still works (create, list, delete from dashboard)
 
 ---
 
