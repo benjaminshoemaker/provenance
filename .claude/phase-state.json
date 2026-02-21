@@ -139,11 +139,11 @@
         "completed_at": null,
         "checkpoint": null,
         "tasks": [
-          { "id": "5.1.A", "status": "PENDING", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
-          { "id": "5.2.A", "status": "PENDING", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
-          { "id": "5.2.B", "status": "PENDING", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
-          { "id": "5.2.C", "status": "PENDING", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
-          { "id": "5.3.A", "status": "PENDING", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } }
+          { "id": "5.1.A", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "5.2.A", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "5.2.B", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "5.2.C", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } },
+          { "id": "5.3.A", "status": "COMPLETE", "failures": { "consecutive": 0, "verification_attempts": {}, "last_errors": [] } }
         ]
       }
     ]

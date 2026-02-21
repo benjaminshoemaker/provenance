@@ -885,7 +885,7 @@ Implement the `generateBadge()` Server Action that freezes the document text, au
 - [x] (TEST) Stats include ai_percentage, external_paste_percentage, interaction_count, session_count, total_active_seconds
   - Verify: `npx vitest run src/app/actions/badges.test.ts`
 - [x] (CODE) Badge PNG generated via @vercel/og with Provenance branding and percentage
-  - Verify: `grep -q 'ImageResponse\|vercel/og' src/lib/badge-image.ts`
+  - Verify: `grep -q 'ImageResponse\|vercel/og' src/lib/badge-image.tsx`
 - [x] (TEST) Badge is insert-only — no update or delete permitted
   - Verify: `npx vitest run src/app/actions/badges.test.ts`
 - [x] (TEST) Only document owner can generate badges — non-owners get authorization error (REQ-043)
@@ -896,7 +896,7 @@ Implement the `generateBadge()` Server Action that freezes the document text, au
 **Files to Create:**
 - `src/app/actions/badges.ts` — generateBadge Server Action
 - `src/app/actions/badges.test.ts` — Badge generation tests
-- `src/lib/badge-image.ts` — Badge PNG template using @vercel/og
+- `src/lib/badge-image.tsx` — Badge PNG template using @vercel/og
 - `src/lib/badge-snippets.ts` — HTML and Markdown embed snippet generation
 
 **Files to Modify:**
@@ -1019,7 +1019,7 @@ Create the `/api/badges/[verificationId]/image` Route Handler that serves badge 
 **Files to Modify:** None
 
 **Existing Code to Reference:**
-- `src/lib/badge-image.ts` — Badge PNG generation
+- `src/lib/badge-image.tsx` — Badge PNG generation
 - `src/lib/badge-snippets.ts` — Snippet templates
 
 **Dependencies:** Task 5.1.A
