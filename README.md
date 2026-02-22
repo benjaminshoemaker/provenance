@@ -25,7 +25,7 @@ Open [http://localhost:3000](http://localhost:3000).
 ## How It Works
 
 1. **Write** in the TipTap-based editor with full formatting support
-2. **Use AI** via inline tools (select text, choose an action like Improve/Simplify/Expand)
+2. **Use AI** via inline tools or the side-panel chat (research, critique, brainstorm)
 3. **Every interaction is tracked** — AI suggestions, pastes from external sources, manual edits
 4. **Generate a badge** that shows the exact AI percentage, embeddable in any blog or site
 5. **Readers verify** by clicking the badge to see the full audit trail
@@ -34,7 +34,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 | Layer | Technology |
 |-------|-----------|
-| Framework | Next.js 15 (App Router) |
+| Framework | Next.js 16 (App Router) |
 | Language | TypeScript |
 | Database | Neon PostgreSQL |
 | ORM | Drizzle ORM |
@@ -51,14 +51,15 @@ Open [http://localhost:3000](http://localhost:3000).
 src/
   app/              # Next.js App Router pages and API routes
     dashboard/      # Document list with sidebar, search, filters
-    editor/[id]/    # Full-width editor with inline AI
+    editor/[id]/    # Two-panel editor with inline AI + chat sidebar
     verify/[id]/    # Public verification page
     settings/       # User preferences (AI provider, model)
-    api/            # Route handlers (AI completion, badges, timeline)
+    api/            # Route handlers (AI completion, chat, badges, timeline)
     actions/        # Server actions (documents, sessions, AI interactions)
   components/
     dashboard/      # Sidebar, DocumentRow, DashboardContent
     editor/         # Editor, InlineAI, Toolbar, TrackChangesDiff, TimelineModal
+      chat/         # AI chat panel (ChatPanel, ChatMessage, ChatInput, ChatHeader)
     verify/         # StatsSummary, AuditTimeline, TimelineMinimap, ScopeStatement
     ui/             # Shared components (BackLink, tooltip, etc.)
   extensions/       # TipTap extensions (OriginMark, PasteHandler)
