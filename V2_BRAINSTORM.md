@@ -8,7 +8,6 @@
 
 - **Audit trail panel**: A vertical section to the right of the main editor showing the audit trail as it builds. Collapsible. Doesn't need real-time updates — refresh every ~10 seconds with the full trail.
 - **AI chat panel**: Always available but collapsible. The "Chat with AI" conversational interface should be accessible without leaving the editor.
-- **Model switcher**: A model selector directly in the AI sidebar — users are familiar with this pattern from ChatGPT, Claude, and similar tools. Let users pick the model (e.g. fast vs. capable) without leaving the writing context.
 - **IDE-style pane layout**: Multiple panes (audit trail, AI chat) that can be expanded and retracted independently, similar to how VS Code or other IDEs handle sidebar panels. The writer controls what's visible based on what they need at the moment.
 
 ---

@@ -30,3 +30,6 @@ npm-debug.log*
 .codex/
 .playwright-mcp/
 tsconfig.tsbuildinfo
+
+# Mockup images
+mockups/*.png
