@@ -6,7 +6,7 @@ Workflow guidelines for AI agents executing tasks from EXECUTION_PLAN.md.
 
 ## Project Context
 
-**Tech Stack:** TypeScript, Next.js 15 (App Router), Tailwind CSS, shadcn/ui, Neon PostgreSQL, Auth.js v5, Drizzle ORM, TipTap v2, Vercel AI SDK, Vitest
+**Tech Stack:** TypeScript, Next.js 16 (App Router), Tailwind CSS v4, shadcn/ui, Neon PostgreSQL, Auth.js v5, Drizzle ORM, TipTap v2, Vercel AI SDK 6, Vitest
 
 **Dev Server:** `npm run dev` → `http://localhost:3000` (wait 5s for startup)
 
