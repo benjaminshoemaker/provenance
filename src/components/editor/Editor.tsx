@@ -232,7 +232,7 @@ export function Editor({
         <Toolbar editor={editor} onHistoryClick={() => setShowTimeline(true)} />
       </div>
       <div ref={scrollAreaRef} className="flex-1 overflow-auto">
-        <div ref={proseAreaRef} className="mx-auto max-w-3xl px-16 py-8">
+        <div ref={proseAreaRef} className="mx-auto max-w-4xl px-8 py-8">
           <EditorContent
             editor={editor}
             className="prose prose-neutral dark:prose-invert max-w-none focus-within:outline-none [&_.tiptap]:min-h-[60vh] [&_.tiptap]:outline-none"

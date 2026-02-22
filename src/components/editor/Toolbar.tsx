@@ -167,7 +167,7 @@ export function Toolbar({ editor, onHistoryClick }: ToolbarProps) {
             <Button
               key={title}
               variant={isActive() ? "secondary" : "ghost"}
-              size="icon-xs"
+              size="icon-sm"
               onClick={action}
               title={title}
               type="button"
@@ -201,7 +201,7 @@ export function Toolbar({ editor, onHistoryClick }: ToolbarProps) {
       {/* History button */}
       <Button
         variant="ghost"
-        size="icon-xs"
+        size="icon-sm"
         onClick={onHistoryClick}
         title="History"
         type="button"
