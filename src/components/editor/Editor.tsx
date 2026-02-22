@@ -13,7 +13,21 @@ import { Toolbar } from "./Toolbar";
 import { InlineAI } from "./InlineAI";
 import { FreeformAI } from "./FreeformAI";
 import { TimelineModal } from "./TimelineModal";
+import { ChatPanel } from "./chat/ChatPanel";
+import {
+  ResizablePanelGroup,
+  ResizablePanel,
+  ResizableHandle,
+} from "@/components/ui/resizable";
+import type { PanelImperativeHandle } from "react-resizable-panels";
 import { Sparkles } from "lucide-react";
+
+interface ThreadSummary {
+  id: string;
+  title: string;
+  messageCount: number | null;
+  updatedAt: Date | null;
+}
 
 interface EditorProps {
   content: Record<string, unknown>;
@@ -21,6 +35,9 @@ interface EditorProps {
   title: string;
   provider?: string;
   model?: string;
+  chatOpen?: boolean;
+  onChatToggle?: () => void;
+  initialChatThreads?: ThreadSummary[];
   onUpdate?: (json: Record<string, unknown>) => void;
 }
 
@@ -42,11 +59,15 @@ export function Editor({
   onUpdate,
   provider = "anthropic",
   model,
+  chatOpen = true,
+  onChatToggle,
+  initialChatThreads = [],
 }: EditorProps) {
   const [selection, setSelection] = useState<TextSelection | null>(null);
   const [showInlineAI, setShowInlineAI] = useState(false);
   const [showFreeform, setShowFreeform] = useState(false);
   const [showTimeline, setShowTimeline] = useState(false);
+  const [showLens, setShowLens] = useState(false);
   const [triggerPosition, setTriggerPosition] = useState<TriggerPosition>({
     top: 96,
     left: 0,
@@ -57,8 +78,10 @@ export function Editor({
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const proseAreaRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<Record<string, unknown>>(content);
+  const chatPanelRef = useRef<PanelImperativeHandle>(null);
 
   const getDocumentContent = useCallback(() => contentRef.current, []);
+  const handleLensToggle = useCallback(() => setShowLens((v) => !v), []);
 
   const handleExternalPaste = useCallback(
     (pastedContent: string, characterCount: number) => {
@@ -178,6 +201,34 @@ export function Editor({
     };
   }, [editor, updateTriggerPosition]);
 
+  // Dynamically toggle lens-off class on the ProseMirror editor root
+  useEffect(() => {
+    if (!editor) return;
+    const el = editor.view.dom;
+    if (showLens) {
+      el.classList.remove("lens-off");
+    } else {
+      el.classList.add("lens-off");
+    }
+  }, [editor, showLens]);
+
+  // Cmd+Shift+H keyboard shortcut for lens toggle, scoped to editor container
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.code === "KeyH" &&
+        e.shiftKey &&
+        (e.metaKey || e.ctrlKey) &&
+        proseAreaRef.current?.contains(document.activeElement)
+      ) {
+        e.preventDefault();
+        setShowLens((v) => !v);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   useEffect(() => {
     if (!selection) {
       setShowInlineAI(false);
@@ -212,6 +263,29 @@ export function Editor({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  // Sync chatOpen prop with imperative panel handle
+  useEffect(() => {
+    const panel = chatPanelRef.current;
+    if (!panel) return;
+    if (chatOpen) {
+      panel.expand();
+    } else {
+      panel.collapse();
+    }
+  }, [chatOpen]);
+
+  // ⌘L keyboard shortcut to toggle AI chat panel
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "l") {
+        e.preventDefault();
+        onChatToggle?.();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onChatToggle]);
+
   const handleAIResponse = useCallback(
     (responseText: string) => {
       if (!editor) return;
@@ -223,48 +297,86 @@ export function Editor({
   );
 
   return (
-    <main
-      ref={mainRef}
-      className="relative flex h-[calc(100vh-8rem)] w-full flex-col rounded-lg border"
-      role="main"
-    >
-      <div className="border-b">
-        <Toolbar editor={editor} onHistoryClick={() => setShowTimeline(true)} />
-      </div>
-      <div ref={scrollAreaRef} className="flex-1 overflow-auto">
-        <div ref={proseAreaRef} className="mx-auto max-w-4xl px-8 py-8">
-          <EditorContent
-            editor={editor}
-            className="prose prose-neutral dark:prose-invert max-w-none focus-within:outline-none [&_.tiptap]:min-h-[60vh] [&_.tiptap]:outline-none"
-          />
-        </div>
-      </div>
-
-      <button
-        type="button"
-        onMouseDown={(e) => {
-          // Keep editor selection when clicking trigger so highlighted text remains available.
-          e.preventDefault();
-        }}
-        onClick={handleAITriggerClick}
-        className="absolute z-40 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-violet-200 bg-background text-violet-600 shadow-sm transition-colors hover:bg-violet-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-provenance-500"
-        style={{
-          top: `${triggerPosition.top}px`,
-          left: `${triggerPosition.left}px`,
-        }}
-        aria-label={
-          selection?.text.trim()
-            ? "Modify selected text with AI"
-            : "Open AI assistant"
-        }
-        title={
-          selection?.text.trim() ? "Modify selected text" : "Open AI assistant"
-        }
-        data-testid="inline-ai-trigger"
+    <>
+      <ResizablePanelGroup
+        orientation="horizontal"
+        className="h-[calc(100vh-8rem)] w-full rounded-lg border"
       >
-        <Sparkles className="h-4 w-4" />
-      </button>
+        <ResizablePanel defaultSize={65} minSize={40}>
+          <main
+            ref={mainRef}
+            className="relative flex h-full w-full flex-col"
+            role="main"
+          >
+            <div className="border-b">
+              <Toolbar
+                editor={editor}
+                onHistoryClick={() => setShowTimeline(true)}
+                showLens={showLens}
+                onLensToggle={handleLensToggle}
+                chatOpen={chatOpen}
+                onChatToggle={onChatToggle}
+              />
+            </div>
+            <div ref={scrollAreaRef} className="flex-1 overflow-auto">
+              <div ref={proseAreaRef} className="mx-auto max-w-4xl px-8 py-8">
+                <EditorContent
+                  editor={editor}
+                  className="prose prose-neutral dark:prose-invert max-w-none focus-within:outline-none [&_.tiptap]:min-h-[60vh] [&_.tiptap]:outline-none"
+                />
+              </div>
+            </div>
 
+            <button
+              type="button"
+              onMouseDown={(e) => {
+                e.preventDefault();
+              }}
+              onClick={handleAITriggerClick}
+              className="absolute z-40 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-violet-200 bg-background text-violet-600 shadow-sm transition-colors hover:bg-violet-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-provenance-500"
+              style={{
+                top: `${triggerPosition.top}px`,
+                left: `${triggerPosition.left}px`,
+              }}
+              aria-label={
+                selection?.text.trim()
+                  ? "Modify selected text with AI"
+                  : "Open AI assistant"
+              }
+              title={
+                selection?.text.trim()
+                  ? "Modify selected text"
+                  : "Open AI assistant"
+              }
+              data-testid="inline-ai-trigger"
+            >
+              <Sparkles className="h-4 w-4" />
+            </button>
+          </main>
+        </ResizablePanel>
+
+        <ResizableHandle withHandle />
+
+        <ResizablePanel
+          panelRef={chatPanelRef}
+          defaultSize={35}
+          minSize={25}
+          collapsible
+          collapsedSize={0}
+          onResize={() => updateTriggerPosition()}
+        >
+          <ChatPanel
+            documentId={documentId}
+            provider={provider}
+            model={model}
+            getDocumentContent={getDocumentContent}
+            initialThreads={initialChatThreads}
+            onClose={() => onChatToggle?.()}
+          />
+        </ResizablePanel>
+      </ResizablePanelGroup>
+
+      {/* Modals render outside the panel group so they overlay correctly */}
       {showInlineAI && selection && editor && (
         <InlineAI
           editor={editor}
@@ -295,6 +407,6 @@ export function Editor({
         isOpen={showTimeline}
         onClose={() => setShowTimeline(false)}
       />
-    </main>
+    </>
   );
 }

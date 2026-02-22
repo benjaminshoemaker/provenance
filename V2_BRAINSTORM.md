@@ -140,69 +140,140 @@ This is the most market-relevant trend for Provenance:
 
 ---
 
-## Core User Flows to Support
+## Core User Flows — Prioritized
 
-Based on the research + the three stated personal patterns:
+Ranked by value to writers/readers and current support level. Investment should focus on high-value, low-support flows.
 
-### Flow 1: Research Companion (Pattern A)
-**"I want to understand something before/while I write about it."**
+| Rank | Flow | Value (1-100) | Current Support |
+|------|------|:-------------:|:---------------:|
+| 1 | Critical Reader | 95 | Barely |
+| 2 | Flow & Structure | 85 | Minimal |
+| 3 | Documents & Onboarding | 65 | Basic |
+| 4 | Research Companion | 55 | Partial |
+| 5 | Inline Generation | 50 | Good |
+| 6 | Polish Pass | 45 | Partial |
+| 7 | Badge & Verification | 90 | Complete |
 
-The writer is exploring a topic. They might paste in source material, ask open-ended questions, or want the AI to synthesize across sources. The output goes into the writer's thinking, not directly into the document.
+---
 
-- Happens in the **AI chat panel**
-- Writer can reference document content ("based on what I've written so far...")
-- AI responses stay in the panel — writer manually pulls in anything useful
-- Audit trail logs the full interaction
-
-### Flow 2: Critical Reader (Pattern C)
+### Flow 1: Critical Reader (Value: 95 · Support: Barely)
 **"Read what I've written and tell me what's wrong with my thinking."**
+
+The 2026 research is unambiguous: "think with me" is the dominant paradigm, the most valued use case, and the least well-served by existing tools. For writers, it's the thing they most want AI to do. For readers, "writer asked for critique, then made their own edits" is the most compelling audit trail entry possible — it's direct evidence of human thinking.
 
 The writer has a draft (or partial draft) and wants diagnostic feedback. Not line edits — structural and intellectual critique. "Where does my argument fall apart? Where do I lose the reader?"
 
+**Ideal UX:**
 - Writer selects text (or the whole document) and asks for critique
 - AI responds with **annotations/comments**, not rewrites
 - Comments appear inline or in the chat panel, referencing specific parts of the text
 - Writer makes their own edits based on the feedback
 - Audit trail logs the critique request and what the writer did with it
 
-### Flow 3: Flow & Structure Improvement (Patterns D + E)
+**Current state:** A writer could type "critique my draft" into the Side Panel chat and get feedback since the panel has document context. But there's no dedicated critique action, no inline annotations, no way for AI to point at specific sections, and no comments system. The writer has to mentally map between chat feedback and their document. A writer would get better results pasting their draft into Claude directly.
+
+---
+
+### Flow 2: Flow & Structure Improvement (Value: 85 · Support: Minimal)
 **"Help me reorganize and tighten this."**
+
+Addresses the #1 pain point across all research: destructive edits. When done as tracked changes instead of rewrites, it's a genuine differentiator — no mainstream writing tool does this well. For readers, an audit trail full of individual accept/reject decisions on surgical suggestions is rich and trustworthy.
 
 The writer wants to improve how the piece reads — reorder sections, improve transitions, cut dead weight, tighten prose. This is where destructive edits are the biggest risk.
 
+**Ideal UX:**
 - AI suggests structural changes as **proposals**: "Consider moving section X before Y because..."
 - For prose-level improvements: **tracked changes** style (like Word or Google Docs suggestions mode)
 - Writer accepts/rejects each change individually
 - Wholesale rewrites are never the default — always surgical suggestions
 - Audit trail captures every suggestion and the writer's accept/reject decision
 
-### Flow 4: Inline Generation (Pattern B)
+**Current state:** The Inline AI has "Improve" and "Simplify" buttons on text selection, but these are paragraph-level rewrites — the AI replaces the selection wholesale. No tracked changes, no suggestion mode, no way to ask for structural reorganization, no diff view. The "Improve" button is a destructive edit — exactly the problem the research identifies as the #1 frustration. The app actively does the wrong thing for this flow.
+
+---
+
+### Flow 3: Documents & Onboarding (Value: 65 · Support: Basic)
+**"I just signed up — what do I do?"**
+
+This is an adoption gate, not a feature. A weak empty state means writers never create document #1, which means every other flow is irrelevant. The 2026 data shows writers will only switch editors if friction is extremely low — the first 30 seconds matter enormously.
+
+**Ideal UX:**
+- Empty state communicates the value prop and makes the first action obvious
+- Not just a blank page — something that shows what Provenance does and why it matters
+- Clear path from "I just signed up" to "I'm writing my first document"
+
+**Current state:** Dashboard shows documents with word count, last modified, and badge count. Empty state is just a text message. No value prop communication, no encouraging first-run experience, no search, no document status indicators (draft vs. badge generated).
+
+---
+
+### Flow 4: Research Companion (Value: 55 · Support: Partial)
+**"I want to understand something before/while I write about it."**
+
+The writer is exploring a topic. They might paste in source material, ask open-ended questions, or want the AI to synthesize across sources. The output goes into the writer's thinking, not directly into the document. Useful but well-served by existing tools — writers already have Claude/ChatGPT in another tab. The unique Provenance value is that research gets logged in the audit trail, which is moderately interesting to readers ("the writer did their homework").
+
+**Ideal UX:**
+- Happens in the **AI chat panel**
+- Writer can reference document content ("based on what I've written so far...")
+- AI responses stay in the panel — writer manually pulls in anything useful
+- Audit trail logs the full interaction
+
+**Current state:** Side Panel chat exists and is document-aware (sends document content as context). A writer can ask research questions. But chat history resets on page reload — no persistence. No way to reference specific parts of the document. No way to pull a useful response into the document with a single action — writer has to manually copy/paste.
+
+---
+
+### Flow 5: Inline Generation (Value: 50 · Support: Good)
 **"Write me a paragraph about X" or "Expand on this point."**
 
-The writer wants AI to generate text, either from scratch or by expanding something they've started. This is the most "traditional" AI writing interaction.
+The most traditional AI writing interaction. Every AI writing tool does this. Already the best-supported flow in the app. For readers, heavy AI generation actually makes the badge less interesting (high AI%). Necessary to have, not where investment creates differentiation.
 
+**Ideal UX:**
 - Writer places cursor or selects text and invokes AI
 - AI-generated text appears as a **suggestion** (visually distinct from committed text)
 - Writer can accept, modify, or reject
 - If accepted, text is marked as AI-originated in the audit trail
 - If modified then accepted, the diff is captured
 
-### Flow 5: Polish Pass (Pattern E)
+**Current state:** Inline AI "Expand" works on selected text. Freeform AI (Cmd+K) lets the writer request any generation. Generated text gets origin-marked as AI. Accept/reject is tracked. The main gap is no "accept but modify" step that shows the diff — it's binary accept or reject.
+
+---
+
+### Flow 6: Polish Pass (Value: 45 · Support: Partial)
 **"Clean up my grammar and tighten the prose in this section."**
 
-Final-stage editing. The writer wants line-level improvements without structural changes.
+Final-stage editing. Table stakes in 2026 — grammar fixing is baseline expected. For readers, "writer fixed some commas" is the least interesting audit trail entry. The current all-or-nothing accept/reject is annoying but not a dealbreaker.
 
+**Ideal UX:**
 - Select text → "Polish this" / "Tighten this" / "Fix grammar"
 - Changes appear as **tracked changes** — green insertions, red deletions
 - Writer reviews each change individually
 - Batch "accept all" is available but not the default
 - Audit trail logs every individual accept/reject
 
+**Current state:** Inline AI "Fix Grammar" works on selected text and shows the result with accept/reject. But it's all-or-nothing — the AI rewrites the entire selection and you accept or reject the whole thing. No individual change review, no way to accept some fixes and reject others. Risk of voice erosion.
+
+---
+
+### Flow 7: Badge & Verification (Value: 90 · Support: Complete)
+**"I'm done — generate my proof."**
+
+The entire product thesis. Without this, there's no reason to use Provenance over any other editor. The "human-first premium" research shows writers now have economic motivation to prove their process. For readers, this is their only touchpoint with the product. Already fully built and solid.
+
+**Ideal UX:**
+- Preview page shows everything that will be public (with explicit warning)
+- Badge generation freezes the audit trail as an immutable snapshot
+- Verification page shows stats, timeline, full text
+- Badge image dynamically generated
+- HTML/Markdown snippets for embedding
+
+**Current state:** Fully implemented. Preview with public content warning, badge generation with frozen audit trail, verification page with stats/timeline/full text, dynamic badge image, HTML/Markdown snippets, takedown support. No major gaps.
+
 ---
 
 ## Deferred Items
 
 - **BadgeList integration**: BadgeList has been removed from the editor view. It will be integrated with the audit trail panel when that panel is implemented.
+- **getDocumentContent tool**: AI tool that retrieves the current document content during chat, enabling the AI to reference specific sections without sending the full document in every message.
+- **Cross-highlighting / annotations**: When AI references a specific section of the document in chat, highlight that section in the editor. Bidirectional: clicking an annotation in the chat scrolls to that section, and vice versa.
 
 ---
 

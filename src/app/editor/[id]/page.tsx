@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { documents, users } from "@/lib/db/schema";
-import { eq, and, isNull } from "drizzle-orm";
+import { documents, users, chatThreads } from "@/lib/db/schema";
+import { eq, and, isNull, desc } from "drizzle-orm";
 import { redirect, notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -32,10 +32,23 @@ export default async function EditorPage({
     redirect("/dashboard");
   }
 
-  const [prefs] = await db
-    .select({ aiProvider: users.aiProvider, aiModel: users.aiModel })
-    .from(users)
-    .where(eq(users.id, session.user.id));
+  const [prefs, threads] = await Promise.all([
+    db
+      .select({ aiProvider: users.aiProvider, aiModel: users.aiModel })
+      .from(users)
+      .where(eq(users.id, session.user.id))
+      .then((rows) => rows[0]),
+    db
+      .select({
+        id: chatThreads.id,
+        title: chatThreads.title,
+        messageCount: chatThreads.messageCount,
+        updatedAt: chatThreads.updatedAt,
+      })
+      .from(chatThreads)
+      .where(eq(chatThreads.documentId, id))
+      .orderBy(desc(chatThreads.updatedAt)),
+  ]);
 
   return (
     <div className="px-4 py-4">
@@ -53,6 +66,7 @@ export default async function EditorPage({
         initialContent={document.content as Record<string, unknown>}
         aiProvider={prefs?.aiProvider ?? "anthropic"}
         aiModel={prefs?.aiModel ?? null}
+        initialChatThreads={threads}
       />
     </div>
   );

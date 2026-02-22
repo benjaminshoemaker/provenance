@@ -7,6 +7,7 @@ import {
   pasteEvents,
   writingSessions,
   revisions,
+  chatThreads,
 } from "@/lib/db/schema";
 import { requireDocumentOwner } from "@/lib/auth/authorize";
 import {
@@ -23,7 +24,7 @@ export async function generateBadge(documentId: string) {
   const { document } = await requireDocumentOwner(documentId);
 
   // Fetch audit trail data
-  const [interactions, pastes, sessions, documentRevisions] = await Promise.all([
+  const [interactions, pastes, sessions, documentRevisions, threads] = await Promise.all([
     db
       .select()
       .from(aiInteractions)
@@ -40,6 +41,15 @@ export async function generateBadge(documentId: string) {
       .select()
       .from(revisions)
       .where(eq(revisions.documentId, documentId)),
+    db
+      .select({
+        mode: chatThreads.mode,
+        summary: chatThreads.summary,
+        messageCount: chatThreads.messageCount,
+        createdAt: chatThreads.createdAt,
+      })
+      .from(chatThreads)
+      .where(eq(chatThreads.documentId, documentId)),
   ]);
 
   // Extract plain text and calculate metrics
@@ -73,6 +83,7 @@ export async function generateBadge(documentId: string) {
     session_count: sessions.length,
     total_active_seconds: totalActiveSeconds,
     total_characters: metrics.total_characters,
+    chat_thread_count: threads.length,
   };
 
   // Generate verification ID
@@ -103,6 +114,12 @@ export async function generateBadge(documentId: string) {
     revisions: documentRevisions.map((r) => ({
       trigger: r.trigger,
       createdAt: r.createdAt,
+    })),
+    chat_threads: threads.map((t) => ({
+      mode: t.mode,
+      summary: t.summary,
+      messageCount: t.messageCount,
+      createdAt: t.createdAt,
     })),
   };
 

@@ -1,5 +1,25 @@
 import { z } from "zod";
 
+export const chatRequestSchema = z.object({
+  provider: z.enum(["anthropic", "openai"]).optional(),
+  model: z.string().max(100).optional(),
+  messages: z
+    .array(
+      z
+        .object({
+          id: z.string().optional(),
+          role: z.enum(["user", "assistant", "system"]),
+          content: z.union([z.string(), z.array(z.any())]).optional(),
+          parts: z.array(z.any()).optional(),
+        })
+        .passthrough()
+    )
+    .min(1)
+    .max(100),
+  documentContext: z.string().max(50_000).optional(),
+  threadId: z.string().uuid().optional(),
+});
+
 export const aiCompletionSchema = z
   .object({
     mode: z.enum(["inline", "side_panel", "freeform"]),

@@ -185,6 +185,30 @@ export const badges = pgTable(
   (table) => [index("badges_document_created_idx").on(table.documentId, table.createdAt)]
 );
 
+export const chatThreads = pgTable(
+  "chat_threads",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    documentId: uuid("document_id")
+      .notNull()
+      .references(() => documents.id),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id),
+    title: text("title").notNull().default("New conversation"),
+    messages: jsonb("messages").notNull().default([]),
+    mode: text("mode").notNull().default("ask"),
+    summary: jsonb("summary"),
+    model: text("model"),
+    messageCount: integer("message_count").default(0),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+  },
+  (table) => [
+    index("chat_threads_document_idx").on(table.documentId, table.updatedAt),
+  ]
+);
+
 export const aiRequestLog = pgTable(
   "ai_request_log",
   {
@@ -221,6 +245,7 @@ export const documentsRelations = relations(documents, ({ one, many }) => ({
   pasteEvents: many(pasteEvents),
   writingSessions: many(writingSessions),
   badges: many(badges),
+  chatThreads: many(chatThreads),
 }));
 
 export const revisionsRelations = relations(revisions, ({ one }) => ({
@@ -275,6 +300,17 @@ export const badgesRelations = relations(badges, ({ one }) => ({
   }),
 }));
 
+export const chatThreadsRelations = relations(chatThreads, ({ one }) => ({
+  document: one(documents, {
+    fields: [chatThreads.documentId],
+    references: [documents.id],
+  }),
+  user: one(users, {
+    fields: [chatThreads.userId],
+    references: [users.id],
+  }),
+}));
+
 // ─── Inferred Types ─────────────────────────────────────────────────────────
 
 export type User = typeof users.$inferSelect;
@@ -297,3 +333,6 @@ export type NewWritingSession = typeof writingSessions.$inferInsert;
 
 export type Badge = typeof badges.$inferSelect;
 export type NewBadge = typeof badges.$inferInsert;
+
+export type ChatThread = typeof chatThreads.$inferSelect;
+export type NewChatThread = typeof chatThreads.$inferInsert;

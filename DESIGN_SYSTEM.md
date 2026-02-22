@@ -107,28 +107,39 @@ Reference mockups: `/mockups/ui-mockups.html`
 - AI badge: `px-1.5 py-0.5 text-[10px] font-medium bg-emerald-50 text-emerald-700 rounded`
 - Word count: `text-[10px] text-gray-400`
 
-### Editor (Full Width)
+### Editor (Two-Panel Layout)
 
 ```
-+------------------------------------------+
-| <- Dashboard   Title input     [History] |
-| Toolbar: B I | H1 H2 | Link Image Code  |
-| Origin legend: o Human  o AI  o Pasted   |
-+------------------------------------------+
-|                                          |
-|   Full-width prose editor                |
-|   (max-w-3xl mx-auto)                   |
-|                                  [AI]    | <- Floating margin icon
-|                                          |
-+------------------------------------------+
++-------------------------------------------------------------------+
+| <- Dashboard   Title input                [History] [AI]          |
+| Toolbar: B I | H1 H2 | Link Image Code | Provenance | AI toggle |
++-------------------------------+-----------------------------------+
+|                               | AI  [Ask|Edit]  [+] [x]          |
+|   Prose editor                |-----------------------------------|
+|   (max-w-4xl mx-auto)        |  Ask about your document          |
+|                       [AI]    |  [Critique] [Weakness] [Research] |
+|                               |                                   |
+|                               |  User message (gray card)         |
+|                               |  Assistant message (white card)   |
+|                               |                                   |
+|                               |  [Ask about your document...]  -> |
++-------------------------------+-----------------------------------+
 ```
 
-- **No side panels** — editor is full-width
-- **No activity bar** — removed
-- **No resizable panels** — removed
-- **AI interactions**: Gemini-style floating margin icon + Cmd+K freeform modal
+- **Resizable two-panel layout**: Editor (65%) + AI chat panel (35%), drag handle between
+- **AI chat panel**: Collapsible via toolbar toggle or `Cmd+L`, open by default
+- **AI interactions**: Gemini-style floating margin icon + Cmd+K freeform modal + AI chat panel
 - **Timeline access**: Clock/history icon button in toolbar
 - **Origin legend**: In toolbar area — small dots with labels
+
+### Chat Panel
+
+- **Background**: `bg-gray-50`
+- **User messages**: `bg-gray-100 rounded-lg px-3 py-2` — gray card
+- **Assistant messages**: `bg-white border border-gray-200 rounded-lg px-3 py-2` — white card with border
+- **Header**: Segmented Ask/Edit control (Edit disabled), thread dropdown, new thread (+), close (X)
+- **Input**: Auto-resize textarea with send/stop button, submit on Enter, Shift+Enter for newline
+- **Empty state**: Suggested prompts as pill buttons
 
 ---
 
@@ -266,6 +277,7 @@ Primary style (shields.io):
 | Shortcut | Action |
 |----------|--------|
 | `Cmd+K` | Freeform AI modal |
+| `Cmd+L` | Toggle AI panel |
 | (To be defined) | Open AI inline widget |
 
 ---
@@ -273,6 +285,6 @@ Primary style (shields.io):
 ## What's NOT in scope (deferred)
 
 - Minimalistic editor redesign (v2 brainstorm)
-- Conversational AI chat panel (removed, add back later)
 - Dark mode (CSS variables exist but not actively designed for)
-- Resizable/collapsible panels (dropped in favor of full-width editor)
+- AI Edit mode (disabled in segmented control, coming later)
+- Cross-highlighting / annotations between chat and editor

@@ -20,14 +20,21 @@ import {
   Undo,
   Redo,
   Clock,
+  Eye,
+  EyeOff,
+  Sparkles,
 } from "lucide-react";
 
 interface ToolbarProps {
   editor: Editor | null;
   onHistoryClick?: () => void;
+  showLens?: boolean;
+  onLensToggle?: () => void;
+  chatOpen?: boolean;
+  onChatToggle?: () => void;
 }
 
-export function Toolbar({ editor, onHistoryClick }: ToolbarProps) {
+export function Toolbar({ editor, onHistoryClick, showLens, onLensToggle, chatOpen, onChatToggle }: ToolbarProps) {
   if (!editor) return null;
 
   const items = [
@@ -180,20 +187,32 @@ export function Toolbar({ editor, onHistoryClick }: ToolbarProps) {
 
       <div className="mx-2 w-px self-stretch bg-border" />
 
-      {/* Origin legend */}
-      <div className="flex items-center gap-3 text-xs text-muted-foreground">
-        <span className="flex items-center gap-1">
-          <span className="inline-block h-2 w-2 rounded-full bg-gray-400" />
-          Human
-        </span>
-        <span className="flex items-center gap-1">
-          <span className="inline-block h-2 w-2 rounded-full bg-violet-400" />
-          AI
-        </span>
-        <span className="flex items-center gap-1">
-          <span className="inline-block h-2 w-2 rounded-full bg-orange-400" />
-          Pasted
-        </span>
+      {/* Provenance lens toggle */}
+      <div className="flex items-center gap-2">
+        <Button
+          variant={showLens ? "secondary" : "ghost"}
+          size="sm"
+          onClick={onLensToggle}
+          title="Toggle provenance highlights (⌘⇧H)"
+          type="button"
+          aria-pressed={showLens}
+          className="flex items-center gap-1.5 text-xs"
+        >
+          {showLens ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+          Provenance
+        </Button>
+        {showLens && (
+          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <span className="inline-block h-2 w-2 rounded-full bg-violet-400" />
+              AI
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="inline-block h-2 w-2 rounded-full bg-orange-400" />
+              Pasted
+            </span>
+          </div>
+        )}
       </div>
 
       <div className="mx-2 w-px self-stretch bg-border" />
@@ -207,6 +226,22 @@ export function Toolbar({ editor, onHistoryClick }: ToolbarProps) {
         type="button"
       >
         <Clock className="h-4 w-4" />
+      </Button>
+
+      <div className="mx-2 w-px self-stretch bg-border" />
+
+      {/* AI panel toggle */}
+      <Button
+        variant={chatOpen ? "secondary" : "ghost"}
+        size="sm"
+        onClick={onChatToggle}
+        title="Toggle AI panel (⌘L)"
+        type="button"
+        aria-pressed={chatOpen}
+        className="flex items-center gap-1.5 text-xs"
+      >
+        <Sparkles className="h-4 w-4" />
+        AI
       </Button>
     </div>
   );

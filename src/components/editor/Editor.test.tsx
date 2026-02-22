@@ -4,11 +4,13 @@ import { render, screen, fireEvent, act } from "@testing-library/react";
 const mockSetTextSelection = vi.fn(() => ({ run: vi.fn() }));
 
 // Mock TipTap
+const mockDom = document.createElement("div");
 const mockEditor = {
   getJSON: vi.fn(() => ({ type: "doc", content: [] })),
   getHTML: vi.fn(() => "<p></p>"),
   getText: vi.fn(() => ""),
   view: {
+    dom: mockDom,
     coordsAtPos: vi.fn(() => ({ top: 220, left: 640, right: 640, bottom: 236 })),
   },
   state: {
@@ -101,6 +103,13 @@ vi.mock("@ai-sdk/react", () => ({
     handleInputChange: vi.fn(),
     handleSubmit: vi.fn(),
   })),
+  useChat: vi.fn(() => ({
+    messages: [],
+    setMessages: vi.fn(),
+    sendMessage: vi.fn(),
+    status: "ready",
+    stop: vi.fn(),
+  })),
 }));
 
 vi.mock("@/app/actions/ai-interactions", () => ({
@@ -115,6 +124,20 @@ vi.mock("next/link", () => ({
 
 vi.mock("./TimelineModal", () => ({
   TimelineModal: () => null,
+}));
+
+vi.mock("./chat/ChatPanel", () => ({
+  ChatPanel: () => <div data-testid="chat-panel">Chat Panel</div>,
+}));
+
+vi.mock("@/components/ui/resizable", () => ({
+  ResizablePanelGroup: ({ children, ...props }: any) => <div data-testid="resizable-group" {...props}>{children}</div>,
+  ResizablePanel: ({ children, ...props }: any) => <div data-testid="resizable-panel" {...props}>{children}</div>,
+  ResizableHandle: () => <div data-testid="resizable-handle" />,
+}));
+
+vi.mock("react-resizable-panels", () => ({
+  usePanelRef: vi.fn(() => ({ current: null })),
 }));
 
 import { Editor } from "./Editor";
@@ -196,7 +219,7 @@ describe("Editor", () => {
     );
   });
 
-  it("should render editor content full-width without panels", () => {
+  it("should render editor content within resizable panel layout", () => {
     render(
       <Editor
         content={{ type: "doc", content: [] }}

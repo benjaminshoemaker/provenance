@@ -10,16 +10,25 @@ import { BackLink } from "@/components/ui/BackLink";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
+interface ThreadSummary {
+  id: string;
+  title: string;
+  messageCount: number | null;
+  updatedAt: Date | null;
+}
+
 interface EditorShellProps {
   documentId: string;
   initialTitle: string;
   initialContent: Record<string, unknown>;
   aiProvider: string;
   aiModel: string | null;
+  initialChatThreads?: ThreadSummary[];
 }
 
-export function EditorShell({ documentId, initialTitle, initialContent, aiProvider, aiModel }: EditorShellProps) {
+export function EditorShell({ documentId, initialTitle, initialContent, aiProvider, aiModel, initialChatThreads = [] }: EditorShellProps) {
   const [title, setTitle] = useState(initialTitle);
+  const [chatOpen, setChatOpen] = useState(true);
   const { save, status, retry, isDirty } = useAutoSave({ documentId, title });
   const { markActive } = useSession({ documentId });
   const router = useRouter();
@@ -70,6 +79,9 @@ export function EditorShell({ documentId, initialTitle, initialContent, aiProvid
         provider={aiProvider}
         model={aiModel ?? undefined}
         onUpdate={handleUpdate}
+        chatOpen={chatOpen}
+        onChatToggle={() => setChatOpen((v) => !v)}
+        initialChatThreads={initialChatThreads}
       />
     </div>
   );
