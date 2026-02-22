@@ -151,7 +151,7 @@ export function Toolbar({ editor, onHistoryClick, showLens, onLensToggle, chatOp
   ];
 
   return (
-    <div className="flex items-center gap-1 p-2">
+    <div className="flex min-h-12 items-center gap-1 p-2">
       <div className="flex flex-wrap gap-1">
         {items.map((item, index) => {
           if ("type" in item && item.type === "divider") {

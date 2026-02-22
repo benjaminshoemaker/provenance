@@ -59,20 +59,31 @@ export function ChatPanel({
 }: ChatPanelProps) {
   const [threads, setThreads] = useState<ThreadSummary[]>(initialThreads);
   const [activeThreadId, setActiveThreadId] = useState<string | null>(null);
+  const [selectedProvider, setSelectedProvider] = useState(provider);
+  const [selectedModel, setSelectedModel] = useState(model);
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const startTimeRef = useRef<number>(0);
-  // Stable ref for the thread ID used during a streaming session,
-  // preventing race conditions when thread switching mid-stream.
   const streamThreadIdRef = useRef<string | null>(null);
-  // Guard against duplicate thread creation when first save is in-flight
   const savingRef = useRef(false);
 
-  // Memoize document context extraction so it doesn't run on every render
   const documentContext = useMemo(
     () => extractPlainTextFromContent(getDocumentContent()),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [getDocumentContent]
+  );
+
+  const wordCount = useMemo(
+    () => documentContext.split(/\s+/).filter(Boolean).length,
+    [documentContext]
+  );
+
+  const handleModelChange = useCallback(
+    (newProvider: string, newModel: string) => {
+      setSelectedProvider(newProvider);
+      setSelectedModel(newModel);
+    },
+    []
   );
 
   const {
@@ -86,14 +97,13 @@ export function ChatPanel({
       api: "/api/chat",
       body: {
         documentContext,
-        threadId: activeThreadId,
-        provider,
-        model,
+        ...(activeThreadId ? { threadId: activeThreadId } : {}),
+        provider: selectedProvider,
+        model: selectedModel,
       },
     }),
     experimental_throttle: 50,
     onFinish: async ({ message, messages: allMessages }) => {
-      // Use the thread ID that was active when streaming started
       const threadId = streamThreadIdRef.current;
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -105,7 +115,6 @@ export function ChatPanel({
         ? getTextFromMessage(firstUserMsg).slice(0, 50) || "New conversation"
         : "New conversation";
 
-      // Guard against duplicate saves for new threads
       if (!threadId && savingRef.current) return;
       savingRef.current = true;
 
@@ -120,8 +129,8 @@ export function ChatPanel({
             messageCount: allMessages.length,
             durationMinutes: elapsed,
             category: "ask",
-            provider: metadata?.provider ?? provider,
-            model: metadata?.model ?? model ?? "",
+            provider: metadata?.provider ?? selectedProvider,
+            model: metadata?.model ?? selectedModel ?? "",
             ...(metadata?.tokenCount
               ? { tokenCount: metadata.tokenCount }
               : {}),
@@ -129,7 +138,6 @@ export function ChatPanel({
         });
 
         if (!threadId && saved) {
-          // New thread was created — persist its ID
           setActiveThreadId(saved.id);
           streamThreadIdRef.current = saved.id;
           setThreads((prev) => [
@@ -165,14 +173,12 @@ export function ChatPanel({
 
   const isStreaming = status === "streaming";
 
-  // Scroll to bottom on new messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const handleThreadSelect = useCallback(
     async (threadId: string | null) => {
-      // Stop any in-progress stream before switching
       if (isStreaming) stop();
 
       if (!threadId) {
@@ -209,7 +215,6 @@ export function ChatPanel({
     if (!inputValue.trim()) return;
     const text = inputValue;
     setInputValue("");
-    // Snapshot the current thread ID for this streaming session
     streamThreadIdRef.current = activeThreadId;
     startTimeRef.current = startTimeRef.current || Date.now();
     sendMessage({ text });
@@ -233,13 +238,16 @@ export function ChatPanel({
         onThreadSelect={handleThreadSelect}
         onNewThread={handleNewThread}
         onClose={onClose}
+        selectedProvider={selectedProvider}
+        selectedModel={selectedModel}
+        onModelChange={handleModelChange}
       />
 
-      <div className="flex-1 overflow-y-auto px-3 py-3">
+      <div className="flex-1 overflow-y-auto px-4 py-5">
         {messages.length === 0 ? (
           <ChatEmptyState onSuggestionClick={handleSuggestionClick} />
         ) : (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-4">
             {messages.map((message, i) => (
               <ChatMessage
                 key={message.id ?? i}
@@ -260,6 +268,7 @@ export function ChatPanel({
         onSubmit={handleSubmit}
         onStop={stop}
         isStreaming={isStreaming}
+        wordCount={wordCount}
       />
     </div>
   );

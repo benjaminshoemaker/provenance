@@ -10,37 +10,33 @@ interface ChatMessageProps {
 export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
   const isUser = message.role === "user";
 
-  // Render from message.parts (v6 UIMessage pattern)
   const displayText = message.parts
     .filter((p): p is { type: "text"; text: string } => p.type === "text")
     .map((p) => p.text)
     .join("");
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const metadata = message.metadata as Record<string, any> | undefined;
-  const modelName = metadata?.model as string | undefined;
-
   return (
-    <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
+    <div className="flex flex-col gap-1">
+      {/* Role label */}
+      <span
+        className={`text-[11px] font-semibold uppercase tracking-wide ${
+          isUser ? "text-gray-500" : "text-violet-600"
+        }`}
+      >
+        {isUser ? "You" : "Claude"}
+      </span>
+
+      {/* Message card */}
       <div
-        className={`max-w-[85%] rounded-lg px-3 py-2 text-sm ${
+        className={`rounded-lg px-3 py-2.5 text-[14px] leading-relaxed ${
           isUser
-            ? "bg-gray-100 text-foreground"
-            : "border border-gray-200 bg-white text-foreground"
+            ? "bg-gray-100 text-gray-800"
+            : "border border-gray-200 bg-white text-gray-700"
         }`}
       >
         <div className="whitespace-pre-wrap break-words">{displayText}</div>
-        {isStreaming && !displayText && (
-          <div className="flex gap-1 py-1">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-muted-foreground/40" />
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-muted-foreground/40 [animation-delay:150ms]" />
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-muted-foreground/40 [animation-delay:300ms]" />
-          </div>
-        )}
-        {!isUser && modelName && !isStreaming && (
-          <div className="mt-1 text-[10px] text-muted-foreground">
-            {modelName}
-          </div>
+        {isStreaming && (
+          <span className="ml-0.5 inline-block h-3.5 w-0.5 animate-pulse bg-violet-500 align-text-bottom" />
         )}
       </div>
     </div>
