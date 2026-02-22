@@ -7,6 +7,7 @@ import { nanoid } from "nanoid";
 import { logAIInteraction } from "@/app/actions/ai-interactions";
 import { Sparkles, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { TrackChangesDiff } from "./TrackChangesDiff";
 
 const PRESETS = [
   { label: "Improve", prompt: "Improve this text while keeping the same meaning" },
@@ -44,6 +45,28 @@ interface Choice {
 function wordCount(text: string): number {
   return text.split(/\s+/).filter(Boolean).length;
 }
+
+function changeRatio(original: string, suggestion: string): number {
+  const origWords = original.split(/\s+/).filter(Boolean);
+  const suggWords = suggestion.split(/\s+/).filter(Boolean);
+  const maxLen = Math.max(origWords.length, suggWords.length);
+  if (maxLen === 0) return 0;
+  // Count words in common using LCS length
+  const m = origWords.length;
+  const n = suggWords.length;
+  const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      dp[i][j] = origWords[i - 1] === suggWords[j - 1]
+        ? dp[i - 1][j - 1] + 1
+        : Math.max(dp[i - 1][j], dp[i][j - 1]);
+    }
+  }
+  const common = dp[m][n];
+  return 1 - common / maxLen;
+}
+
+const DIFF_THRESHOLD = 0.25;
 
 function cleanSuggestionText(text: string): string {
   return text
@@ -445,9 +468,13 @@ SUGGESTION 2:
                 )}
               </div>
 
-              {/* Text content */}
-              <div className="whitespace-pre-wrap text-gray-700">
-                {choice.text}
+              {/* Text content — show inline diff only for light edits */}
+              <div className="text-gray-700">
+                {choice.isOriginal || changeRatio(selectedText, choice.text) >= DIFF_THRESHOLD ? (
+                  <span className="whitespace-pre-wrap">{choice.text}</span>
+                ) : (
+                  <TrackChangesDiff original={selectedText} suggestion={choice.text} />
+                )}
               </div>
             </button>
           );
