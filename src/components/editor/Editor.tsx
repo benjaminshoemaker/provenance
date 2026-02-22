@@ -355,7 +355,10 @@ export function Editor({
           </main>
         </ResizablePanel>
 
-        <ResizableHandle withHandle />
+        <ResizableHandle
+          withHandle={chatOpen !== false}
+          className={chatOpen === false ? "w-0 opacity-0" : ""}
+        />
 
         <ResizablePanel
           panelRef={chatPanelRef}
@@ -365,14 +368,16 @@ export function Editor({
           collapsedSize={0}
           onResize={() => updateTriggerPosition()}
         >
-          <ChatPanel
-            documentId={documentId}
-            provider={provider}
-            model={model}
-            getDocumentContent={getDocumentContent}
-            initialThreads={initialChatThreads}
-            onClose={() => onChatToggle?.()}
-          />
+          {chatOpen !== false && (
+            <ChatPanel
+              documentId={documentId}
+              provider={provider}
+              model={model}
+              getDocumentContent={getDocumentContent}
+              initialThreads={initialChatThreads}
+              onClose={() => onChatToggle?.()}
+            />
+          )}
         </ResizablePanel>
       </ResizablePanelGroup>
 

@@ -50,7 +50,7 @@ export function ChatHeader({
           AI
         </span>
 
-        {/* Mode segmented control (mockup: gray-200 bg, white active pill) */}
+        {/* Mode segmented control */}
         <div className="flex gap-px rounded-md bg-gray-200 p-0.5">
           <button
             type="button"
@@ -74,8 +74,15 @@ export function ChatHeader({
             <span className="text-xs text-gray-300">·</span>
             <select
               value={activeThreadId ?? ""}
-              onChange={(e) => onThreadSelect(e.target.value || null)}
-              className="max-w-[140px] truncate rounded bg-transparent py-0.5 pl-1 pr-0.5 text-xs font-medium text-gray-500 outline-none hover:bg-gray-200 hover:text-gray-700"
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val === "") {
+                  onNewThread();
+                } else {
+                  onThreadSelect(val);
+                }
+              }}
+              className="max-w-[140px] cursor-pointer truncate rounded border border-gray-200 bg-white py-0.5 pl-2 pr-1 text-xs font-medium text-gray-600 outline-none hover:border-gray-300"
             >
               <option value="">New chat</option>
               {threads.map((t) => (
@@ -97,7 +104,7 @@ export function ChatHeader({
             const model = allModels.find((m) => m.id === e.target.value);
             if (model) onModelChange(model.provider, model.id);
           }}
-          className="max-w-[150px] truncate rounded border border-gray-200 bg-white px-2 py-0.5 text-[11px] text-gray-500 outline-none"
+          className="max-w-[150px] cursor-pointer truncate rounded border border-gray-200 bg-white px-2 py-0.5 text-[11px] text-gray-500 outline-none"
           title="AI model"
         >
           {Object.values(providers).map((p) => (
@@ -110,15 +117,6 @@ export function ChatHeader({
             </optgroup>
           ))}
         </select>
-
-        <button
-          type="button"
-          onClick={onNewThread}
-          className="flex h-7 items-center gap-1 rounded px-1.5 text-[11px] font-medium text-gray-400 transition-colors hover:bg-gray-200 hover:text-gray-600"
-          title="New thread"
-        >
-          + New
-        </button>
 
         <button
           type="button"

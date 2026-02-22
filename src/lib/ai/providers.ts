@@ -8,6 +8,9 @@ export const providers: Record<string, AIProvider> = {
     name: "Anthropic",
     defaultModel: "claude-sonnet-4-5-20250929",
     models: [
+      { id: "claude-opus-4-6", name: "Claude Opus 4.6", tier: "standard" },
+      { id: "claude-sonnet-4-6", name: "Claude Sonnet 4.6", tier: "standard" },
+      { id: "claude-opus-4-5-20250918", name: "Claude Opus 4.5", tier: "standard" },
       { id: "claude-sonnet-4-5-20250929", name: "Claude Sonnet 4.5", tier: "standard" },
       { id: "claude-haiku-4-5-20251001", name: "Claude Haiku 4.5", tier: "fast" },
     ],
@@ -15,10 +18,12 @@ export const providers: Record<string, AIProvider> = {
   openai: {
     id: "openai",
     name: "OpenAI",
-    defaultModel: "gpt-4o",
+    defaultModel: "gpt-5.2",
     models: [
-      { id: "gpt-4o", name: "GPT-4o", tier: "standard" },
-      { id: "gpt-4o-mini", name: "GPT-4o Mini", tier: "fast" },
+      { id: "gpt-5.2", name: "GPT-5.2", tier: "standard" },
+      { id: "gpt-5.1", name: "GPT-5.1", tier: "standard" },
+      { id: "gpt-5-mini", name: "GPT-5 Mini", tier: "fast" },
+      { id: "gpt-5-nano", name: "GPT-5 Nano", tier: "fast" },
     ],
   },
 };

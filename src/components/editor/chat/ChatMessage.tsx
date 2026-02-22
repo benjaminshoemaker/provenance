@@ -1,5 +1,6 @@
 "use client";
 
+import ReactMarkdown from "react-markdown";
 import type { UIMessage } from "ai";
 
 interface ChatMessageProps {
@@ -34,7 +35,13 @@ export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
             : "border border-gray-200 bg-white text-gray-700"
         }`}
       >
-        <div className="whitespace-pre-wrap break-words">{displayText}</div>
+        {isUser ? (
+          <div className="whitespace-pre-wrap break-words">{displayText}</div>
+        ) : (
+          <div className="chat-prose break-words">
+            <ReactMarkdown>{displayText}</ReactMarkdown>
+          </div>
+        )}
         {isStreaming && (
           <span className="ml-0.5 inline-block h-3.5 w-0.5 animate-pulse bg-violet-500 align-text-bottom" />
         )}

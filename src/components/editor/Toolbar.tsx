@@ -22,7 +22,6 @@ import {
   Clock,
   Eye,
   EyeOff,
-  Sparkles,
 } from "lucide-react";
 
 interface ToolbarProps {
@@ -232,16 +231,21 @@ export function Toolbar({ editor, onHistoryClick, showLens, onLensToggle, chatOp
 
       {/* AI panel toggle */}
       <Button
-        variant={chatOpen ? "secondary" : "ghost"}
+        variant={chatOpen ? "secondary" : "outline"}
         size="sm"
         onClick={onChatToggle}
         title="Toggle AI panel (⌘L)"
         type="button"
         aria-pressed={chatOpen}
-        className="flex items-center gap-1.5 text-xs"
+        className="flex items-center gap-2 text-xs"
       >
-        <Sparkles className="h-4 w-4" />
-        AI
+        <span className="flex items-center gap-1">
+          {chatOpen ? "" : "+"}
+          <span>AI</span>
+        </span>
+        <kbd className="rounded border border-gray-200 bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-500">
+          ⌘L
+        </kbd>
       </Button>
     </div>
   );

@@ -70,7 +70,7 @@ describe("updateUserPreferences", () => {
       {
         id: "user-1",
         aiProvider: "openai",
-        aiModel: "gpt-4o",
+        aiModel: "gpt-5.2",
       },
     ]);
   });
@@ -78,7 +78,7 @@ describe("updateUserPreferences", () => {
   it("should persist ai_provider and ai_model to users table", async () => {
     const result = await updateUserPreferences({
       aiProvider: "openai",
-      aiModel: "gpt-4o",
+      aiModel: "gpt-5.2",
     });
 
     expect(mocks.mockRequireAuth).toHaveBeenCalled();
@@ -86,11 +86,11 @@ describe("updateUserPreferences", () => {
     expect(mocks.mockSet).toHaveBeenCalledWith(
       expect.objectContaining({
         aiProvider: "openai",
-        aiModel: "gpt-4o",
+        aiModel: "gpt-5.2",
       })
     );
     expect(result).toHaveProperty("aiProvider", "openai");
-    expect(result).toHaveProperty("aiModel", "gpt-4o");
+    expect(result).toHaveProperty("aiModel", "gpt-5.2");
   });
 
   it("should require authentication before updating", async () => {
