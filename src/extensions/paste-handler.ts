@@ -1,5 +1,6 @@
 import { Extension } from "@tiptap/core";
 import { Plugin, PluginKey } from "@tiptap/pm/state";
+import { DOMParser as ProseMirrorDOMParser } from "@tiptap/pm/model";
 import { nanoid } from "nanoid";
 
 export interface PasteHandlerOptions {
@@ -99,50 +100,54 @@ export const PasteHandler = Extension.create<PasteHandlerOptions>({
               event.clipboardData?.getData("text/plain");
             if (!clipboardText) return false;
 
+            const { schema } = view.state;
+            const originMarkType = schema.marks.origin;
+            if (!originMarkType) return false;
+
             const classification = classifyPaste(
               clipboardText,
               storage.recentAIResponses
             );
 
-            if (classification === "ai_internal") {
-              // Apply origin mark with type "ai" so metrics count this correctly
-              const { schema: aiSchema } = view.state;
-              const aiOriginMarkType = aiSchema.marks.origin;
-              if (!aiOriginMarkType) return false;
-
-              const aiSourceId = nanoid();
-              const aiMark = aiOriginMarkType.create({
-                type: "ai",
-                sourceId: aiSourceId,
-                originalLength: clipboardText.length,
-              });
-
-              const aiTextNode = aiSchema.text(clipboardText, [aiMark]);
-              const { from: aiFrom, to: aiTo } = view.state.selection;
-              const aiTr = view.state.tr.replaceWith(aiFrom, aiTo, aiTextNode);
-              view.dispatch(aiTr);
-
-              return true;
-            }
-
-            // External paste — apply origin mark and log
-            const { schema } = view.state;
-            const originMarkType = schema.marks.origin;
-            if (!originMarkType) return false;
-
+            const originType =
+              classification === "ai_internal" ? "ai" : "external_paste";
             const sourceId = nanoid();
-            const mark = originMarkType.create({
-              type: "external_paste",
+            const originMark = originMarkType.create({
+              type: originType,
               sourceId,
               originalLength: clipboardText.length,
             });
 
-            const textNode = schema.text(clipboardText, [mark]);
             const { from, to } = view.state.selection;
-            const tr = view.state.tr.replaceWith(from, to, textNode);
-            view.dispatch(tr);
 
-            onExternalPaste?.(clipboardText, clipboardText.length);
+            // Try to parse HTML to preserve formatting (headings, bold, etc.)
+            const clipboardHtml =
+              event.clipboardData?.getData("text/html");
+            let slice;
+            if (clipboardHtml) {
+              const wrapper = document.createElement("div");
+              wrapper.innerHTML = clipboardHtml;
+              slice = ProseMirrorDOMParser.fromSchema(schema).parseSlice(
+                wrapper
+              );
+            }
+
+            if (slice && slice.content.childCount > 0) {
+              // Insert the parsed rich content, then apply origin mark to the range
+              const tr = view.state.tr.replaceRange(from, to, slice);
+              const insertEnd = tr.mapping.map(to);
+              tr.addMark(from, insertEnd, originMark);
+              view.dispatch(tr);
+            } else {
+              // Fallback: insert plain text with origin mark
+              const textNode = schema.text(clipboardText, [originMark]);
+              const tr = view.state.tr.replaceWith(from, to, textNode);
+              view.dispatch(tr);
+            }
+
+            if (classification !== "ai_internal") {
+              onExternalPaste?.(clipboardText, clipboardText.length);
+            }
 
             return true;
           },

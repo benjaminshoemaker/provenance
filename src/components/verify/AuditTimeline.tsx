@@ -34,6 +34,7 @@ interface AuditTimelineProps {
     trigger: string;
     createdAt: string | Date | null;
   }>;
+  showBadgeLandmark?: boolean;
 }
 
 type FilterType = "all" | "ai_interaction" | "paste" | "revision";
@@ -150,15 +151,17 @@ export function AuditTimeline(props: AuditTimelineProps) {
         ))}
       </div>
 
-      {/* Badge landmark */}
-      <div className="mt-6 rounded-lg border border-emerald-200 bg-emerald-50/50 p-4 text-center" data-testid="badge-landmark">
-        <div className="text-sm font-medium text-emerald-700">
-          Badge Generated
+      {/* Badge landmark — only shown on verification pages */}
+      {props.showBadgeLandmark !== false && (
+        <div className="mt-6 rounded-lg border border-emerald-200 bg-emerald-50/50 p-4 text-center" data-testid="badge-landmark">
+          <div className="text-sm font-medium text-emerald-700">
+            Badge Generated
+          </div>
+          <div className="text-xs text-emerald-600">
+            Audit trail frozen at this point
+          </div>
         </div>
-        <div className="text-xs text-emerald-600">
-          Audit trail frozen at this point
-        </div>
-      </div>
+      )}
     </div>
   );
 }

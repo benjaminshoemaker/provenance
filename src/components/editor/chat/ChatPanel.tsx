@@ -67,15 +67,15 @@ export function ChatPanel({
   const streamThreadIdRef = useRef<string | null>(null);
   const savingRef = useRef(false);
 
-  const documentContext = useMemo(
+  const getDocumentContext = useCallback(
     () => extractPlainTextFromContent(getDocumentContent()),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [getDocumentContent]
   );
 
   const wordCount = useMemo(
-    () => documentContext.split(/\s+/).filter(Boolean).length,
-    [documentContext]
+    () => getDocumentContext().split(/\s+/).filter(Boolean).length,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [getDocumentContent]
   );
 
   const handleModelChange = useCallback(
@@ -86,6 +86,29 @@ export function ChatPanel({
     []
   );
 
+  const transportRef = useRef({ getDocumentContext, activeThreadId, selectedProvider, selectedModel });
+  transportRef.current = { getDocumentContext, activeThreadId, selectedProvider, selectedModel };
+
+  const transport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: "/api/chat",
+        prepareSendMessagesRequest: ({ messages: msgs, id }) => ({
+          body: {
+            id,
+            messages: msgs,
+            documentContext: transportRef.current.getDocumentContext(),
+            ...(transportRef.current.activeThreadId
+              ? { threadId: transportRef.current.activeThreadId }
+              : {}),
+            provider: transportRef.current.selectedProvider,
+            model: transportRef.current.selectedModel,
+          },
+        }),
+      }),
+    []
+  );
+
   const {
     messages,
     setMessages,
@@ -93,15 +116,7 @@ export function ChatPanel({
     status,
     stop,
   } = useChat({
-    transport: new DefaultChatTransport({
-      api: "/api/chat",
-      body: {
-        documentContext,
-        ...(activeThreadId ? { threadId: activeThreadId } : {}),
-        provider: selectedProvider,
-        model: selectedModel,
-      },
-    }),
+    transport,
     experimental_throttle: 50,
     onFinish: async ({ message, messages: allMessages }) => {
       const threadId = streamThreadIdRef.current;

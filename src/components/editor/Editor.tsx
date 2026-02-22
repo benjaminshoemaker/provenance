@@ -5,8 +5,13 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
+import Placeholder from "@tiptap/extension-placeholder";
 import { OriginMark } from "@/extensions/origin-mark";
 import { PasteHandler } from "@/extensions/paste-handler";
+import {
+  SelectionHighlight,
+  selectionHighlightKey,
+} from "@/extensions/selection-highlight";
 import { logPasteEvent } from "@/app/actions/paste-events";
 import { useRevisions } from "@/hooks/useRevisions";
 import { Toolbar } from "./Toolbar";
@@ -106,7 +111,11 @@ export function Editor({
         defaultProtocol: "https",
       }),
       Image.configure({ inline: false }),
+      Placeholder.configure({
+        placeholder: "Start writing...",
+      }),
       OriginMark,
+      SelectionHighlight,
       PasteHandler.configure({
         documentId,
         onExternalPaste: handleExternalPaste,
@@ -235,6 +244,32 @@ export function Editor({
     }
   }, [selection]);
 
+  // Sync persistent selection highlight decoration with InlineAI visibility
+  useEffect(() => {
+    if (!editor?.view || !editor.state?.tr) return;
+    try {
+      if (showInlineAI && selection) {
+        editor.view.dispatch(
+          editor.state.tr.setMeta(selectionHighlightKey, {
+            from: selection.from,
+            to: selection.to,
+            active: true,
+          })
+        );
+      } else {
+        editor.view.dispatch(
+          editor.state.tr.setMeta(selectionHighlightKey, {
+            from: 0,
+            to: 0,
+            active: false,
+          })
+        );
+      }
+    } catch {
+      // Editor not fully initialized yet
+    }
+  }, [editor, showInlineAI, selection]);
+
   const handleDismissInlineAI = useCallback(() => {
     setShowInlineAI(false);
   }, []);
@@ -318,7 +353,16 @@ export function Editor({
                 onChatToggle={onChatToggle}
               />
             </div>
-            <div ref={scrollAreaRef} className="flex-1 overflow-auto">
+            <div
+              ref={scrollAreaRef}
+              className="flex-1 cursor-text overflow-auto"
+              onClick={(e) => {
+                // Click anywhere in scroll area focuses the editor
+                if (e.target === scrollAreaRef.current || e.target === proseAreaRef.current) {
+                  editor?.chain().focus("end").run();
+                }
+              }}
+            >
               <div ref={proseAreaRef} className="mx-auto max-w-4xl px-8 py-8">
                 <EditorContent
                   editor={editor}

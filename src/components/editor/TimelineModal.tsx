@@ -135,6 +135,7 @@ export function TimelineModal({ documentId, isOpen, onClose }: TimelineModalProp
             pasteEvents={data.pasteEvents}
             sessions={data.sessions}
             revisions={data.revisions}
+            showBadgeLandmark={false}
           />
         )}
 

@@ -150,7 +150,8 @@ export function Toolbar({ editor, onHistoryClick, showLens, onLensToggle, chatOp
   ];
 
   return (
-    <div className="flex min-h-12 items-center gap-1 p-2">
+    <div className="flex min-h-12 items-center gap-1 overflow-x-auto p-2">
+      {/* Formatting tools */}
       <div className="flex flex-wrap gap-1">
         {items.map((item, index) => {
           if ("type" in item && item.type === "divider") {
@@ -184,69 +185,73 @@ export function Toolbar({ editor, onHistoryClick, showLens, onLensToggle, chatOp
         })}
       </div>
 
-      <div className="mx-2 w-px self-stretch bg-border" />
+      {/* Right-aligned tools */}
+      <div className="ml-auto flex shrink-0 items-center gap-1">
+        <div className="mx-1 w-px self-stretch bg-border" />
 
-      {/* Provenance lens toggle */}
-      <div className="flex items-center gap-2">
+        {/* Provenance lens toggle */}
+        <div className="flex items-center gap-2">
+          <Button
+            variant={showLens ? "secondary" : "ghost"}
+            size="sm"
+            onClick={onLensToggle}
+            title="Toggle provenance highlights (⌘⇧H)"
+            type="button"
+            aria-pressed={showLens}
+            className="flex items-center gap-1.5 text-xs"
+          >
+            {showLens ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+            Provenance
+          </Button>
+          {showLens && (
+            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1">
+                <span className="inline-block h-2 w-2 rounded-full bg-violet-400" />
+                AI
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="inline-block h-2 w-2 rounded-full bg-orange-400" />
+                Pasted
+              </span>
+            </div>
+          )}
+        </div>
+
+        <div className="mx-1 w-px self-stretch bg-border" />
+
+        {/* History button */}
         <Button
-          variant={showLens ? "secondary" : "ghost"}
-          size="sm"
-          onClick={onLensToggle}
-          title="Toggle provenance highlights (⌘⇧H)"
+          variant="ghost"
+          size="icon-sm"
+          onClick={onHistoryClick}
+          title="History"
           type="button"
-          aria-pressed={showLens}
-          className="flex items-center gap-1.5 text-xs"
         >
-          {showLens ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
-          Provenance
+          <Clock className="h-4 w-4" />
         </Button>
-        {showLens && (
-          <div className="flex items-center gap-3 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1">
-              <span className="inline-block h-2 w-2 rounded-full bg-violet-400" />
-              AI
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="inline-block h-2 w-2 rounded-full bg-orange-400" />
-              Pasted
-            </span>
-          </div>
-        )}
+
+        <div className="mx-1 w-px self-stretch bg-border" />
+
+        {/* AI panel toggle */}
+        <Button
+          variant={chatOpen ? "secondary" : "outline"}
+          size="sm"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={onChatToggle}
+          title="Toggle AI panel (⌘L)"
+          type="button"
+          aria-pressed={chatOpen}
+          className="flex items-center gap-2 text-xs"
+        >
+          <span className="flex items-center gap-1">
+            {chatOpen ? "" : "+"}
+            <span>AI</span>
+          </span>
+          <kbd className="rounded border border-gray-200 bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-500">
+            ⌘L
+          </kbd>
+        </Button>
       </div>
-
-      <div className="mx-2 w-px self-stretch bg-border" />
-
-      {/* History button */}
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        onClick={onHistoryClick}
-        title="History"
-        type="button"
-      >
-        <Clock className="h-4 w-4" />
-      </Button>
-
-      <div className="mx-2 w-px self-stretch bg-border" />
-
-      {/* AI panel toggle */}
-      <Button
-        variant={chatOpen ? "secondary" : "outline"}
-        size="sm"
-        onClick={onChatToggle}
-        title="Toggle AI panel (⌘L)"
-        type="button"
-        aria-pressed={chatOpen}
-        className="flex items-center gap-2 text-xs"
-      >
-        <span className="flex items-center gap-1">
-          {chatOpen ? "" : "+"}
-          <span>AI</span>
-        </span>
-        <kbd className="rounded border border-gray-200 bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-500">
-          ⌘L
-        </kbd>
-      </Button>
     </div>
   );
 }
