@@ -224,3 +224,15 @@
   margin: 0.5em 0;
   color: #6b7280;
 }
+
+/* Streaming cursor (step blink, not smooth pulse) */
+.streaming-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 14px;
+  background: #8b5cf6;
+  animation: blink 1s step-end infinite;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+}
+@keyframes blink { 50% { opacity: 0; } }

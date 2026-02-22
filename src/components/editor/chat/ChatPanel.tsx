@@ -22,6 +22,7 @@ interface ThreadSummary {
 
 interface ChatPanelProps {
   documentId: string;
+  documentTitle?: string;
   provider: string;
   model?: string;
   getDocumentContent: () => Record<string, unknown>;
@@ -51,6 +52,7 @@ function getTextFromMessage(message: UIMessage): string {
 
 export function ChatPanel({
   documentId,
+  documentTitle,
   provider,
   model,
   getDocumentContent,
@@ -284,6 +286,8 @@ export function ChatPanel({
         onStop={stop}
         isStreaming={isStreaming}
         wordCount={wordCount}
+        documentTitle={documentTitle}
+        hasMessages={messages.length > 0}
       />
     </div>
   );

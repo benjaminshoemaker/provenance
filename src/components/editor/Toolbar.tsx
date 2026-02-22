@@ -22,6 +22,7 @@ import {
   Clock,
   Eye,
   EyeOff,
+  Sparkle,
 } from "lucide-react";
 
 interface ToolbarProps {
@@ -150,7 +151,7 @@ export function Toolbar({ editor, onHistoryClick, showLens, onLensToggle, chatOp
   ];
 
   return (
-    <div className="flex min-h-12 items-center gap-1 overflow-x-auto p-2">
+    <div className="flex min-h-12 items-center gap-1 overflow-x-auto bg-[#fcfcfd] p-2">
       {/* Formatting tools */}
       <div className="flex flex-wrap gap-1">
         {items.map((item, index) => {
@@ -230,27 +231,27 @@ export function Toolbar({ editor, onHistoryClick, showLens, onLensToggle, chatOp
           <Clock className="h-4 w-4" />
         </Button>
 
-        <div className="mx-1 w-px self-stretch bg-border" />
-
-        {/* AI panel toggle */}
-        <Button
-          variant={chatOpen ? "secondary" : "outline"}
-          size="sm"
-          onMouseDown={(e) => e.preventDefault()}
-          onClick={onChatToggle}
-          title="Toggle AI panel (⌘L)"
-          type="button"
-          aria-pressed={chatOpen}
-          className="flex items-center gap-2 text-xs"
-        >
-          <span className="flex items-center gap-1">
-            {chatOpen ? "" : "+"}
-            <span>AI</span>
-          </span>
-          <kbd className="rounded border border-gray-200 bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-500">
-            ⌘L
-          </kbd>
-        </Button>
+        {/* AI panel toggle — only shown when panel is collapsed */}
+        {!chatOpen && (
+          <>
+            <div className="mx-1 w-px self-stretch bg-border" />
+            <Button
+              variant="outline"
+              size="sm"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={onChatToggle}
+              title="Toggle AI panel (⌘L)"
+              type="button"
+              className="flex items-center gap-2 text-xs"
+            >
+              <Sparkle className="h-3.5 w-3.5" />
+              <span>AI</span>
+              <kbd className="rounded border border-gray-200 bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-500">
+                ⌘L
+              </kbd>
+            </Button>
+          </>
+        )}
       </div>
     </div>
   );

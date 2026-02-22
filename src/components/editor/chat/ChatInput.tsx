@@ -11,6 +11,8 @@ interface ChatInputProps {
   isStreaming: boolean;
   disabled?: boolean;
   wordCount?: number;
+  documentTitle?: string;
+  hasMessages?: boolean;
 }
 
 export function ChatInput({
@@ -21,6 +23,8 @@ export function ChatInput({
   isStreaming,
   disabled,
   wordCount,
+  documentTitle,
+  hasMessages,
 }: ChatInputProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -51,10 +55,14 @@ export function ChatInput({
   return (
     <div className="border-t border-gray-200 px-4 py-3">
       {/* Context chip */}
-      {wordCount != null && wordCount > 0 && (
+      {wordCount != null && (
         <div className="mb-2 inline-flex items-center gap-1.5 rounded border border-provenance-100 bg-provenance-50 px-2 py-0.5 text-[11px] font-medium text-provenance-700">
           <span className="h-1.5 w-1.5 rounded-full bg-provenance-500" />
-          Full document · {wordCount.toLocaleString()} words
+          {wordCount > 0
+            ? `Full document · ${wordCount.toLocaleString()} words`
+            : documentTitle
+              ? `Document: "${documentTitle}" · 0 words (empty draft)`
+              : "Empty document"}
         </div>
       )}
 
@@ -92,21 +100,23 @@ export function ChatInput({
         )}
       </div>
 
-      {/* Keyboard hints */}
-      <div className="mt-1.5 flex gap-2 px-0.5 text-[11px] text-gray-400">
-        <span>
-          <kbd className="rounded border border-gray-200 bg-gray-50 px-1 py-px text-[10px] text-gray-500">
-            ⌘ L
-          </kbd>{" "}
-          toggle
-        </span>
-        <span>
-          <kbd className="rounded border border-gray-200 bg-gray-50 px-1 py-px text-[10px] text-gray-500">
-            Enter
-          </kbd>{" "}
-          send
-        </span>
-      </div>
+      {/* Keyboard hints — hidden once conversation starts */}
+      {!hasMessages && (
+        <div className="mt-1.5 flex gap-2 px-0.5 text-[11px] text-gray-400">
+          <span>
+            <kbd className="rounded border border-gray-200 bg-gray-50 px-1 py-px text-[10px] text-gray-500">
+              ⌘ L
+            </kbd>{" "}
+            toggle
+          </span>
+          <span>
+            <kbd className="rounded border border-gray-200 bg-gray-50 px-1 py-px text-[10px] text-gray-500">
+              Enter
+            </kbd>{" "}
+            send
+          </span>
+        </div>
+      )}
     </div>
   );
 }

@@ -43,7 +43,7 @@ export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
           </div>
         )}
         {isStreaming && (
-          <span className="ml-0.5 inline-block h-3.5 w-0.5 animate-pulse bg-violet-500 align-text-bottom" />
+          <span className="streaming-cursor" />
         )}
       </div>
     </div>

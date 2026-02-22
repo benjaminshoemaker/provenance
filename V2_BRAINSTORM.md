@@ -274,6 +274,9 @@ The entire product thesis. Without this, there's no reason to use Provenance ove
 - **BadgeList integration**: BadgeList has been removed from the editor view. It will be integrated with the audit trail panel when that panel is implemented.
 - **getDocumentContent tool**: AI tool that retrieves the current document content during chat, enabling the AI to reference specific sections without sending the full document in every message.
 - **Cross-highlighting / annotations**: When AI references a specific section of the document in chat, highlight that section in the editor. Bidirectional: clicking an annotation in the chat scrolls to that section, and vice versa.
+- **Annotation cards for critique flow**: When the AI critiques the document, render structured annotation cards (left-bordered, severity-colored: red/violet/gray) with paragraph references instead of plain chat messages. Enables the Critical Reader flow (Flow 1) from the side panel mockups.
+- **Explore mode (full-width chat)**: Collapse the editor pane and let the chat panel take full viewport width with content centered at 640px max-width. A "◀ Editor" button in the header restores the split layout. Supports the "research first, write later" workflow (Flow 4) from the side panel mockups.
+- **Message hover actions**: Copy and Keep/Pin buttons that appear on hover over assistant messages. Keep pins a message as a reference the writer can return to.
 
 ---
 

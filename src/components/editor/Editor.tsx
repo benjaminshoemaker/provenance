@@ -24,7 +24,7 @@ import {
   ResizableHandle,
 } from "@/components/ui/resizable";
 import type { PanelImperativeHandle } from "react-resizable-panels";
-import { Sparkles } from "lucide-react";
+import { Sparkle } from "lucide-react";
 
 interface ThreadSummary {
   id: string;
@@ -60,6 +60,7 @@ interface TriggerPosition {
 export function Editor({
   content,
   documentId,
+  title,
   onUpdate,
   provider = "anthropic",
   model,
@@ -387,7 +388,7 @@ export function Editor({
                 }
                 data-testid="inline-ai-trigger"
               >
-                <Sparkles className="h-4 w-4" />
+                <Sparkle className="h-4 w-4" />
               </button>
             )}
           </main>
@@ -409,6 +410,7 @@ export function Editor({
           {chatOpen !== false && (
             <ChatPanel
               documentId={documentId}
+              documentTitle={title}
               provider={provider}
               model={model}
               getDocumentContent={getDocumentContent}
