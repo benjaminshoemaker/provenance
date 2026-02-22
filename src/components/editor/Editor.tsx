@@ -11,10 +11,8 @@ import { logPasteEvent } from "@/app/actions/paste-events";
 import { useRevisions } from "@/hooks/useRevisions";
 import { Toolbar } from "./Toolbar";
 import { InlineAI } from "./InlineAI";
-import { SidePanel } from "./SidePanel";
 import { FreeformAI } from "./FreeformAI";
-import { PanelLayout } from "./PanelLayout";
-import NextLink from "next/link";
+import { TimelineModal } from "./TimelineModal";
 
 interface EditorProps {
   content: Record<string, unknown>;
@@ -40,6 +38,7 @@ export function Editor({
 }: EditorProps) {
   const [selection, setSelection] = useState<TextSelection | null>(null);
   const [showFreeform, setShowFreeform] = useState(false);
+  const [showTimeline, setShowTimeline] = useState(false);
   const { updateContent, createAIRevision } = useRevisions({ documentId });
   const contentRef = useRef<Record<string, unknown>>(content);
 
@@ -60,18 +59,14 @@ export function Editor({
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
-        heading: {
-          levels: [1, 2, 3],
-        },
+        heading: { levels: [1, 2, 3] },
       }),
       Link.configure({
         openOnClick: false,
         autolink: true,
         defaultProtocol: "https",
       }),
-      Image.configure({
-        inline: false,
-      }),
+      Image.configure({ inline: false }),
       OriginMark,
       PasteHandler.configure({
         documentId,
@@ -90,7 +85,6 @@ export function Editor({
 
   useEffect(() => {
     if (!editor) return;
-
     const handleSelectionUpdate = () => {
       const { from, to } = editor.state.selection;
       if (from !== to) {
@@ -100,7 +94,6 @@ export function Editor({
         setSelection(null);
       }
     };
-
     editor.on("selectionUpdate", handleSelectionUpdate);
     return () => {
       editor.off("selectionUpdate", handleSelectionUpdate);
@@ -132,24 +125,18 @@ export function Editor({
     [editor, createAIRevision]
   );
 
-  const editorContent = (
-    <div className="relative flex h-full flex-col rounded-lg border">
-      <div className="flex items-center border-b">
-        <div className="flex-1">
-          <Toolbar editor={editor} />
-        </div>
-        <NextLink
-          href={`/editor/${documentId}/preview`}
-          className="mr-2 shrink-0 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
-        >
-          Generate Badge
-        </NextLink>
+  return (
+    <main className="relative flex h-[calc(100vh-8rem)] w-full flex-col rounded-lg border" role="main">
+      <div className="border-b">
+        <Toolbar editor={editor} onHistoryClick={() => setShowTimeline(true)} />
       </div>
       <div className="flex-1 overflow-auto">
-        <EditorContent
-          editor={editor}
-          className="prose prose-neutral dark:prose-invert max-w-none p-4 focus-within:outline-none [&_.tiptap]:min-h-[60vh] [&_.tiptap]:outline-none"
-        />
+        <div className="mx-auto max-w-3xl px-16 py-8">
+          <EditorContent
+            editor={editor}
+            className="prose prose-neutral dark:prose-invert max-w-none focus-within:outline-none [&_.tiptap]:min-h-[60vh] [&_.tiptap]:outline-none"
+          />
+        </div>
       </div>
       {selection && editor && (
         <InlineAI
@@ -164,35 +151,21 @@ export function Editor({
           onAIResponse={handleAIResponse}
         />
       )}
-    </div>
-  );
-
-  const aiChatContent = (
-    <SidePanel
-      documentId={documentId}
-      provider={provider}
-      model={model}
-      getDocumentContent={getDocumentContent}
-      onAIResponse={handleAIResponse}
-    />
-  );
-
-  const freeformContent = showFreeform ? (
-    <FreeformAI
-      documentId={documentId}
-      provider={provider}
-      model={model}
-      getDocumentContent={getDocumentContent}
-      onAIResponse={handleAIResponse}
-      onClose={() => setShowFreeform(false)}
-    />
-  ) : undefined;
-
-  return (
-    <PanelLayout
-      editorContent={editorContent}
-      aiChatContent={aiChatContent}
-      freeformContent={freeformContent}
-    />
+      {showFreeform && (
+        <FreeformAI
+          documentId={documentId}
+          provider={provider}
+          model={model}
+          getDocumentContent={getDocumentContent}
+          onAIResponse={handleAIResponse}
+          onClose={() => setShowFreeform(false)}
+        />
+      )}
+      <TimelineModal
+        documentId={documentId}
+        isOpen={showTimeline}
+        onClose={() => setShowTimeline(false)}
+      />
+    </main>
   );
 }

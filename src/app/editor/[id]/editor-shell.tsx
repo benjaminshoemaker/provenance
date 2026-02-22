@@ -6,6 +6,8 @@ import { Editor } from "@/components/editor/Editor";
 import { useAutoSave } from "@/hooks/useAutoSave";
 import { useSession } from "@/hooks/useSession";
 import { SaveIndicator } from "@/components/editor/SaveIndicator";
+import { BackLink } from "@/components/ui/BackLink";
+import Link from "next/link";
 
 interface EditorShellProps {
   documentId: string;
@@ -15,13 +17,7 @@ interface EditorShellProps {
   aiModel: string | null;
 }
 
-export function EditorShell({
-  documentId,
-  initialTitle,
-  initialContent,
-  aiProvider,
-  aiModel,
-}: EditorShellProps) {
+export function EditorShell({ documentId, initialTitle, initialContent, aiProvider, aiModel }: EditorShellProps) {
   const [title, setTitle] = useState(initialTitle);
   const { save, status, retry, isDirty } = useAutoSave({ documentId, title });
   const { markActive } = useSession({ documentId });
@@ -35,42 +31,38 @@ export function EditorShell({
     [save, markActive]
   );
 
-  // Intercept in-app navigation when there are unsaved changes
   useEffect(() => {
     if (!isDirty) return;
-
     const handleClick = (e: MouseEvent) => {
       const anchor = (e.target as HTMLElement).closest("a");
       if (!anchor) return;
-
       const href = anchor.getAttribute("href");
       if (!href || href.startsWith("http") || href.startsWith("#")) return;
-
-      const confirmed = window.confirm(
-        "You have unsaved changes. Are you sure you want to leave?"
-      );
-      if (!confirmed) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
+      const confirmed = window.confirm("You have unsaved changes. Are you sure you want to leave?");
+      if (!confirmed) { e.preventDefault(); e.stopPropagation(); }
     };
-
     document.addEventListener("click", handleClick, true);
     return () => document.removeEventListener("click", handleClick, true);
   }, [isDirty, router]);
 
   return (
     <div>
-      <div className="mb-4 flex items-center gap-4">
+      <nav className="mb-4 flex items-center gap-4" aria-label="Editor navigation">
+        <BackLink href="/dashboard" />
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="flex-1 border-b border-transparent bg-transparent text-3xl font-bold outline-none focus:border-border"
+          className="flex-1 border-b border-transparent bg-transparent text-2xl font-bold outline-none focus:border-border"
           placeholder="Untitled"
         />
         <SaveIndicator status={status} onRetry={retry} />
-      </div>
-
+        <Link
+          href={`/editor/${documentId}/preview`}
+          className="shrink-0 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
+        >
+          Generate Badge
+        </Link>
+      </nav>
       <Editor
         content={initialContent}
         documentId={documentId}

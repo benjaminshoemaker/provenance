@@ -19,13 +19,15 @@ import {
   ImageIcon,
   Undo,
   Redo,
+  Clock,
 } from "lucide-react";
 
 interface ToolbarProps {
   editor: Editor | null;
+  onHistoryClick?: () => void;
 }
 
-export function Toolbar({ editor }: ToolbarProps) {
+export function Toolbar({ editor, onHistoryClick }: ToolbarProps) {
   if (!editor) return null;
 
   const items = [
@@ -142,37 +144,70 @@ export function Toolbar({ editor }: ToolbarProps) {
   ];
 
   return (
-    <div className="flex flex-wrap gap-1 p-2">
-      {items.map((item, index) => {
-        if ("type" in item && item.type === "divider") {
+    <div className="flex items-center gap-1 p-2">
+      <div className="flex flex-wrap gap-1">
+        {items.map((item, index) => {
+          if ("type" in item && item.type === "divider") {
+            return (
+              <div
+                key={`divider-${index}`}
+                className="mx-1 w-px self-stretch bg-border"
+              />
+            );
+          }
+
+          const { icon: Icon, title, action, isActive } = item as {
+            icon: React.ComponentType<{ className?: string }>;
+            title: string;
+            action: () => void;
+            isActive: () => boolean;
+          };
+
           return (
-            <div
-              key={`divider-${index}`}
-              className="mx-1 w-px self-stretch bg-border"
-            />
+            <Button
+              key={title}
+              variant={isActive() ? "secondary" : "ghost"}
+              size="icon-xs"
+              onClick={action}
+              title={title}
+              type="button"
+            >
+              <Icon className="h-4 w-4" />
+            </Button>
           );
-        }
+        })}
+      </div>
 
-        const { icon: Icon, title, action, isActive } = item as {
-          icon: React.ComponentType<{ className?: string }>;
-          title: string;
-          action: () => void;
-          isActive: () => boolean;
-        };
+      <div className="mx-2 w-px self-stretch bg-border" />
 
-        return (
-          <Button
-            key={title}
-            variant={isActive() ? "secondary" : "ghost"}
-            size="icon-xs"
-            onClick={action}
-            title={title}
-            type="button"
-          >
-            <Icon className="h-4 w-4" />
-          </Button>
-        );
-      })}
+      {/* Origin legend */}
+      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+        <span className="flex items-center gap-1">
+          <span className="inline-block h-2 w-2 rounded-full bg-gray-400" />
+          Human
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="inline-block h-2 w-2 rounded-full bg-violet-400" />
+          AI
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="inline-block h-2 w-2 rounded-full bg-orange-400" />
+          Pasted
+        </span>
+      </div>
+
+      <div className="mx-2 w-px self-stretch bg-border" />
+
+      {/* History button */}
+      <Button
+        variant="ghost"
+        size="icon-xs"
+        onClick={onHistoryClick}
+        title="History"
+        type="button"
+      >
+        <Clock className="h-4 w-4" />
+      </Button>
     </div>
   );
 }

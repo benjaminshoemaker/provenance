@@ -18,32 +18,58 @@ export function StatsSummary({ stats }: StatsSummaryProps) {
     hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
 
   return (
-    <div className="rounded-lg border bg-card p-4 sm:p-6">
-      <div className="mb-4 text-center">
-        <div className="text-4xl font-bold tabular-nums sm:text-5xl">
-          {stats.ai_percentage}%
+    <div data-testid="stats-summary">
+      {/* Desktop: 5-col grid */}
+      <div className="hidden gap-4 sm:grid sm:grid-cols-5">
+        <div className="flex flex-col items-center justify-center rounded-xl border border-emerald-200/50 bg-gradient-to-br from-emerald-50 to-emerald-100/50 p-6">
+          <div className="text-4xl font-bold tabular-nums text-emerald-700" data-testid="hero-stat">
+            {stats.ai_percentage}%
+          </div>
+          <div className="mt-1 text-sm text-emerald-600">AI-generated</div>
         </div>
-        <div className="mt-1 text-sm text-muted-foreground">AI-generated</div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3 border-t pt-4 sm:grid-cols-4 sm:gap-4">
-        <div className="text-center">
-          <div className="text-base font-semibold sm:text-lg">{humanPercentage}%</div>
+        <div className="rounded-xl bg-gray-50 p-5 text-center">
+          <div className="text-lg font-semibold">{humanPercentage}%</div>
           <div className="text-xs text-muted-foreground">Human-written</div>
         </div>
-        <div className="text-center">
-          <div className="text-base font-semibold sm:text-lg">
-            {stats.interaction_count}
-          </div>
-          <div className="text-xs text-muted-foreground">AI interactions</div>
+        <div className="rounded-xl bg-gray-50 p-5 text-center">
+          <div className="text-lg font-semibold">{stats.interaction_count}</div>
+          <div className="text-xs text-muted-foreground">AI chats</div>
         </div>
-        <div className="text-center">
-          <div className="text-base font-semibold sm:text-lg">{stats.session_count}</div>
+        <div className="rounded-xl bg-gray-50 p-5 text-center">
+          <div className="text-lg font-semibold">{stats.session_count}</div>
           <div className="text-xs text-muted-foreground">Sessions</div>
         </div>
-        <div className="text-center">
-          <div className="text-base font-semibold sm:text-lg">{timeDisplay}</div>
+        <div className="rounded-xl bg-gray-50 p-5 text-center">
+          <div className="text-lg font-semibold">{timeDisplay}</div>
           <div className="text-xs text-muted-foreground">Total time</div>
+        </div>
+      </div>
+
+      {/* Mobile: full-width hero + 2x2 grid */}
+      <div className="space-y-3 sm:hidden" data-testid="stats-mobile">
+        <div className="flex flex-col items-center justify-center rounded-xl border border-emerald-200/50 bg-gradient-to-br from-emerald-50 to-emerald-100/50 p-6">
+          <div className="text-5xl font-bold tabular-nums text-emerald-700">
+            {stats.ai_percentage}%
+          </div>
+          <div className="mt-1 text-sm text-emerald-600">AI-generated</div>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="rounded-xl bg-gray-50 p-4 text-center">
+            <div className="text-lg font-semibold">{humanPercentage}%</div>
+            <div className="text-xs text-muted-foreground">Human-written</div>
+          </div>
+          <div className="rounded-xl bg-gray-50 p-4 text-center">
+            <div className="text-lg font-semibold">{stats.interaction_count}</div>
+            <div className="text-xs text-muted-foreground">AI chats</div>
+          </div>
+          <div className="rounded-xl bg-gray-50 p-4 text-center">
+            <div className="text-lg font-semibold">{stats.session_count}</div>
+            <div className="text-xs text-muted-foreground">Sessions</div>
+          </div>
+          <div className="rounded-xl bg-gray-50 p-4 text-center">
+            <div className="text-lg font-semibold">{timeDisplay}</div>
+            <div className="text-xs text-muted-foreground">Total time</div>
+          </div>
         </div>
       </div>
     </div>

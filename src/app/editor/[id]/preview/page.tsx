@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { generateBadge } from "@/app/actions/badges";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { AlertTriangle } from "lucide-react";
 
 interface PreviewPageProps {
   params: Promise<{ id: string }>;
@@ -41,7 +41,6 @@ function PreviewContent({ params }: PreviewPageProps) {
   } | null>(null);
   const router = useRouter();
 
-  // Load data on mount
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -108,79 +107,102 @@ function PreviewContent({ params }: PreviewPageProps) {
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
       <div className="mb-6 flex items-center gap-4">
-        <Link href={documentId ? `/editor/${documentId}` : "/dashboard"}>
-          <Button variant="ghost" size="sm">
-            &larr; Back to Editor
-          </Button>
+        <Link
+          href={documentId ? `/editor/${documentId}` : "/dashboard"}
+          className="text-sm text-muted-foreground hover:text-foreground"
+        >
+          &larr; Back to Editor
         </Link>
         <h1 className="text-xl font-semibold">Pre-Publish Preview</h1>
       </div>
 
-      <div className="mb-6 rounded-lg border border-yellow-500 bg-yellow-50 p-4 dark:bg-yellow-950">
-        <p className="font-medium text-yellow-800 dark:text-yellow-200">
-          Everything shown here will be publicly visible to anyone with the badge
-          link.
+      {/* Amber warning banner */}
+      <div className="mb-6 flex items-start gap-3 rounded-lg border-b border-amber-200 bg-amber-50 px-4 py-3">
+        <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+        <p className="text-sm font-medium text-amber-800">
+          Everything shown below will be publicly visible to anyone with the badge link.
         </p>
       </div>
 
-      <section className="mb-8">
-        <h2 className="mb-3 text-lg font-semibold">Document</h2>
-        <div className="rounded-lg border p-4">
-          <h3 className="mb-2 font-medium">{previewData.title}</h3>
-          <div className="whitespace-pre-wrap text-sm text-muted-foreground">
-            {previewData.content}
-          </div>
+      {/* Stat summary (3-col) */}
+      <div className="mb-6 grid grid-cols-3 gap-3">
+        <div className="rounded-lg border p-3 text-center">
+          <div className="text-lg font-semibold">{previewData.interactions.length}</div>
+          <div className="text-xs text-muted-foreground">AI Interactions</div>
         </div>
-      </section>
+        <div className="rounded-lg border p-3 text-center">
+          <div className="text-lg font-semibold">{previewData.pasteEvents.length}</div>
+          <div className="text-xs text-muted-foreground">Paste Events</div>
+        </div>
+        <div className="rounded-lg border p-3 text-center">
+          <div className="text-lg font-semibold">{previewData.content.split(/\s+/).filter(Boolean).length}</div>
+          <div className="text-xs text-muted-foreground">Words</div>
+        </div>
+      </div>
 
+      {/* Expandable sections */}
       {previewData.interactions.length > 0 && (
-        <section className="mb-8">
-          <h2 className="mb-3 text-lg font-semibold">
+        <details className="mb-4 rounded-lg border border-violet-200 bg-violet-50/30">
+          <summary className="cursor-pointer px-4 py-3 text-sm font-semibold">
             AI Interactions ({previewData.interactions.length})
-          </h2>
-          <div className="space-y-3">
+          </summary>
+          <div className="space-y-3 border-t px-4 py-3">
             {previewData.interactions.map((interaction, i) => (
-              <div key={i} className="rounded-lg border p-4">
-                <div className="mb-2 flex items-center gap-2 text-xs text-muted-foreground">
-                  <span className="rounded bg-blue-100 px-2 py-0.5 font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+              <div key={i} className="rounded-lg border bg-background p-3">
+                <div className="mb-1 flex items-center gap-2 text-xs text-muted-foreground">
+                  <span className="rounded bg-violet-100 px-2 py-0.5 font-medium text-violet-700">
                     {interaction.mode}
                   </span>
                   <span>{interaction.action}</span>
                 </div>
                 <p className="mb-1 text-sm">
-                  <span className="font-medium">Prompt:</span>{" "}
-                  {interaction.prompt}
+                  <span className="font-medium">Prompt:</span> {interaction.prompt}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  <span className="font-medium">Response:</span>{" "}
-                  {interaction.response}
+                  <span className="font-medium">Response:</span> {interaction.response}
                 </p>
               </div>
             ))}
           </div>
-        </section>
+        </details>
       )}
 
       {previewData.pasteEvents.length > 0 && (
-        <section className="mb-8">
-          <h2 className="mb-3 text-lg font-semibold">
+        <details className="mb-4 rounded-lg border border-orange-200 bg-orange-50/30">
+          <summary className="cursor-pointer px-4 py-3 text-sm font-semibold">
             Paste Events ({previewData.pasteEvents.length})
-          </h2>
-          <div className="space-y-2">
+          </summary>
+          <div className="space-y-2 border-t px-4 py-3">
             {previewData.pasteEvents.map((event, i) => (
               <div
                 key={i}
-                className="flex items-center justify-between rounded-lg border p-3 text-sm"
+                className="flex items-center justify-between rounded-lg border bg-background p-3 text-sm"
               >
                 <span>{event.sourceType}</span>
-                <span className="text-muted-foreground">
-                  {event.characterCount} characters
-                </span>
+                <span className="text-muted-foreground">{event.characterCount} characters</span>
               </div>
             ))}
           </div>
-        </section>
+        </details>
       )}
+
+      <details className="mb-6 rounded-lg border border-gray-200">
+        <summary className="cursor-pointer px-4 py-3 text-sm font-semibold">
+          Document Text
+        </summary>
+        <div className="border-t px-4 py-3">
+          <h3 className="mb-2 font-medium">{previewData.title}</h3>
+          <div className="max-h-60 overflow-y-auto whitespace-pre-wrap text-sm text-muted-foreground">
+            {previewData.content}
+          </div>
+        </div>
+      </details>
+
+      {/* Permanence note */}
+      <div className="mb-6 rounded-lg bg-gray-50 p-3 text-xs text-gray-500">
+        Once generated, this badge and its audit trail are permanent and cannot be modified or deleted.
+        The verification page will be publicly accessible via a unique URL.
+      </div>
 
       {badgeResult ? (
         <section className="rounded-lg border border-green-500 bg-green-50 p-4 dark:bg-green-950">
@@ -189,10 +211,7 @@ function PreviewContent({ params }: PreviewPageProps) {
           </h2>
           <p className="mb-3 text-sm text-green-700 dark:text-green-300">
             Verification URL:{" "}
-            <a
-              href={`/verify/${badgeResult.verificationId}`}
-              className="underline"
-            >
+            <a href={`/verify/${badgeResult.verificationId}`} className="underline">
               /verify/{badgeResult.verificationId}
             </a>
           </p>
@@ -217,9 +236,13 @@ function PreviewContent({ params }: PreviewPageProps) {
         </section>
       ) : (
         <div className="flex justify-end">
-          <Button onClick={handleConfirm} disabled={generating}>
-            {generating ? "Generating..." : "Confirm & Generate"}
-          </Button>
+          <button
+            onClick={handleConfirm}
+            disabled={generating}
+            className="rounded-lg bg-provenance-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-provenance-700 disabled:opacity-50"
+          >
+            {generating ? "Generating..." : "Confirm & Generate Badge"}
+          </button>
         </div>
       )}
     </div>

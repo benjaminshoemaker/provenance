@@ -6,12 +6,12 @@ export function generateBadgeHtml(
 ): string {
   const verifyUrl = `${APP_URL}/verify/${verificationId}`;
   const imageUrl = `${APP_URL}/api/badges/${verificationId}/image`;
-  const altText = `Provenance Verified: ${aiPercentage}% AI-generated — View full writing process audit at ${verifyUrl}`;
+  const altText = `Provenance | ${aiPercentage}% AI — Verified at ${verifyUrl}`;
 
   return `<a href="${verifyUrl}">
   <img src="${imageUrl}"
        alt="${altText}"
-       width="200" height="40" />
+       width="160" height="28" />
 </a>`;
 }
 
@@ -22,5 +22,5 @@ export function generateBadgeMarkdown(
   const verifyUrl = `${APP_URL}/verify/${verificationId}`;
   const imageUrl = `${APP_URL}/api/badges/${verificationId}/image`;
 
-  return `[![Provenance Verified: ${aiPercentage}% AI-generated](${imageUrl})](${verifyUrl})`;
+  return `[![Provenance | ${aiPercentage}% AI — Verified at ${verifyUrl}](${imageUrl})](${verifyUrl})`;
 }

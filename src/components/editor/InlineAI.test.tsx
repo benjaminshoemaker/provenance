@@ -53,7 +53,7 @@ describe("InlineAI", () => {
     mocks.isLoadingValue = false;
   });
 
-  it("should render floating toolbar with selection and preset options", () => {
+  it("should render floating icon initially (stage 1)", () => {
     const editor = createMockEditor();
     render(
       <InlineAI
@@ -68,9 +68,36 @@ describe("InlineAI", () => {
       />
     );
 
-    expect(screen.getByText(/Improve/)).toBeDefined();
-    expect(screen.getByText(/Simplify/)).toBeDefined();
-    expect(screen.getByText(/Fix Grammar/)).toBeDefined();
+    expect(screen.getByTestId("inline-ai-icon")).toBeDefined();
+  });
+
+  it("should show action menu with 7 presets on icon click (stage 2)", async () => {
+    const editor = createMockEditor();
+    render(
+      <InlineAI
+        editor={editor as never}
+        documentId="doc-1"
+        provider="anthropic"
+        model="claude-sonnet-4-5-20250929"
+        selectedText="some selected text"
+        selectionFrom={10}
+        selectionTo={28}
+        onDismiss={vi.fn()}
+      />
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("inline-ai-icon"));
+    });
+
+    expect(screen.getByTestId("inline-ai-menu")).toBeDefined();
+    expect(screen.getByText("Rephrase")).toBeDefined();
+    expect(screen.getByText("Shorten")).toBeDefined();
+    expect(screen.getByText("Elaborate")).toBeDefined();
+    expect(screen.getByText("More formal")).toBeDefined();
+    expect(screen.getByText("More casual")).toBeDefined();
+    expect(screen.getByText("Bulletize")).toBeDefined();
+    expect(screen.getByText("Summarize")).toBeDefined();
   });
 
   it("should call complete with preset prompt on click", async () => {
@@ -88,28 +115,34 @@ describe("InlineAI", () => {
       />
     );
 
+    // Click icon to open menu
     await act(async () => {
-      fireEvent.click(screen.getByText(/Improve/));
+      fireEvent.click(screen.getByTestId("inline-ai-icon"));
+    });
+
+    // Click preset
+    await act(async () => {
+      fireEvent.click(screen.getByText("Rephrase"));
     });
 
     expect(mocks.mockComplete).toHaveBeenCalledWith(
-      expect.stringContaining("Improve"),
-        expect.objectContaining({
-          body: expect.objectContaining({
-            mode: "inline",
-            provider: "anthropic",
-            model: "claude-sonnet-4-5-20250929",
-            selectedText: "messy text",
-          }),
-        })
-      );
+      expect.stringContaining("Rephrase"),
+      expect.objectContaining({
+        body: expect.objectContaining({
+          mode: "inline",
+          provider: "anthropic",
+          model: "claude-sonnet-4-5-20250929",
+          selectedText: "messy text",
+        }),
+      })
+    );
   });
 
-  it("should show accept and reject buttons when completion exists", () => {
+  it("should show suggestion card with diff when completion exists (stage 3)", async () => {
     mocks.completionValue = "improved AI text";
     const editor = createMockEditor();
 
-    render(
+    const { container } = render(
       <InlineAI
         editor={editor as never}
         documentId="doc-1"
@@ -122,12 +155,19 @@ describe("InlineAI", () => {
       />
     );
 
-    expect(
-      screen.getByRole("button", { name: /accept/i })
-    ).toBeDefined();
-    expect(
-      screen.getByRole("button", { name: /reject/i })
-    ).toBeDefined();
+    // Click icon → menu → a preset to reach suggestion stage
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("inline-ai-icon"));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByText("Rephrase"));
+    });
+
+    // Should show diff with original and suggestion
+    expect(container.querySelector(".diff-remove")).toBeTruthy();
+    expect(container.querySelector(".diff-add")).toBeTruthy();
+    expect(screen.getByRole("button", { name: /insert/i })).toBeDefined();
+    expect(screen.getByRole("button", { name: /reject/i })).toBeDefined();
   });
 
   it("should accept AI text and log interaction", async () => {
@@ -147,12 +187,19 @@ describe("InlineAI", () => {
       />
     );
 
-    const acceptButton = screen.getByRole("button", { name: /accept/i });
+    // Navigate to suggestion stage
     await act(async () => {
-      fireEvent.click(acceptButton);
+      fireEvent.click(screen.getByTestId("inline-ai-icon"));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByText("Rephrase"));
     });
 
-    // Verify text was inserted via editor chain
+    const insertButton = screen.getByRole("button", { name: /insert/i });
+    await act(async () => {
+      fireEvent.click(insertButton);
+    });
+
     expect(editor.chain).toHaveBeenCalled();
     expect(editor._chainObj.insertContentAt).toHaveBeenCalledWith(
       { from: 10, to: 23 },
@@ -176,7 +223,6 @@ describe("InlineAI", () => {
     );
     expect(editor._chainObj.run).toHaveBeenCalled();
 
-    // Verify interaction was logged
     expect(mocks.mockLogAIInteraction).toHaveBeenCalledWith(
       expect.objectContaining({
         documentId: "doc-1",
@@ -187,6 +233,64 @@ describe("InlineAI", () => {
         model: "claude-sonnet-4-5-20250929",
       })
     );
+  });
+
+  it("should accept on Tab key when suggestion is shown", async () => {
+    mocks.completionValue = "improved text";
+    const onDismiss = vi.fn();
+    const editor = createMockEditor();
+
+    render(
+      <InlineAI
+        editor={editor as never}
+        documentId="doc-1"
+        provider="anthropic"
+        model="claude-sonnet-4-5-20250929"
+        selectedText="original"
+        selectionFrom={0}
+        selectionTo={8}
+        onDismiss={onDismiss}
+      />
+    );
+
+    // Navigate to suggestion stage
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("inline-ai-icon"));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByText("Rephrase"));
+    });
+
+    // Press Tab to accept
+    await act(async () => {
+      fireEvent.keyDown(window, { key: "Tab" });
+    });
+
+    expect(editor.chain).toHaveBeenCalled();
+    expect(onDismiss).toHaveBeenCalled();
+  });
+
+  it("should dismiss on Escape key", async () => {
+    const onDismiss = vi.fn();
+    const editor = createMockEditor();
+
+    render(
+      <InlineAI
+        editor={editor as never}
+        documentId="doc-1"
+        provider="anthropic"
+        selectedText="text"
+        selectionFrom={0}
+        selectionTo={4}
+        onDismiss={onDismiss}
+      />
+    );
+
+    await act(async () => {
+      fireEvent.keyDown(window, { key: "Escape" });
+    });
+
+    expect(onDismiss).toHaveBeenCalled();
   });
 
   it("should dismiss on reject", async () => {
@@ -207,10 +311,16 @@ describe("InlineAI", () => {
       />
     );
 
+    // Navigate to suggestion stage
     await act(async () => {
-      fireEvent.click(
-        screen.getByRole("button", { name: /reject/i })
-      );
+      fireEvent.click(screen.getByTestId("inline-ai-icon"));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByText("Rephrase"));
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /reject/i }));
     });
 
     expect(mocks.mockSetCompletion).toHaveBeenCalledWith("");
