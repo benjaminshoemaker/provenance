@@ -1,0 +1,2339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Provenance — Side Panel Mockups</title>
+  <style>
+    /* ——— Reset & Base ——— */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --provenance-50: #f0f4ff;
+      --provenance-100: #dbe4ff;
+      --provenance-500: #4c6ef5;
+      --provenance-600: #3b5bdb;
+      --provenance-700: #364fc7;
+      --provenance-900: #1c2541;
+      --violet-50: #f5f3ff;
+      --violet-100: #ede9fe;
+      --violet-200: #ddd6fe;
+      --violet-500: #8b5cf6;
+      --violet-600: #7c3aed;
+      --violet-700: #6d28d9;
+      --gray-25: #fcfcfd;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+      --emerald-50: #ecfdf5;
+      --emerald-100: #d1fae5;
+      --emerald-500: #10b981;
+      --emerald-600: #059669;
+      --emerald-700: #047857;
+      --radius: 8px;
+      --font: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: 'Geist Mono', ui-monospace, monospace;
+    }
+    body {
+      font-family: var(--font);
+      background: #f5f5f5;
+      color: var(--gray-800);
+      line-height: 1.5;
+      padding: 0;
+    }
+
+    /* ——— Mockup navigation ——— */
+    .mockup-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--gray-900);
+      color: white;
+      padding: 16px 32px;
+      display: flex; align-items: center; gap: 12px;
+      flex-wrap: wrap;
+    }
+    .mockup-nav h1 { font-size: 14px; font-weight: 600; margin-right: 16px; opacity: 0.7; }
+    .mockup-nav button {
+      font-family: var(--font);
+      font-size: 13px; font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: transparent;
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .mockup-nav button:hover { background: rgba(255,255,255,0.1); color: white; }
+    .mockup-nav button.active {
+      background: var(--provenance-600);
+      border-color: var(--provenance-600);
+      color: white;
+    }
+
+    /* ——— Mockup sections ——— */
+    .mockup-section {
+      display: none;
+      padding: 32px;
+    }
+    .mockup-section.active { display: block; }
+    .mockup-section h2 {
+      font-size: 20px; font-weight: 700;
+      margin-bottom: 6px; color: var(--gray-900);
+    }
+    .mockup-section .desc {
+      font-size: 14px; color: var(--gray-500);
+      margin-bottom: 24px; max-width: 720px; line-height: 1.6;
+    }
+    .mockup-label {
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.05em; color: var(--gray-400);
+      margin-bottom: 12px; margin-top: 32px;
+    }
+    .mockup-label:first-of-type { margin-top: 0; }
+
+    /* ——— Shared frame ——— */
+    .frame {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
+      margin-bottom: 32px;
+    }
+
+    /* ——— Top nav bar ——— */
+    .top-nav {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--gray-200);
+      background: white;
+    }
+    .top-nav .back {
+      font-size: 13px; color: var(--gray-400);
+      text-decoration: none; display: flex; align-items: center; gap: 4px;
+    }
+    .top-nav .back:hover { color: var(--gray-600); }
+    .top-nav .title-input {
+      flex: 1; border: none; outline: none;
+      font-size: 18px; font-weight: 700;
+      font-family: var(--font);
+      color: var(--gray-900);
+      background: transparent;
+    }
+    .top-nav .save-status { font-size: 12px; color: var(--gray-400); }
+    .badge-btn {
+      font-size: 12px; font-weight: 600;
+      padding: 6px 14px; border-radius: 6px;
+      background: var(--provenance-600); color: white;
+      border: none; cursor: pointer;
+    }
+
+    /* ——— Split layout ——— */
+    .split-layout {
+      display: flex;
+      height: 640px;
+    }
+
+    /* ——— Editor pane ——— */
+    .editor-pane {
+      flex: 1; min-width: 0;
+      display: flex; flex-direction: column;
+      border-right: 1px solid var(--gray-200);
+    }
+    .editor-pane.no-border { border-right: none; }
+    .editor-toolbar {
+      display: flex; align-items: center; gap: 2px;
+      padding: 6px 12px;
+      border-bottom: 1px solid var(--gray-100);
+      background: var(--gray-25);
+    }
+    .editor-toolbar .tbtn {
+      width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      border: none; background: transparent;
+      color: var(--gray-500); border-radius: 5px;
+      cursor: pointer; font-size: 13px; font-weight: 600;
+      font-family: var(--font);
+    }
+    .editor-toolbar .tbtn:hover { background: var(--gray-100); color: var(--gray-700); }
+    .editor-toolbar .sep {
+      width: 1px; height: 18px;
+      background: var(--gray-200);
+      margin: 0 4px;
+    }
+    .editor-toolbar .spacer { flex: 1; }
+    .editor-toolbar .lens-btn {
+      font-size: 11px; color: var(--gray-400);
+      display: flex; align-items: center; gap: 4px;
+      padding: 4px 8px; border-radius: 5px;
+      border: none; background: transparent; cursor: pointer;
+      font-family: var(--font);
+    }
+    .editor-toolbar .lens-btn:hover { background: var(--gray-100); }
+
+    .editor-content {
+      flex: 1; overflow-y: auto; padding: 40px 48px;
+    }
+    .editor-content .prose-area {
+      max-width: 680px; margin: 0 auto;
+      font-size: 16px; line-height: 1.75;
+      color: var(--gray-800);
+    }
+    .editor-content .prose-area h2 {
+      font-size: 22px; font-weight: 700;
+      margin: 1.5em 0 0.5em; color: var(--gray-900);
+    }
+    .editor-content .prose-area p { margin: 0 0 1em; }
+    .editor-content .prose-area .ai-highlight {
+      background: rgba(139, 92, 246, 0.06);
+      border-bottom: 1.5px solid rgba(139, 92, 246, 0.2);
+      padding: 1px 0;
+    }
+
+    /* ——— Sparkle trigger ——— */
+    .sparkle-trigger {
+      position: absolute;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: 1px solid var(--violet-200);
+      background: white;
+      color: var(--violet-500);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      font-size: 14px;
+    }
+
+    /* ——— Resize handle ——— */
+    .resize-handle {
+      width: 4px;
+      background: transparent;
+      cursor: col-resize;
+      position: relative;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .resize-handle:hover, .resize-handle.active {
+      background: var(--provenance-500);
+    }
+    .resize-handle::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 4px; height: 32px;
+      border-radius: 2px;
+      background: var(--gray-300);
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .resize-handle:hover::after { opacity: 1; background: var(--provenance-500); }
+
+    /* ——— Chat panel — shared ——— */
+    .chat-panel {
+      width: 400px; min-width: 320px;
+      display: flex; flex-direction: column;
+      background: white;
+    }
+
+    /* ——— VARIATION A: Minimal (Linear-inspired) ——— */
+    .chat-panel.minimal .chat-header {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 16px;
+      border-bottom: 1px solid var(--gray-100);
+      background: var(--gray-25);
+    }
+    .chat-panel.minimal .chat-header .mode-tab {
+      font-size: 13px; font-weight: 500;
+      padding: 4px 10px; border-radius: 5px;
+      border: none; cursor: pointer;
+      font-family: var(--font);
+      background: transparent; color: var(--gray-400);
+    }
+    .chat-panel.minimal .chat-header .mode-tab.active {
+      background: var(--gray-900); color: white;
+    }
+    .chat-panel.minimal .chat-header .model-select {
+      margin-left: auto;
+      font-size: 11px; color: var(--gray-400);
+      border: 1px solid var(--gray-200);
+      border-radius: 5px; padding: 3px 8px;
+      background: white; font-family: var(--font);
+      cursor: pointer;
+    }
+    .chat-panel.minimal .chat-header .close-btn {
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      border: none; background: transparent;
+      color: var(--gray-400); border-radius: 5px;
+      cursor: pointer; font-size: 16px;
+    }
+    .chat-panel.minimal .chat-header .close-btn:hover {
+      background: var(--gray-100); color: var(--gray-600);
+    }
+
+    /* ——— VARIATION B: Tinted (Cursor-inspired) ——— */
+    .chat-panel.tinted { background: var(--gray-50); }
+    .chat-panel.tinted .chat-header {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 16px;
+      border-bottom: 1px solid var(--gray-200);
+      background: var(--gray-50);
+    }
+    .chat-panel.tinted .chat-header .panel-title {
+      font-size: 12px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.04em;
+      color: var(--gray-500);
+    }
+    .chat-panel.tinted .chat-header .mode-pills {
+      display: flex; gap: 1px;
+      background: var(--gray-200); border-radius: 6px;
+      padding: 2px; margin-left: 8px;
+    }
+    .chat-panel.tinted .chat-header .mode-pill {
+      font-size: 11px; font-weight: 500;
+      padding: 3px 10px; border-radius: 4px;
+      border: none; cursor: pointer;
+      font-family: var(--font);
+      background: transparent; color: var(--gray-500);
+    }
+    .chat-panel.tinted .chat-header .mode-pill.active {
+      background: white; color: var(--gray-800);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    }
+    .chat-panel.tinted .chat-header .model-select {
+      margin-left: auto;
+      font-size: 11px; color: var(--gray-500);
+      border: 1px solid var(--gray-200);
+      border-radius: 5px; padding: 3px 8px;
+      background: white; font-family: var(--font);
+      cursor: pointer;
+    }
+    .chat-panel.tinted .chat-header .close-btn {
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      border: none; background: transparent;
+      color: var(--gray-400); border-radius: 5px;
+      cursor: pointer; font-size: 16px;
+    }
+    .chat-panel.tinted .chat-header .close-btn:hover {
+      background: var(--gray-200); color: var(--gray-600);
+    }
+
+    /* ——— Chat body (shared) ——— */
+    .chat-body {
+      flex: 1; overflow-y: auto;
+      padding: 20px 16px;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+
+    /* ——— Empty state ——— */
+    .empty-state {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 32px 24px;
+      gap: 16px;
+    }
+    .empty-state .icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+    }
+    .empty-state.minimal-empty .icon {
+      background: var(--gray-100); color: var(--gray-400);
+    }
+    .empty-state.tinted-empty .icon {
+      background: var(--violet-50); color: var(--violet-500);
+      border: 1px solid var(--violet-100);
+    }
+    .empty-state.branded-empty .icon {
+      background: var(--provenance-50); color: var(--provenance-600);
+      border: 1px solid var(--provenance-100);
+    }
+    .empty-state h3 {
+      font-size: 15px; font-weight: 600; color: var(--gray-800);
+    }
+    .empty-state p {
+      font-size: 13px; color: var(--gray-400);
+      max-width: 280px; line-height: 1.5;
+    }
+    .suggested-prompts {
+      display: flex; flex-direction: column; gap: 6px;
+      width: 100%; max-width: 300px; margin-top: 4px;
+    }
+    .suggested-prompt {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--gray-200);
+      background: white;
+      cursor: pointer;
+      transition: all 0.12s;
+      text-align: left;
+      font-family: var(--font);
+    }
+    .suggested-prompt:hover {
+      border-color: var(--gray-300);
+      background: var(--gray-50);
+    }
+    .tinted .suggested-prompt { background: white; }
+    .suggested-prompt .prompt-icon {
+      font-size: 14px; color: var(--gray-400); flex-shrink: 0;
+      width: 20px; text-align: center;
+    }
+    .suggested-prompt .prompt-text {
+      font-size: 13px; color: var(--gray-600); font-weight: 450;
+    }
+
+    /* ——— Messages ——— */
+    .message { display: flex; flex-direction: column; gap: 4px; }
+    .message .msg-role {
+      font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.03em;
+    }
+    .message.user .msg-role { color: var(--gray-500); }
+    .message.assistant .msg-role { color: var(--violet-600); }
+    .message .msg-body {
+      font-size: 14px; line-height: 1.65; color: var(--gray-700);
+    }
+    .message .msg-body p { margin: 0 0 0.5em; }
+    .message .msg-body p:last-child { margin: 0; }
+
+    /* Flat style (Variation A) */
+    .message.flat .msg-body {
+      padding: 0;
+    }
+    .message.flat.user .msg-body { color: var(--gray-800); }
+
+    /* Card style (Variation B) */
+    .message.card .msg-body {
+      padding: 10px 12px;
+      border-radius: 8px;
+    }
+    .message.card.user .msg-body {
+      background: var(--gray-100);
+      color: var(--gray-800);
+    }
+    .message.card.assistant .msg-body {
+      background: white;
+      border: 1px solid var(--gray-200);
+    }
+
+    /* Bubble style (Variation C) */
+    .message.bubble { flex-direction: row; gap: 8px; }
+    .message.bubble .msg-avatar {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; flex-shrink: 0; margin-top: 2px;
+    }
+    .message.bubble.user .msg-avatar {
+      background: var(--gray-200); color: var(--gray-600);
+    }
+    .message.bubble.assistant .msg-avatar {
+      background: var(--violet-100); color: var(--violet-600);
+    }
+    .message.bubble .msg-content { flex: 1; min-width: 0; }
+    .message.bubble .msg-role { display: none; }
+    .message.bubble .msg-body {
+      font-size: 14px; line-height: 1.6;
+    }
+    .message.bubble .msg-name {
+      font-size: 12px; font-weight: 600; margin-bottom: 2px;
+    }
+    .message.bubble.user .msg-name { color: var(--gray-700); }
+    .message.bubble.assistant .msg-name { color: var(--violet-700); }
+
+    /* Streaming cursor */
+    .streaming-cursor {
+      display: inline-block;
+      width: 2px; height: 14px;
+      background: var(--violet-500);
+      animation: blink 1s step-end infinite;
+      margin-left: 2px;
+      vertical-align: text-bottom;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* Streaming dots */
+    .streaming-dots { display: flex; gap: 4px; padding: 8px 0; }
+    .streaming-dots span {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--gray-300);
+      animation: dotPulse 1.4s ease-in-out infinite;
+    }
+    .streaming-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .streaming-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes dotPulse {
+      0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+      40% { opacity: 1; transform: scale(1); }
+    }
+
+    /* ——— Chat input ——— */
+    .chat-input-area {
+      padding: 12px 16px;
+      border-top: 1px solid var(--gray-100);
+    }
+    .tinted .chat-input-area { border-color: var(--gray-200); }
+    .chat-input-wrap {
+      display: flex; align-items: flex-end; gap: 8px;
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      padding: 8px 12px;
+      background: white;
+      transition: border-color 0.15s;
+    }
+    .chat-input-wrap:focus-within {
+      border-color: var(--provenance-500);
+      box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.08);
+    }
+    .chat-input-wrap textarea {
+      flex: 1; border: none; outline: none;
+      font-family: var(--font); font-size: 13px;
+      line-height: 1.5; resize: none;
+      min-height: 20px; max-height: 120px;
+      color: var(--gray-800);
+      background: transparent;
+    }
+    .chat-input-wrap textarea::placeholder { color: var(--gray-400); }
+    .chat-input-wrap .send-btn {
+      width: 28px; height: 28px; border-radius: 6px;
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      background: var(--provenance-600); color: white;
+      font-size: 14px;
+      transition: background 0.15s;
+    }
+    .chat-input-wrap .send-btn:hover { background: var(--provenance-700); }
+    .chat-input-wrap .send-btn.disabled {
+      background: var(--gray-200); color: var(--gray-400);
+      cursor: default;
+    }
+    .chat-input-hint {
+      font-size: 11px; color: var(--gray-400);
+      margin-top: 6px; padding: 0 2px;
+    }
+    .chat-input-hint kbd {
+      font-family: var(--font);
+      font-size: 10px;
+      padding: 1px 4px;
+      border-radius: 3px;
+      border: 1px solid var(--gray-200);
+      background: var(--gray-50);
+      color: var(--gray-500);
+    }
+
+    /* ——— Context chip ——— */
+    .context-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 500;
+      padding: 2px 8px 2px 6px;
+      border-radius: 4px;
+      background: var(--provenance-50);
+      color: var(--provenance-700);
+      border: 1px solid var(--provenance-100);
+      margin-bottom: 8px;
+    }
+    .context-chip .dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--provenance-500);
+    }
+
+    /* ——— Collapse toggle ——— */
+    .collapse-toggle {
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      width: 16px; height: 40px;
+      border-radius: 4px;
+      border: 1px solid var(--gray-200);
+      background: white;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; color: var(--gray-400);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      z-index: 10;
+      transition: all 0.15s;
+    }
+    .collapse-toggle:hover {
+      background: var(--gray-50);
+      color: var(--gray-600);
+      border-color: var(--gray-300);
+    }
+
+    /* ——— Panel toggle button (when collapsed) ——— */
+    .panel-toggle-btn {
+      position: absolute; right: 12px; top: 50%;
+      transform: translateY(-50%);
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      border: 1px solid var(--gray-200);
+      background: white;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; color: var(--gray-500);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      transition: all 0.15s;
+    }
+    .panel-toggle-btn:hover {
+      border-color: var(--violet-200);
+      color: var(--violet-600);
+      background: var(--violet-50);
+    }
+
+    /* ——— Keyboard shortcut badge in toolbar ——— */
+    .toolbar-chat-btn {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 12px; font-weight: 500;
+      padding: 4px 10px; border-radius: 5px;
+      border: 1px solid var(--gray-200);
+      background: white;
+      color: var(--gray-500);
+      cursor: pointer;
+      font-family: var(--font);
+      transition: all 0.12s;
+    }
+    .toolbar-chat-btn:hover {
+      border-color: var(--violet-200);
+      color: var(--violet-600);
+      background: var(--violet-50);
+    }
+    .toolbar-chat-btn .kbd {
+      font-size: 10px; color: var(--gray-400);
+      padding: 1px 4px; border-radius: 3px;
+      border: 1px solid var(--gray-200);
+      background: var(--gray-50);
+    }
+
+    /* ——— Full-width chat (explore mode) ——— */
+    .full-chat { width: 100%; }
+    .full-chat .chat-body { max-width: 640px; margin: 0 auto; width: 100%; }
+    .full-chat .chat-input-area { max-width: 640px; margin: 0 auto; width: 100%; }
+    .full-chat .empty-state { max-width: 480px; margin: 0 auto; }
+
+    /* ——— Action buttons on messages ——— */
+    .msg-actions {
+      display: flex; gap: 4px; margin-top: 6px;
+      opacity: 0; transition: opacity 0.15s;
+    }
+    .message:hover .msg-actions { opacity: 1; }
+    .msg-action-btn {
+      font-size: 11px; color: var(--gray-400);
+      padding: 3px 8px; border-radius: 4px;
+      border: 1px solid transparent;
+      background: transparent; cursor: pointer;
+      font-family: var(--font);
+      display: flex; align-items: center; gap: 3px;
+      transition: all 0.12s;
+    }
+    .msg-action-btn:hover {
+      background: var(--gray-100);
+      color: var(--gray-600);
+      border-color: var(--gray-200);
+    }
+
+    /* ——— Annotations (for critical reader flow) ——— */
+    .annotation-card {
+      margin: 4px 0 4px 0;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border-left: 3px solid var(--violet-500);
+      background: var(--violet-50);
+      font-size: 13px; line-height: 1.55;
+      color: var(--gray-700);
+    }
+    .annotation-card .annotation-ref {
+      font-size: 11px; font-weight: 600;
+      color: var(--violet-600);
+      margin-bottom: 4px;
+    }
+
+    /* ——— Conversation thread selector ——— */
+    .thread-selector {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 16px;
+      border-bottom: 1px solid var(--gray-100);
+      font-size: 12px;
+    }
+    .thread-pill {
+      padding: 3px 10px; border-radius: 12px;
+      border: 1px solid var(--gray-200);
+      background: white; color: var(--gray-600);
+      font-size: 11px; font-weight: 500;
+      cursor: pointer; font-family: var(--font);
+    }
+    .thread-pill.active {
+      background: var(--gray-900); color: white;
+      border-color: var(--gray-900);
+    }
+    .thread-pill.new {
+      border-style: dashed; color: var(--gray-400);
+    }
+
+    /* ——— Recommended combo: thread dropdown ——— */
+    .thread-dropdown-trigger {
+      display: flex; align-items: center; gap: 4px;
+      font-size: 12px; font-weight: 500;
+      color: var(--gray-500);
+      padding: 3px 8px; border-radius: 5px;
+      border: none; background: transparent;
+      cursor: pointer; font-family: var(--font);
+      transition: all 0.12s;
+      max-width: 160px;
+    }
+    .thread-dropdown-trigger:hover { background: var(--gray-200); color: var(--gray-700); }
+    .thread-dropdown-trigger .thread-name {
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .thread-dropdown-trigger .chevron { font-size: 10px; opacity: 0.5; flex-shrink: 0; }
+    .thread-dropdown {
+      position: absolute; top: 100%; left: 0;
+      width: 240px;
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);
+      padding: 4px;
+      z-index: 20;
+    }
+    .thread-dropdown .thread-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 10px;
+      border-radius: 5px;
+      border: none; background: transparent;
+      cursor: pointer; font-family: var(--font);
+      font-size: 12px; color: var(--gray-600);
+      width: 100%; text-align: left;
+      transition: background 0.1s;
+    }
+    .thread-dropdown .thread-item:hover { background: var(--gray-50); }
+    .thread-dropdown .thread-item.active-thread {
+      background: var(--provenance-50);
+      color: var(--provenance-700);
+      font-weight: 500;
+    }
+    .thread-dropdown .thread-item .thread-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--gray-300); flex-shrink: 0;
+    }
+    .thread-dropdown .thread-item.active-thread .thread-dot {
+      background: var(--provenance-500);
+    }
+    .thread-dropdown .thread-item .thread-label {
+      flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .thread-dropdown .thread-item .thread-time {
+      font-size: 10px; color: var(--gray-400); flex-shrink: 0;
+    }
+    .thread-dropdown .thread-sep {
+      height: 1px; background: var(--gray-100); margin: 4px 0;
+    }
+    .thread-dropdown .thread-new {
+      color: var(--gray-400); font-size: 12px;
+    }
+    .thread-dropdown .thread-new:hover { color: var(--gray-600); }
+
+    /* ——— Recommended: header layout ——— */
+    .rec-header {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--gray-200);
+      background: var(--gray-50);
+      position: relative;
+    }
+    .rec-header .header-left {
+      display: flex; align-items: center; gap: 6px;
+    }
+    .rec-header .header-right {
+      margin-left: auto;
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    .thread-dropdown-hidden { display: none !important; }
+
+    /* ——— Notes ——— */
+    .mockup-notes {
+      margin-top: 12px;
+      padding: 16px 20px;
+      border-radius: 8px;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+    }
+    .mockup-notes h4 {
+      font-size: 12px; font-weight: 600;
+      color: var(--gray-500); margin-bottom: 8px;
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .mockup-notes ul { list-style: none; padding: 0; }
+    .mockup-notes li {
+      font-size: 13px; color: var(--gray-600);
+      padding: 3px 0; line-height: 1.5;
+    }
+    .mockup-notes li::before {
+      content: '→ '; color: var(--gray-400);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ——— Navigation ——— -->
+<nav class="mockup-nav">
+  <h1>Side Panel Mockups</h1>
+  <button class="active" onclick="showSection('rec-empty')" style="background:var(--provenance-600);border-color:var(--provenance-600);color:white;">★ Recommended: Empty</button>
+  <button onclick="showSection('rec-convo')" style="border-color:var(--provenance-500);color:var(--provenance-100);">★ Recommended: Chat</button>
+  <button onclick="showSection('rec-critique')" style="border-color:var(--provenance-500);color:var(--provenance-100);">★ Recommended: Critique</button>
+  <button onclick="showSection('rec-collapsed')" style="border-color:var(--provenance-500);color:var(--provenance-100);">★ Recommended: Collapsed</button>
+  <button onclick="showSection('rec-explore')" style="border-color:var(--provenance-500);color:var(--provenance-100);">★ Recommended: Explore</button>
+  <span style="width:1px;height:24px;background:rgba(255,255,255,0.15);margin:0 4px;"></span>
+  <button onclick="showSection('a-empty')">A · Minimal Empty</button>
+  <button onclick="showSection('a-convo')">A · Minimal Conversation</button>
+  <button onclick="showSection('b-empty')">B · Tinted Empty</button>
+  <button onclick="showSection('b-convo')">B · Tinted Conversation</button>
+  <button onclick="showSection('c-convo')">C · Avatars Conversation</button>
+  <button onclick="showSection('collapsed')">Collapsed</button>
+  <button onclick="showSection('explore')">Explore Mode</button>
+  <button onclick="showSection('critique')">Critical Reader</button>
+  <button onclick="showSection('threads')">Thread History</button>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- RECOMMENDED: Empty State                                        -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section id="rec-empty" class="mockup-section active">
+  <h2>★ Recommended Design — Empty State</h2>
+  <p class="desc">
+    The consolidated recommendation: B's tinted gray-50 background and segmented control for spatial clarity, A's flat messages for content focus, thread dropdown in the header for zero-cost thread management, toolbar toggle with ⌘L for collapse.
+  </p>
+  <div class="frame">
+    <div class="top-nav">
+      <a class="back" href="#">← Dashboard</a>
+      <input class="title-input" value="The Case for Process-Based Provenance" readonly>
+      <span class="save-status">Saved</span>
+      <button class="badge-btn">Generate Badge</button>
+    </div>
+    <div class="split-layout">
+      <div class="editor-pane">
+        <div class="editor-toolbar">
+          <button class="tbtn"><b>B</b></button>
+          <button class="tbtn"><i>I</i></button>
+          <button class="tbtn"><s>S</s></button>
+          <div class="sep"></div>
+          <button class="tbtn">H1</button>
+          <button class="tbtn">H2</button>
+          <button class="tbtn">H3</button>
+          <div class="sep"></div>
+          <button class="tbtn">❝</button>
+          <button class="tbtn">•</button>
+          <button class="tbtn">1.</button>
+          <div class="spacer"></div>
+          <button class="lens-btn">👁 Lens</button>
+          <button class="tbtn">🕐</button>
+        </div>
+        <div class="editor-content" style="position:relative;">
+          <div class="prose-area">
+            <h2>The Detection Dead End</h2>
+            <p>The most common response to AI-generated content has been detection — tools like GPTZero and Originality.ai that analyze text and assign probability scores. But detection has a fundamental problem: it's an arms race that defenders are losing.</p>
+            <p>GPTZero achieves 99.3% accuracy on raw AI-generated text. Impressive, until you learn that accuracy drops to 18% when the text has been processed through a humanizer tool. These tools are free, widely available, and trivially easy to use.</p>
+            <p>More critically, detection tools produce false positives at rates that make them unreliable for high-stakes decisions. Multiple documented cases show students falsely accused of AI use, professionals having work questioned, and entire publications casting doubt on legitimate human writing.</p>
+            <p>The MLA-CCCC Joint Task Force put it bluntly: AI text detection is "inaccurate, biased, easily circumvented, and not transparent." They recommend process tracking instead — documenting how content was made rather than trying to detect AI after the fact.</p>
+          </div>
+          <div class="sparkle-trigger" style="right: 32px; top: 140px;">✦</div>
+        </div>
+      </div>
+      <div class="resize-handle"></div>
+      <div class="chat-panel tinted">
+        <div class="rec-header">
+          <div class="header-left">
+            <span class="panel-title" style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--gray-500);">AI</span>
+            <div class="mode-pills" style="display:flex;gap:1px;background:var(--gray-200);border-radius:6px;padding:2px;">
+              <button class="mode-pill active" style="font-size:11px;font-weight:500;padding:3px 10px;border-radius:4px;border:none;cursor:pointer;font-family:var(--font);background:white;color:var(--gray-800);box-shadow:0 1px 2px rgba(0,0,0,0.06);">Ask</button>
+              <button class="mode-pill" style="font-size:11px;font-weight:500;padding:3px 10px;border-radius:4px;border:none;cursor:pointer;font-family:var(--font);background:transparent;color:var(--gray-500);">Edit</button>
+            </div>
+          </div>
+          <div class="header-right">
+            <select class="model-select" style="font-size:11px;color:var(--gray-500);border:1px solid var(--gray-200);border-radius:5px;padding:3px 8px;background:white;font-family:var(--font);cursor:pointer;">
+              <option>Claude Sonnet 4.5</option>
+              <option>Claude Haiku 4.5</option>
+              <option>GPT-4o</option>
+            </select>
+            <button class="close-btn" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;color:var(--gray-400);border-radius:5px;cursor:pointer;font-size:16px;">×</button>
+          </div>
+        </div>
+        <div class="chat-body">
+          <div class="empty-state tinted-empty">
+            <div class="icon">✦</div>
+            <h3>Ask about your writing</h3>
+            <p>Get critique, explore ideas, or research topics. Your full document is loaded as context.</p>
+            <div class="suggested-prompts">
+              <button class="suggested-prompt">
+                <span class="prompt-icon">🔍</span>
+                <span class="prompt-text">Where does my argument fall apart?</span>
+              </button>
+              <button class="suggested-prompt">
+                <span class="prompt-icon">📐</span>
+                <span class="prompt-text">How could I restructure this?</span>
+              </button>
+              <button class="suggested-prompt">
+                <span class="prompt-icon">📚</span>
+                <span class="prompt-text">Find supporting research</span>
+              </button>
+              <button class="suggested-prompt">
+                <span class="prompt-icon">🎯</span>
+                <span class="prompt-text">Is my core message clear?</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <div class="context-chip">
+            <span class="dot"></span>
+            Full document · 1,247 words
+          </div>
+          <div class="chat-input-wrap">
+            <textarea rows="1" placeholder="Ask about your writing..."></textarea>
+            <button class="send-btn disabled">↑</button>
+          </div>
+          <div class="chat-input-hint">
+            <kbd>⌘ L</kbd> toggle · <kbd>@</kbd> reference · <kbd>Enter</kbd> send
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-notes">
+    <h4>Design decisions</h4>
+    <ul>
+      <li><strong>Background:</strong> Gray-50 tint on panel — creates clear spatial boundary from white editor</li>
+      <li><strong>Mode switch:</strong> Segmented control — communicates meaningful state change between Ask (read-only) and Edit (document-mutating)</li>
+      <li><strong>Messages use card style</strong> — user on gray, assistant on white with border — see Chat view for example</li>
+      <li><strong>Thread management:</strong> No always-visible pills. Thread dropdown appears in header only when multiple threads exist</li>
+      <li><strong>Context chip:</strong> Shows word count — tells the user how much context the AI has</li>
+      <li><strong>Suggested prompts:</strong> Writing-specific, map to Flows 1 (critique) and 4 (research)</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- RECOMMENDED: Active Conversation                                -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section id="rec-convo" class="mockup-section">
+  <h2>★ Recommended Design — Active Conversation</h2>
+  <p class="desc">
+    Card-style messages on the tinted background. User messages on gray, assistant messages on white with a thin border. The cards provide visual anchoring in busy conversations, and the white assistant cards pop against the gray-50 panel. Thread dropdown shows in header since this is the second conversation on this document.
+  </p>
+  <div class="frame">
+    <div class="top-nav">
+      <a class="back" href="#">← Dashboard</a>
+      <input class="title-input" value="The Case for Process-Based Provenance" readonly>
+      <span class="save-status">Saved</span>
+      <button class="badge-btn">Generate Badge</button>
+    </div>
+    <div class="split-layout">
+      <div class="editor-pane">
+        <div class="editor-toolbar">
+          <button class="tbtn"><b>B</b></button>
+          <button class="tbtn"><i>I</i></button>
+          <button class="tbtn"><s>S</s></button>
+          <div class="sep"></div>
+          <button class="tbtn">H1</button>
+          <button class="tbtn">H2</button>
+          <button class="tbtn">H3</button>
+          <div class="sep"></div>
+          <button class="tbtn">❝</button>
+          <button class="tbtn">•</button>
+          <button class="tbtn">1.</button>
+          <div class="spacer"></div>
+          <button class="lens-btn">👁 Lens</button>
+          <button class="tbtn">🕐</button>
+        </div>
+        <div class="editor-content">
+          <div class="prose-area">
+            <h2>The Detection Dead End</h2>
+            <p>The most common response to AI-generated content has been detection — tools like GPTZero and Originality.ai that analyze text and assign probability scores. But detection has a fundamental problem: it's an arms race that defenders are losing.</p>
+            <p>GPTZero achieves 99.3% accuracy on raw AI-generated text. Impressive, until you learn that accuracy drops to 18% when the text has been processed through a humanizer tool.</p>
+            <p>More critically, detection tools produce false positives at rates that make them unreliable for high-stakes decisions.</p>
+            <p>The MLA-CCCC Joint Task Force put it bluntly: AI text detection is "inaccurate, biased, easily circumvented, and not transparent."</p>
+          </div>
+        </div>
+      </div>
+      <div class="resize-handle"></div>
+      <div class="chat-panel tinted">
+        <div class="rec-header">
+          <div class="header-left">
+            <span class="panel-title" style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--gray-500);">AI</span>
+            <div class="mode-pills" style="display:flex;gap:1px;background:var(--gray-200);border-radius:6px;padding:2px;">
+              <button class="mode-pill active" style="font-size:11px;font-weight:500;padding:3px 10px;border-radius:4px;border:none;cursor:pointer;font-family:var(--font);background:white;color:var(--gray-800);box-shadow:0 1px 2px rgba(0,0,0,0.06);">Ask</button>
+              <button class="mode-pill" style="font-size:11px;font-weight:500;padding:3px 10px;border-radius:4px;border:none;cursor:pointer;font-family:var(--font);background:transparent;color:var(--gray-500);">Edit</button>
+            </div>
+            <span style="color:var(--gray-300);font-size:12px;">·</span>
+            <button class="thread-dropdown-trigger" onclick="this.nextElementSibling.classList.toggle('thread-dropdown-hidden')">
+              <span class="thread-name">Detection research</span>
+              <span class="chevron">▾</span>
+            </button>
+            <div class="thread-dropdown thread-dropdown-hidden" style="display:none;">
+              <!-- Dropdown shown on click; hidden by default in mockup -->
+            </div>
+          </div>
+          <div class="header-right">
+            <select class="model-select" style="font-size:11px;color:var(--gray-500);border:1px solid var(--gray-200);border-radius:5px;padding:3px 8px;background:white;font-family:var(--font);cursor:pointer;">
+              <option>Claude Sonnet 4.5</option>
+            </select>
+            <button class="close-btn" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;color:var(--gray-400);border-radius:5px;cursor:pointer;font-size:16px;">×</button>
+          </div>
+        </div>
+        <div class="chat-body">
+          <div class="message user card">
+            <div class="msg-role">You</div>
+            <div class="msg-body">
+              <p>What research exists on the effectiveness of AI text detection tools in 2026? I need specific numbers I can cite.</p>
+            </div>
+          </div>
+          <div class="message assistant card">
+            <div class="msg-role">Claude</div>
+            <div class="msg-body">
+              <p>Here's what the current research shows:</p>
+              <p><strong>Accuracy on raw AI text:</strong> Weber-Wulff et al. (2023) tested 14 detectors and found accuracy rates between 55–96% on unmodified AI text. GPTZero was among the best at ~99% for raw GPT-4 output.</p>
+              <p><strong>After paraphrasing/humanizing:</strong> Sadasivan et al. (2023) showed that simple paraphrasing attacks reduce all detector accuracy to near-random (50–60%). The 18% figure you're using likely comes from Liang et al. (2023) testing against DIPPER paraphrasing.</p>
+              <p><strong>False positive rates:</strong> Liang et al. (2023) found detectors were significantly biased against non-native English speakers — flagging their writing as AI-generated at rates 2–3x higher than native speakers.</p>
+              <p><strong>2025–2026 developments:</strong> The MLA-CCCC Working Paper (Jan 2025) formally recommended against using detection tools for academic integrity decisions, calling them "not appropriate as the sole basis for any consequential decision."</p>
+            </div>
+            <div class="msg-actions">
+              <button class="msg-action-btn">📋 Copy</button>
+              <button class="msg-action-btn">📌 Keep</button>
+            </div>
+          </div>
+          <div class="message user card">
+            <div class="msg-role">You</div>
+            <div class="msg-body">
+              <p>Good. What's the strongest counterargument to my position that detection is a dead end?</p>
+            </div>
+          </div>
+          <div class="message assistant card">
+            <div class="msg-role">Claude</div>
+            <div class="msg-body">
+              <p>The strongest counter is the <strong>"good enough for flagging" argument</strong>: detection doesn't need to be perfect, it just needs to be useful as a screening tool.</p>
+              <p>The case goes like this: even at 70–80% accuracy, detection creates a cost for deception. It's the difference between a lock that can be picked and no lock at all. Most people won't bother picking the lock.</p>
+              <p>To address this in your article, you need the <strong>asymmetric harm argument</strong>: when detection gets it wrong, the false positive (accusing a human writer) is far more damaging than the false negative (missing AI text). The Liang et al. finding about bias against non-native speakers makes this concrete — it's not hypothetical harm, it's documented disparate impact.</p>
+              <p>You should also note that the "flagging" argument assumes someone reviews the flags. In practice, automated systems act on detection scores directly — Turnitin scores trigger academic misconduct proceedings without human review in many institutions.<span class="streaming-cursor"></span></p>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <div class="context-chip">
+            <span class="dot"></span>
+            Full document · 1,247 words
+          </div>
+          <div class="chat-input-wrap">
+            <textarea rows="1" placeholder="Ask about your writing..."></textarea>
+            <button class="send-btn">↑</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-notes">
+    <h4>Design decisions</h4>
+    <ul>
+      <li><strong>Card messages on gray-50:</strong> User messages get a gray background card, assistant messages get a white card with thin border. The white cards pop against the tinted panel, providing visual anchoring in long conversations.</li>
+      <li><strong>Thread name in header:</strong> "Detection research" with ▾ chevron — click to switch threads or create new. Zero vertical space cost when there's only one thread.</li>
+      <li><strong>Hover actions:</strong> Copy and Keep appear on hover. Keep pins a message as a reference you can return to.</li>
+      <li><strong>Streaming:</strong> Blinking cursor at the end of the active response. Send button stays enabled for aborting (becomes ■ stop).</li>
+      <li><strong>Information density:</strong> Every pixel goes to content. The header is 40px, input area ~80px — the rest is conversation.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- RECOMMENDED: Critical Reader (Flow 1)                           -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section id="rec-critique" class="mockup-section">
+  <h2>★ Recommended Design — Critical Reader (Flow 1)</h2>
+  <p class="desc">
+    The writer asks for critique. The AI responds with structured annotations referencing specific passages. Annotations are visually distinct from regular messages — left-bordered cards with paragraph references and severity colors. The editor highlights the referenced passages.
+  </p>
+  <div class="frame">
+    <div class="top-nav">
+      <a class="back" href="#">← Dashboard</a>
+      <input class="title-input" value="The Case for Process-Based Provenance" readonly>
+      <span class="save-status">Saved</span>
+      <button class="badge-btn">Generate Badge</button>
+    </div>
+    <div class="split-layout">
+      <div class="editor-pane">
+        <div class="editor-toolbar">
+          <button class="tbtn"><b>B</b></button>
+          <button class="tbtn"><i>I</i></button>
+          <button class="tbtn"><s>S</s></button>
+          <div class="sep"></div>
+          <button class="tbtn">H1</button>
+          <button class="tbtn">H2</button>
+          <button class="tbtn">H3</button>
+          <div class="sep"></div>
+          <button class="tbtn">❝</button>
+          <button class="tbtn">•</button>
+          <button class="tbtn">1.</button>
+          <div class="spacer"></div>
+          <button class="lens-btn">👁 Lens</button>
+          <button class="tbtn">🕐</button>
+        </div>
+        <div class="editor-content">
+          <div class="prose-area">
+            <h2>The Detection Dead End</h2>
+            <p>The most common response to AI-generated content has been detection — tools like GPTZero and Originality.ai that analyze text and assign probability scores. But detection has a fundamental problem: <span style="background: rgba(139,92,246,0.1); border-bottom: 2px solid rgba(139,92,246,0.3); padding: 0 2px; border-radius: 1px;">it's an arms race that defenders are losing.</span></p>
+            <p>GPTZero achieves 99.3% accuracy on raw AI-generated text. Impressive, until you learn that accuracy drops to 18% when the text has been processed through a humanizer tool. <span style="background: rgba(249,115,22,0.08); border-bottom: 2px solid rgba(249,115,22,0.25); padding: 0 2px; border-radius: 1px;">These tools are free, widely available, and trivially easy to use.</span></p>
+            <p>More critically, <span style="background: rgba(239,68,68,0.06); border-bottom: 2px solid rgba(239,68,68,0.25); padding: 0 2px; border-radius: 1px;">detection tools produce false positives at rates that make them unreliable for high-stakes decisions. Multiple documented cases show students falsely accused of AI use.</span></p>
+            <p>The MLA-CCCC Joint Task Force put it bluntly: AI text detection is "inaccurate, biased, easily circumvented, and not transparent." They recommend process tracking instead.</p>
+          </div>
+        </div>
+      </div>
+      <div class="resize-handle"></div>
+      <div class="chat-panel tinted">
+        <div class="rec-header">
+          <div class="header-left">
+            <span class="panel-title" style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--gray-500);">AI</span>
+            <div class="mode-pills" style="display:flex;gap:1px;background:var(--gray-200);border-radius:6px;padding:2px;">
+              <button class="mode-pill active" style="font-size:11px;font-weight:500;padding:3px 10px;border-radius:4px;border:none;cursor:pointer;font-family:var(--font);background:white;color:var(--gray-800);box-shadow:0 1px 2px rgba(0,0,0,0.06);">Ask</button>
+              <button class="mode-pill" style="font-size:11px;font-weight:500;padding:3px 10px;border-radius:4px;border:none;cursor:pointer;font-family:var(--font);background:transparent;color:var(--gray-500);">Edit</button>
+            </div>
+          </div>
+          <div class="header-right">
+            <select class="model-select" style="font-size:11px;color:var(--gray-500);border:1px solid var(--gray-200);border-radius:5px;padding:3px 8px;background:white;font-family:var(--font);cursor:pointer;">
+              <option>Claude Sonnet 4.5</option>
+            </select>
+            <button class="close-btn" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;color:var(--gray-400);border-radius:5px;cursor:pointer;font-size:16px;">×</button>
+          </div>
+        </div>
+        <div class="chat-body">
+          <div class="message user card">
+            <div class="msg-role">You</div>
+            <div class="msg-body">
+              <p>Read the "Detection Dead End" section and critique my argument. Be harsh — where is it weak?</p>
+            </div>
+          </div>
+          <div class="message assistant card">
+            <div class="msg-role">Claude</div>
+            <div class="msg-body">
+              <p>Three issues, ordered from most to least severe:</p>
+            </div>
+          </div>
+
+          <div class="annotation-card" style="border-left-color: #ef4444;">
+            <div class="annotation-ref" style="color: #ef4444;">¶3 · "Multiple documented cases show students falsely accused..."</div>
+            <p><strong>Weakest point in the section.</strong> "Multiple documented cases" is academic throat-clearing. Pick two specific examples and name them. Concrete beats abstract every time. This paragraph is supposed to be your emotional hook — right now it's your weakest link.</p>
+          </div>
+
+          <div class="annotation-card">
+            <div class="annotation-ref">¶1 · "it's an arms race that defenders are losing"</div>
+            <p><strong>Unsupported assertion.</strong> You declare the arms race lost before giving any evidence. The 18% stat comes two paragraphs later — it needs to come here, or this sentence is just hand-waving. Lead with the number, then explain what it means.</p>
+          </div>
+
+          <div class="annotation-card" style="border-left-color: var(--gray-400);">
+            <div class="annotation-ref" style="color: var(--gray-500);">¶2 · "These tools are free, widely available..."</div>
+            <p><strong>Vague where it should be specific.</strong> Name one humanizer tool. Show how trivially easy it is to use. The specificity makes the argument undeniable; the vagueness makes it dismissible.</p>
+          </div>
+
+          <div class="message assistant card" style="margin-top: 4px;">
+            <div class="msg-body">
+              <p>Your MLA-CCCC quote is the strongest piece of evidence but it's buried at the end. Consider whether it should lead the section — "The MLA-CCCC Joint Task Force called detection 'inaccurate, biased, easily circumvented.' Here's why."</p>
+            </div>
+            <div class="msg-actions">
+              <button class="msg-action-btn">📋 Copy all</button>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <div class="context-chip">
+            <span class="dot"></span>
+            Full document · 1,247 words
+          </div>
+          <div class="chat-input-wrap">
+            <textarea rows="1" placeholder="Ask a follow-up..."></textarea>
+            <button class="send-btn disabled">↑</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-notes">
+    <h4>Design decisions</h4>
+    <ul>
+      <li><strong>Annotations are distinct from messages:</strong> Left-bordered cards with paragraph references stand apart from flat chat messages</li>
+      <li><strong>Severity via border color:</strong> Red (issue), violet (suggestion), gray (note) — three levels, no more</li>
+      <li><strong>Editor cross-highlights:</strong> Referenced passages get a subtle tinted underline in the editor, matching the annotation severity color</li>
+      <li><strong>Critique, not rewrites:</strong> The AI describes problems and suggests directions. The writer decides what to change. This is Flow 1.</li>
+      <li><strong>Future:</strong> Clicking an annotation scrolls the editor to the referenced passage. Dismissing clears the highlight.</li>
+      <li><strong>Ordered by severity:</strong> Most critical issue first — respects the writer's time</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- RECOMMENDED: Collapsed State                                    -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section id="rec-collapsed" class="mockup-section">
+  <h2>★ Recommended Design — Collapsed Panel</h2>
+  <p class="desc">
+    Panel collapsed. Toolbar button with ⌘L shortcut is the only affordance. The editor takes full width — identical to the current experience. The toggle restores the panel to its previous width and conversation state.
+  </p>
+  <div class="frame">
+    <div class="top-nav">
+      <a class="back" href="#">← Dashboard</a>
+      <input class="title-input" value="The Case for Process-Based Provenance" readonly>
+      <span class="save-status">Saved</span>
+      <button class="badge-btn">Generate Badge</button>
+    </div>
+    <div class="split-layout">
+      <div class="editor-pane no-border">
+        <div class="editor-toolbar">
+          <button class="tbtn"><b>B</b></button>
+          <button class="tbtn"><i>I</i></button>
+          <button class="tbtn"><s>S</s></button>
+          <div class="sep"></div>
+          <button class="tbtn">H1</button>
+          <button class="tbtn">H2</button>
+          <button class="tbtn">H3</button>
+          <div class="sep"></div>
+          <button class="tbtn">❝</button>
+          <button class="tbtn">•</button>
+          <button class="tbtn">1.</button>
+          <div class="spacer"></div>
+          <button class="lens-btn">👁 Lens</button>
+          <button class="tbtn">🕐</button>
+          <div class="sep"></div>
+          <button class="toolbar-chat-btn">
+            ✦ AI
+            <span class="kbd">⌘L</span>
+          </button>
+        </div>
+        <div class="editor-content" style="position:relative;">
+          <div class="prose-area">
+            <h2>The Detection Dead End</h2>
+            <p>The most common response to AI-generated content has been detection — tools like GPTZero and Originality.ai that analyze text and assign probability scores. But detection has a fundamental problem: it's an arms race that defenders are losing.</p>
+            <p>GPTZero achieves 99.3% accuracy on raw AI-generated text. Impressive, until you learn that accuracy drops to 18% when the text has been processed through a humanizer tool. These tools are free, widely available, and trivially easy to use.</p>
+            <p>More critically, detection tools produce false positives at rates that make them unreliable for high-stakes decisions. Multiple documented cases show students falsely accused of AI use, professionals having work questioned, and entire publications casting doubt on legitimate human writing.</p>
+            <p>The MLA-CCCC Joint Task Force put it bluntly: AI text detection is "inaccurate, biased, easily circumvented, and not transparent." They recommend process tracking instead — documenting how content was made rather than trying to detect AI after the fact.</p>
+            <p>This mirrors a broader shift. The C2PA standard — originally built for image and video provenance — released versions 2.2 and 2.3 in late 2025 with preliminary text format support. The EU AI Act's Article 50 becomes enforceable August 2, 2026, requiring AI-generated text to be marked in machine-readable format.</p>
+          </div>
+          <div class="sparkle-trigger" style="right: 32px; top: 140px;">✦</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-notes">
+    <h4>Design decisions</h4>
+    <ul>
+      <li><strong>Toolbar button:</strong> "✦ AI" with ⌘L shortcut shown inline. Discoverable on first use, keyboard-driven after that.</li>
+      <li><strong>When panel is visible:</strong> The toolbar button disappears (the panel's close button takes over).</li>
+      <li><strong>Restores state:</strong> ⌘L re-opens to the same width, same conversation, same scroll position. Not a reset.</li>
+      <li><strong>Default state:</strong> Panel starts collapsed on first visit to a document. Opens on first ⌘L or toolbar click.</li>
+      <li><strong>Full-width editor:</strong> Identical to current app experience — no regressions for writers who don't use the panel.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- RECOMMENDED: Explore Mode (Full-width chat)                     -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section id="rec-explore" class="mockup-section">
+  <h2>★ Recommended Design — Explore Mode</h2>
+  <p class="desc">
+    Editor collapsed, chat takes full width. The "research first, write later" workflow. Conversation content centers at 640px max-width for comfortable reading. A button in the header brings the editor back. The tinted background extends to full width.
+  </p>
+  <div class="frame">
+    <div class="top-nav">
+      <a class="back" href="#">← Dashboard</a>
+      <input class="title-input" value="The Case for Process-Based Provenance" readonly>
+      <span class="save-status">Saved</span>
+      <button class="badge-btn">Generate Badge</button>
+    </div>
+    <div class="split-layout">
+      <div class="chat-panel tinted full-chat" style="width:100%;">
+        <div class="rec-header">
+          <div class="header-left">
+            <button style="font-size:12px;font-weight:500;padding:4px 10px;border-radius:5px;border:1px solid var(--gray-200);background:white;color:var(--gray-500);cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:4px;" title="Show editor (⌘L)">
+              <span style="font-size:10px;">◀</span> Editor
+            </button>
+            <span style="color:var(--gray-300);font-size:14px;">|</span>
+            <span class="panel-title" style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--gray-500);">AI</span>
+            <div class="mode-pills" style="display:flex;gap:1px;background:var(--gray-200);border-radius:6px;padding:2px;">
+              <button class="mode-pill active" style="font-size:11px;font-weight:500;padding:3px 10px;border-radius:4px;border:none;cursor:pointer;font-family:var(--font);background:white;color:var(--gray-800);box-shadow:0 1px 2px rgba(0,0,0,0.06);">Ask</button>
+              <button class="mode-pill" style="font-size:11px;font-weight:500;padding:3px 10px;border-radius:4px;border:none;cursor:pointer;font-family:var(--font);background:transparent;color:var(--gray-500);">Edit</button>
+            </div>
+            <span style="color:var(--gray-300);font-size:12px;">·</span>
+            <button class="thread-dropdown-trigger">
+              <span class="thread-name">Research landscape</span>
+              <span class="chevron">▾</span>
+            </button>
+          </div>
+          <div class="header-right">
+            <select class="model-select" style="font-size:11px;color:var(--gray-500);border:1px solid var(--gray-200);border-radius:5px;padding:3px 8px;background:white;font-family:var(--font);cursor:pointer;">
+              <option>Claude Sonnet 4.5</option>
+            </select>
+          </div>
+        </div>
+        <div class="chat-body" style="padding: 32px 24px;">
+          <div style="max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px;">
+            <div class="message user card">
+              <div class="msg-role">You</div>
+              <div class="msg-body">
+                <p>I'm writing an article about why process-based provenance is a better solution than AI text detection for establishing content authenticity. Before I start drafting, help me map the landscape. What are the main approaches to this problem in 2026?</p>
+              </div>
+            </div>
+            <div class="message assistant card">
+              <div class="msg-role">Claude</div>
+              <div class="msg-body">
+                <p>The content authenticity space in 2026 breaks down into four main approaches:</p>
+                <p><strong>1. Probabilistic Detection</strong> (GPTZero, Originality.ai, Turnitin) — analyzes finished text to estimate AI involvement. Still the most deployed approach despite well-documented limitations. The assumption: you can tell AI text from human text by statistical analysis.</p>
+                <p><strong>2. Watermarking</strong> (Google SynthID, OpenAI internal efforts) — embeds invisible statistical patterns in AI output at the model level. Requires universal provider adoption and is defeated by paraphrasing.</p>
+                <p><strong>3. Content Credentials / C2PA</strong> — cryptographic metadata (provenance chain) attached to content. Originally for images/video, with text support in C2PA 2.2–2.3. The assumption: content should carry a chain of custody from creation to publication.</p>
+                <p><strong>4. Process-Based Provenance</strong> (your territory) — records the writing process itself as evidence. Keystrokes, revisions, AI interactions, timing data. The assumption: the process tells you more than the product.</p>
+                <p>The interesting dynamic is that approaches 3 and 4 are converging. C2PA is moving toward process documentation, and process-based tools are adopting cryptographic verification. Your article could position this convergence as the winning direction.</p>
+              </div>
+              <div class="msg-actions" style="opacity:1;">
+                <button class="msg-action-btn">📋 Copy</button>
+                <button class="msg-action-btn">📌 Keep</button>
+              </div>
+            </div>
+            <div class="message user card">
+              <div class="msg-role">You</div>
+              <div class="msg-body">
+                <p>Great map. Let me drill into the convergence between 3 and 4. What specifically is C2PA doing with text?</p>
+              </div>
+            </div>
+            <div class="message assistant card">
+              <div class="msg-role">Claude</div>
+              <div class="msg-body">
+                <p>C2PA's text support is still the least mature content modality, but they've made real progress:<span class="streaming-cursor"></span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-area" style="max-width: 640px; margin: 0 auto; width: 100%; padding: 12px 24px 16px;">
+          <div class="context-chip">
+            <span class="dot"></span>
+            Document: "The Case for Process-Based Provenance" · 0 words (empty draft)
+          </div>
+          <div class="chat-input-wrap">
+            <textarea rows="1" placeholder="Continue exploring..."></textarea>
+            <button class="send-btn">↑</button>
+          </div>
+          <div class="chat-input-hint">
+            <kbd>⌘ L</kbd> show editor · <kbd>Enter</kbd> send
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-notes">
+    <h4>Design decisions</h4>
+    <ul>
+      <li><strong>Content centered at 640px:</strong> Comfortable reading width matching ChatGPT/Claude.ai. The gray-50 background extends to fill the full viewport.</li>
+      <li><strong>"◀ Editor" button:</strong> Brings the editor pane back (also ⌘L). Persistent in the header — always one click away.</li>
+      <li><strong>Context chip shows empty doc:</strong> The user is exploring before writing. The AI still has the document title for context.</li>
+      <li><strong>Conversation persists:</strong> Switching from explore → split mode doesn't reset the chat. Same thread, same messages.</li>
+      <li><strong>This is Flow 4 (Research Companion):</strong> Open-ended conversation that feeds into the writer's thinking, not the document directly.</li>
+      <li><strong>Thread dropdown available:</strong> Can have multiple research threads going — one on detection, one on C2PA, one on regulation.</li>
+    </ul>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- VARIATION A: Minimal — Empty State                             -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section id="a-empty" class="mockup-section">
+  <h2>Variation A: Minimal — Empty State</h2>
+  <p class="desc">
+    Linear-inspired. Clean white panel, flat message style, subtle mode tabs. The panel header uses small filled tabs for Ask/Edit mode switching. Model selector pushed to the right.
+  </p>
+  <div class="frame">
+    <div class="top-nav">
+      <a class="back" href="#">← Dashboard</a>
+      <input class="title-input" value="The Case for Process-Based Provenance" readonly>
+      <span class="save-status">Saved</span>
+      <button class="badge-btn">Generate Badge</button>
+    </div>
+    <div class="split-layout">
+      <div class="editor-pane">
+        <div class="editor-toolbar">
+          <button class="tbtn"><b>B</b></button>
+          <button class="tbtn"><i>I</i></button>
+          <button class="tbtn"><s>S</s></button>
+          <div class="sep"></div>
+          <button class="tbtn">H1</button>
+          <button class="tbtn">H2</button>
+          <button class="tbtn">H3</button>
+          <div class="sep"></div>
+          <button class="tbtn">❝</button>
+          <button class="tbtn">•</button>
+          <button class="tbtn">1.</button>
+          <div class="spacer"></div>
+          <button class="lens-btn">👁 Lens</button>
+          <button class="tbtn">🕐</button>
+        </div>
+        <div class="editor-content" style="position:relative;">
+          <div class="prose-area">
+            <h2>The Detection Dead End</h2>
+            <p>The most common response to AI-generated content has been detection — tools like GPTZero and Originality.ai that analyze text and assign probability scores. But detection has a fundamental problem: it's an arms race that defenders are losing.</p>
+            <p>GPTZero achieves 99.3% accuracy on raw AI-generated text. Impressive, until you learn that accuracy drops to 18% when the text has been processed through a humanizer tool. These tools are free, widely available, and trivially easy to use.</p>
+            <p>More critically, detection tools produce false positives at rates that make them unreliable for high-stakes decisions. Multiple documented cases show students falsely accused of AI use, professionals having work questioned, and entire publications casting doubt on legitimate human writing.</p>
+            <p>The MLA-CCCC Joint Task Force put it bluntly: AI text detection is "inaccurate, biased, easily circumvented, and not transparent." They recommend process tracking instead — documenting how content was made rather than trying to detect AI after the fact.</p>
+          </div>
+          <div class="sparkle-trigger" style="right: 32px; top: 140px;">✦</div>
+        </div>
+      </div>
+      <div class="resize-handle"></div>
+      <div class="chat-panel minimal">
+        <div class="chat-header">
+          <button class="mode-tab active">Ask</button>
+          <button class="mode-tab">Edit</button>
+          <select class="model-select">
+            <option>Claude Sonnet 4.5</option>
+          </select>
+          <button class="close-btn">×</button>
+        </div>
+        <div class="chat-body">
+          <div class="empty-state minimal-empty">
+            <div class="icon">💬</div>
+            <h3>Ask about your document</h3>
+            <p>Get critique, explore ideas, or research topics — all with your document as context.</p>
+            <div class="suggested-prompts">
+              <button class="suggested-prompt">
+                <span class="prompt-icon">🔍</span>
+                <span class="prompt-text">Where does my argument fall apart?</span>
+              </button>
+              <button class="suggested-prompt">
+                <span class="prompt-icon">📐</span>
+                <span class="prompt-text">How could I restructure this?</span>
+              </button>
+              <button class="suggested-prompt">
+                <span class="prompt-icon">📚</span>
+                <span class="prompt-text">What research supports this claim?</span>
+              </button>
+              <button class="suggested-prompt">
+                <span class="prompt-icon">🎯</span>
+                <span class="prompt-text">Is my core message clear?</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <div class="context-chip">
+            <span class="dot"></span>
+            Full document context
+          </div>
+          <div class="chat-input-wrap">
+            <textarea rows="1" placeholder="Ask anything about your writing..."></textarea>
+            <button class="send-btn disabled">↑</button>
+          </div>
+          <div class="chat-input-hint">
+            <kbd>⌘ L</kbd> to toggle panel · <kbd>Enter</kbd> to send
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-notes">
+    <h4>Design notes</h4>
+    <ul>
+      <li>Panel background matches editor (white) — feels like one continuous surface</li>
+      <li>Mode tabs use filled/unfilled to indicate active state — high contrast, low chrome</li>
+      <li>Suggested prompts are writing-specific and context-aware</li>
+      <li>"Full document context" chip tells the user the AI can see their doc</li>
+      <li>The resize handle is invisible until hovered — only the 1px border separates panels</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- VARIATION A: Minimal — Active Conversation                     -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section id="a-convo" class="mockup-section">
+  <h2>Variation A: Minimal — Active Conversation</h2>
+  <p class="desc">
+    Flat messages with role labels. No bubbles, no cards — just clean text with typographic hierarchy. Hover reveals action buttons (copy, insert).
+  </p>
+  <div class="frame">
+    <div class="top-nav">
+      <a class="back" href="#">← Dashboard</a>
+      <input class="title-input" value="The Case for Process-Based Provenance" readonly>
+      <span class="save-status">Saved</span>
+      <button class="badge-btn">Generate Badge</button>
+    </div>
+    <div class="split-layout">
+      <div class="editor-pane">
+        <div class="editor-toolbar">
+          <button class="tbtn"><b>B</b></button>
+          <button class="tbtn"><i>I</i></button>
+          <button class="tbtn"><s>S</s></button>
+          <div class="sep"></div>
+          <button class="tbtn">H1</button>
+          <button class="tbtn">H2</button>
+          <button class="tbtn">H3</button>
+          <div class="spacer"></div>
+          <button class="lens-btn">👁 Lens</button>
+          <button class="tbtn">🕐</button>
+        </div>
+        <div class="editor-content" style="position:relative;">
+          <div class="prose-area">
+            <h2>The Detection Dead End</h2>
+            <p>The most common response to AI-generated content has been detection — tools like GPTZero and Originality.ai that analyze text and assign probability scores. But detection has a fundamental problem: it's an arms race that defenders are losing.</p>
+            <p>GPTZero achieves 99.3% accuracy on raw AI-generated text. Impressive, until you learn that accuracy drops to 18% when the text has been processed through a humanizer tool.</p>
+            <p>More critically, detection tools produce false positives at rates that make them unreliable for high-stakes decisions.</p>
+            <p>The MLA-CCCC Joint Task Force put it bluntly: AI text detection is "inaccurate, biased, easily circumvented, and not transparent."</p>
+          </div>
+        </div>
+      </div>
+      <div class="resize-handle"></div>
+      <div class="chat-panel minimal">
+        <div class="chat-header">
+          <button class="mode-tab active">Ask</button>
+          <button class="mode-tab">Edit</button>
+          <select class="model-select">
+            <option>Claude Sonnet 4.5</option>
+          </select>
+          <button class="close-btn">×</button>
+        </div>
+        <div class="chat-body">
+          <div class="message user flat">
+            <div class="msg-role">You</div>
+            <div class="msg-body">
+              <p>Where does my argument about detection being a dead end fall apart? Be harsh.</p>
+            </div>
+          </div>
+          <div class="message assistant flat">
+            <div class="msg-role">Claude</div>
+            <div class="msg-body">
+              <p>Your argument has a structural weakness in the middle: you jump from "detection accuracy is low" to "process tracking is better" without addressing the obvious counterargument — <strong>why can't we do both?</strong></p>
+              <p>A reader could reasonably ask: isn't detection useful as one signal among many, even if imperfect? You're treating it as binary (works/doesn't work) when the reality is probabilistic.</p>
+              <p>Three specific gaps:</p>
+              <p><strong>1. The 18% stat needs context.</strong> You cite GPTZero dropping to 18% on humanized text, but you don't mention what "humanized" means. A skeptical reader might dismiss this as an edge case.</p>
+              <p><strong>2. The false positive claim is unsupported.</strong> "Multiple documented cases" is vague. Name two. The MLA quote is strong but it's doing all the heavy lifting.</p>
+              <p><strong>3. Missing the "good enough" argument.</strong> Some detection advocates argue that 80% accuracy is still useful for flagging, not convicting. You need to address this before dismissing the entire approach.</p>
+            </div>
+            <div class="msg-actions">
+              <button class="msg-action-btn">📋 Copy</button>
+              <button class="msg-action-btn">📌 Keep</button>
+            </div>
+          </div>
+          <div class="message user flat">
+            <div class="msg-role">You</div>
+            <div class="msg-body">
+              <p>Good point about the "good enough" argument. What's the strongest counterargument to that position?</p>
+            </div>
+          </div>
+          <div class="message assistant flat">
+            <div class="msg-role">Claude</div>
+            <div class="msg-body">
+              <p>The strongest counter is the <strong>asymmetric harm problem</strong>: when detection is wrong, the consequences are catastrophic and one-directional.<span class="streaming-cursor"></span></p>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <div class="context-chip">
+            <span class="dot"></span>
+            Full document context
+          </div>
+          <div class="chat-input-wrap">
+            <textarea rows="1" placeholder="Ask anything about your writing..."></textarea>
+            <button class="send-btn">↑</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-notes">
+    <h4>Design notes</h4>
+    <ul>
+      <li>Messages are flat — no backgrounds, no borders. Role labels provide the only visual separation.</li>
+      <li>The streaming cursor blinks at the end of the current response</li>
+      <li>Hover on any assistant message reveals Copy and Keep actions</li>
+      <li>"Keep" pins the message as a reference (persistent across the session)</li>
+      <li>Lowest visual weight of all variations — the content is everything</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- VARIATION B: Tinted — Empty State                              -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section id="b-empty" class="mockup-section">
+  <h2>Variation B: Tinted — Empty State</h2>
+  <p class="desc">
+    Cursor-inspired. The panel has a subtle gray-50 background tint to distinguish it from the editor. Mode switching uses a segmented control (pill group). Feels more like a "tool panel."
+  </p>
+  <div class="frame">
+    <div class="top-nav">
+      <a class="back" href="#">← Dashboard</a>
+      <input class="title-input" value="The Case for Process-Based Provenance" readonly>
+      <span class="save-status">Saved</span>
+      <button class="badge-btn">Generate Badge</button>
+    </div>
+    <div class="split-layout">
+      <div class="editor-pane">
+        <div class="editor-toolbar">
+          <button class="tbtn"><b>B</b></button>
+          <button class="tbtn"><i>I</i></button>
+          <button class="tbtn"><s>S</s></button>
+          <div class="sep"></div>
+          <button class="tbtn">H1</button>
+          <button class="tbtn">H2</button>
+          <button class="tbtn">H3</button>
+          <div class="spacer"></div>
+          <button class="lens-btn">👁 Lens</button>
+          <button class="tbtn">🕐</button>
+        </div>
+        <div class="editor-content">
+          <div class="prose-area">
+            <h2>The Detection Dead End</h2>
+            <p>The most common response to AI-generated content has been detection — tools like GPTZero and Originality.ai that analyze text and assign probability scores. But detection has a fundamental problem: it's an arms race that defenders are losing.</p>
+            <p>GPTZero achieves 99.3% accuracy on raw AI-generated text. Impressive, until you learn that accuracy drops to 18% when the text has been processed through a humanizer tool.</p>
+            <p>More critically, detection tools produce false positives at rates that make them unreliable for high-stakes decisions.</p>
+          </div>
+        </div>
+      </div>
+      <div class="resize-handle"></div>
+      <div class="chat-panel tinted">
+        <div class="chat-header">
+          <span class="panel-title">AI</span>
+          <div class="mode-pills">
+            <button class="mode-pill active">Ask</button>
+            <button class="mode-pill">Edit</button>
+          </div>
+          <select class="model-select">
+            <option>Claude Sonnet 4.5</option>
+          </select>
+          <button class="close-btn">×</button>
+        </div>
+        <div class="chat-body">
+          <div class="empty-state tinted-empty">
+            <div class="icon">✦</div>
+            <h3>Explore your ideas</h3>
+            <p>Research, brainstorm, and get feedback — your document is already loaded as context.</p>
+            <div class="suggested-prompts">
+              <button class="suggested-prompt">
+                <span class="prompt-icon">🎯</span>
+                <span class="prompt-text">Critique my core argument</span>
+              </button>
+              <button class="suggested-prompt">
+                <span class="prompt-icon">🧩</span>
+                <span class="prompt-text">What am I missing?</span>
+              </button>
+              <button class="suggested-prompt">
+                <span class="prompt-icon">📖</span>
+                <span class="prompt-text">Find supporting research</span>
+              </button>
+              <button class="suggested-prompt">
+                <span class="prompt-icon">💡</span>
+                <span class="prompt-text">Suggest a stronger opening</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <div class="context-chip">
+            <span class="dot"></span>
+            Full document · 1,247 words
+          </div>
+          <div class="chat-input-wrap">
+            <textarea rows="1" placeholder="Ask about your writing..."></textarea>
+            <button class="send-btn disabled">↑</button>
+          </div>
+          <div class="chat-input-hint">
+            <kbd>⌘ L</kbd> toggle · <kbd>@</kbd> reference · <kbd>Enter</kbd> send
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-notes">
+    <h4>Design notes</h4>
+    <ul>
+      <li>Gray-50 background creates clear visual separation from the white editor</li>
+      <li>Segmented control (pill group) for Ask/Edit feels more deliberate than flat tabs</li>
+      <li>"AI" label in header makes the panel purpose immediately clear</li>
+      <li>Context chip includes word count — tells user how much context the AI has</li>
+      <li>Input hint shows @ reference support (future: reference specific sections)</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- VARIATION B: Tinted — Active Conversation                      -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section id="b-convo" class="mockup-section">
+  <h2>Variation B: Tinted — Active Conversation</h2>
+  <p class="desc">
+    Messages use subtle card styling — user messages on gray background, assistant messages on white cards with a thin border. More visual structure than Variation A.
+  </p>
+  <div class="frame">
+    <div class="top-nav">
+      <a class="back" href="#">← Dashboard</a>
+      <input class="title-input" value="The Case for Process-Based Provenance" readonly>
+      <span class="save-status">Saved</span>
+      <button class="badge-btn">Generate Badge</button>
+    </div>
+    <div class="split-layout">
+      <div class="editor-pane">
+        <div class="editor-toolbar">
+          <button class="tbtn"><b>B</b></button>
+          <button class="tbtn"><i>I</i></button>
+          <button class="tbtn"><s>S</s></button>
+          <div class="sep"></div>
+          <button class="tbtn">H1</button>
+          <button class="tbtn">H2</button>
+          <button class="tbtn">H3</button>
+          <div class="spacer"></div>
+          <button class="lens-btn">👁 Lens</button>
+          <button class="tbtn">🕐</button>
+        </div>
+        <div class="editor-content">
+          <div class="prose-area">
+            <h2>The Detection Dead End</h2>
+            <p>The most common response to AI-generated content has been detection — tools like GPTZero and Originality.ai that analyze text and assign probability scores.</p>
+            <p>GPTZero achieves 99.3% accuracy on raw AI-generated text. Impressive, until you learn that accuracy drops to 18% when the text has been processed through a humanizer tool.</p>
+          </div>
+        </div>
+      </div>
+      <div class="resize-handle"></div>
+      <div class="chat-panel tinted">
+        <div class="chat-header">
+          <span class="panel-title">AI</span>
+          <div class="mode-pills">
+            <button class="mode-pill active">Ask</button>
+            <button class="mode-pill">Edit</button>
+          </div>
+          <select class="model-select">
+            <option>Claude Sonnet 4.5</option>
+          </select>
+          <button class="close-btn">×</button>
+        </div>
+        <div class="chat-body">
+          <div class="message user card">
+            <div class="msg-role">You</div>
+            <div class="msg-body">
+              <p>What research exists on the effectiveness of AI text detection tools in 2026? I need specific numbers I can cite.</p>
+            </div>
+          </div>
+          <div class="message assistant card">
+            <div class="msg-role">Claude</div>
+            <div class="msg-body">
+              <p>Here's what the current research shows:</p>
+              <p><strong>Accuracy on raw AI text:</strong> Weber-Wulff et al. (2023) tested 14 detectors and found accuracy rates between 55-96% on unmodified AI text. GPTZero was among the best at ~99% for raw GPT-4 output.</p>
+              <p><strong>After paraphrasing/humanizing:</strong> Sadasivan et al. (2023) showed that simple paraphrasing attacks reduce all detector accuracy to near-random (50-60%). The 18% figure you're using likely comes from Liang et al. (2023) testing against DIPPER paraphrasing.</p>
+              <p><strong>False positive rates:</strong> Liang et al. (2023) found detectors were significantly biased against non-native English speakers — flagging their writing as AI-generated at rates 2-3x higher than native speakers.</p>
+              <p><strong>2025-2026 developments:</strong> The MLA-CCCC Working Paper (Jan 2025) formally recommended against using detection tools for academic integrity decisions, calling them "not appropriate as the sole basis for any consequential decision."</p>
+            </div>
+            <div class="msg-actions">
+              <button class="msg-action-btn">📋 Copy</button>
+              <button class="msg-action-btn">📌 Keep</button>
+            </div>
+          </div>
+          <div class="message user card">
+            <div class="msg-role">You</div>
+            <div class="msg-body">
+              <p>Perfect. Can you help me figure out how to address the "good enough for flagging" counterargument?</p>
+            </div>
+          </div>
+          <div class="message assistant card">
+            <div class="msg-role">Claude</div>
+            <div class="msg-body">
+              <p>The "good enough for flagging" argument is actually the strongest case for detection, so you need to address it head-on rather than dismissing it. Here's the core tension:<span class="streaming-cursor"></span></p>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <div class="context-chip">
+            <span class="dot"></span>
+            Full document · 1,247 words
+          </div>
+          <div class="chat-input-wrap">
+            <textarea rows="1" placeholder="Ask about your writing..."></textarea>
+            <button class="send-btn">↑</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-notes">
+    <h4>Design notes</h4>
+    <ul>
+      <li>User messages: gray background card. Assistant messages: white card with border.</li>
+      <li>Cards provide more visual anchoring in a busy conversation</li>
+      <li>The tinted panel background makes the white assistant cards pop slightly</li>
+      <li>Role labels are above cards, not inside — keeps cards clean</li>
+      <li>Trade-off vs Variation A: more visual structure, but more visual weight</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- VARIATION C: Avatar Messages                                    -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section id="c-convo" class="mockup-section">
+  <h2>Variation C: Avatar-Style Messages</h2>
+  <p class="desc">
+    Small avatars next to each message. More personal, closer to ChatGPT/Claude web. Better for long conversations where you lose track of who said what. Uses the minimal (white) panel background.
+  </p>
+  <div class="frame">
+    <div class="top-nav">
+      <a class="back" href="#">← Dashboard</a>
+      <input class="title-input" value="The Case for Process-Based Provenance" readonly>
+      <span class="save-status">Saved</span>
+      <button class="badge-btn">Generate Badge</button>
+    </div>
+    <div class="split-layout">
+      <div class="editor-pane">
+        <div class="editor-toolbar">
+          <button class="tbtn"><b>B</b></button>
+          <button class="tbtn"><i>I</i></button>
+          <button class="tbtn"><s>S</s></button>
+          <div class="sep"></div>
+          <button class="tbtn">H1</button>
+          <button class="tbtn">H2</button>
+          <button class="tbtn">H3</button>
+          <div class="spacer"></div>
+          <button class="lens-btn">👁 Lens</button>
+          <button class="tbtn">🕐</button>
+        </div>
+        <div class="editor-content">
+          <div class="prose-area">
+            <h2>The Detection Dead End</h2>
+            <p>The most common response to AI-generated content has been detection — tools like GPTZero and Originality.ai that analyze text and assign probability scores.</p>
+            <p>GPTZero achieves 99.3% accuracy on raw AI-generated text.</p>
+          </div>
+        </div>
+      </div>
+      <div class="resize-handle"></div>
+      <div class="chat-panel minimal" style="width: 420px;">
+        <div class="chat-header">
+          <button class="mode-tab active">Ask</button>
+          <button class="mode-tab">Edit</button>
+          <select class="model-select">
+            <option>Claude Sonnet 4.5</option>
+          </select>
+          <button class="close-btn">×</button>
+        </div>
+        <div class="chat-body">
+          <div class="message bubble user">
+            <div class="msg-avatar">Y</div>
+            <div class="msg-content">
+              <div class="msg-name">You</div>
+              <div class="msg-body">
+                <p>I'm arguing that process-based provenance is superior to detection. What's the most common pushback on this position and how should I preempt it?</p>
+              </div>
+            </div>
+          </div>
+          <div class="message bubble assistant">
+            <div class="msg-avatar">✦</div>
+            <div class="msg-content">
+              <div class="msg-name">Claude</div>
+              <div class="msg-body">
+                <p>The strongest pushback is the <strong>voluntary compliance problem</strong>: process-based provenance only works if the writer chooses to use a tool that tracks their process. Detection, by contrast, works on any text regardless of how it was produced.</p>
+                <p>Critics will say: "Provenance is great for honest writers, but it does nothing about bad actors. Detection at least tries to catch everyone."</p>
+                <p>To preempt this, you need to reframe the goal. You're not arguing that provenance replaces detection — you're arguing that provenance creates a <strong>positive signal</strong> (I can prove my process) rather than relying on a <strong>negative signal</strong> (I can't detect AI in this text).</p>
+                <p>The analogy is organic food certification vs. pesticide testing. We don't test every tomato for chemicals — we certify the farm's process. The certification creates market value; the testing is a backup.</p>
+              </div>
+              <div class="msg-actions">
+                <button class="msg-action-btn">📋 Copy</button>
+                <button class="msg-action-btn">📌 Keep</button>
+              </div>
+            </div>
+          </div>
+          <div class="message bubble user">
+            <div class="msg-avatar">Y</div>
+            <div class="msg-content">
+              <div class="msg-name">You</div>
+              <div class="msg-body">
+                <p>That organic certification analogy is really good. Can you help me develop it further?</p>
+              </div>
+            </div>
+          </div>
+          <div class="message bubble assistant">
+            <div class="msg-avatar">✦</div>
+            <div class="msg-content">
+              <div class="msg-name">Claude</div>
+              <div class="msg-body">
+                <p>Here's how you can extend it:</p>
+                <p>The organic certification model has three properties that map perfectly to provenance:</p>
+                <p><strong>1. Process-first, not product-first.</strong> USDA Organic doesn't test the final product for pesticides (mostly). It certifies that the farm followed specific practices. Similarly, provenance certifies that the writer followed a human-directed process — it doesn't analyze the final text for "AI-ness."<span class="streaming-cursor"></span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <div class="context-chip">
+            <span class="dot"></span>
+            Full document context
+          </div>
+          <div class="chat-input-wrap">
+            <textarea rows="1" placeholder="Ask anything about your writing..."></textarea>
+            <button class="send-btn">↑</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-notes">
+    <h4>Design notes</h4>
+    <ul>
+      <li>Small 26px circle avatars — "Y" for user, "✦" for assistant</li>
+      <li>Names shown below avatar for clarity; role labels hidden</li>
+      <li>More personal feel, easier to scan in long conversations</li>
+      <li>Trade-off: takes more horizontal space per message due to avatar column</li>
+      <li>In a 400px panel, the avatar column is a meaningful cost — works better at 420px+</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- COLLAPSED STATE                                                 -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section id="collapsed" class="mockup-section">
+  <h2>Collapsed Panel State</h2>
+  <p class="desc">
+    When the chat panel is collapsed, the editor gets full width. A small toggle button in the toolbar provides access. Two options shown: toolbar button with keyboard shortcut, or edge-mounted toggle.
+  </p>
+
+  <p class="mockup-label">Option 1: Toolbar toggle button</p>
+  <div class="frame">
+    <div class="top-nav">
+      <a class="back" href="#">← Dashboard</a>
+      <input class="title-input" value="The Case for Process-Based Provenance" readonly>
+      <span class="save-status">Saved</span>
+      <button class="badge-btn">Generate Badge</button>
+    </div>
+    <div class="split-layout">
+      <div class="editor-pane no-border">
+        <div class="editor-toolbar">
+          <button class="tbtn"><b>B</b></button>
+          <button class="tbtn"><i>I</i></button>
+          <button class="tbtn"><s>S</s></button>
+          <div class="sep"></div>
+          <button class="tbtn">H1</button>
+          <button class="tbtn">H2</button>
+          <button class="tbtn">H3</button>
+          <div class="spacer"></div>
+          <button class="lens-btn">👁 Lens</button>
+          <button class="tbtn">🕐</button>
+          <div class="sep"></div>
+          <button class="toolbar-chat-btn">
+            ✦ AI
+            <span class="kbd">⌘L</span>
+          </button>
+        </div>
+        <div class="editor-content" style="position:relative;">
+          <div class="prose-area">
+            <h2>The Detection Dead End</h2>
+            <p>The most common response to AI-generated content has been detection — tools like GPTZero and Originality.ai that analyze text and assign probability scores. But detection has a fundamental problem: it's an arms race that defenders are losing.</p>
+            <p>GPTZero achieves 99.3% accuracy on raw AI-generated text. Impressive, until you learn that accuracy drops to 18% when the text has been processed through a humanizer tool. These tools are free, widely available, and trivially easy to use.</p>
+            <p>More critically, detection tools produce false positives at rates that make them unreliable for high-stakes decisions. Multiple documented cases show students falsely accused of AI use, professionals having work questioned, and entire publications casting doubt on legitimate human writing.</p>
+            <p>The MLA-CCCC Joint Task Force put it bluntly: AI text detection is "inaccurate, biased, easily circumvented, and not transparent." They recommend process tracking instead — documenting how content was made rather than trying to detect AI after the fact.</p>
+            <p>This mirrors a broader shift. The C2PA standard — originally built for image and video provenance — released versions 2.2 and 2.3 in late 2025 with preliminary text format support. The EU AI Act's Article 50 becomes enforceable August 2, 2026.</p>
+          </div>
+          <div class="sparkle-trigger" style="right: 32px; top: 140px;">✦</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="mockup-label">Option 2: Edge-mounted collapse toggle (visible on hover)</p>
+  <div class="frame" style="position:relative;">
+    <div class="top-nav">
+      <a class="back" href="#">← Dashboard</a>
+      <input class="title-input" value="The Case for Process-Based Provenance" readonly>
+      <span class="save-status">Saved</span>
+      <button class="badge-btn">Generate Badge</button>
+    </div>
+    <div class="split-layout">
+      <div class="editor-pane no-border" style="position:relative;">
+        <div class="editor-toolbar">
+          <button class="tbtn"><b>B</b></button>
+          <button class="tbtn"><i>I</i></button>
+          <button class="tbtn"><s>S</s></button>
+          <div class="sep"></div>
+          <button class="tbtn">H1</button>
+          <button class="tbtn">H2</button>
+          <button class="tbtn">H3</button>
+          <div class="spacer"></div>
+          <button class="lens-btn">👁 Lens</button>
+          <button class="tbtn">🕐</button>
+        </div>
+        <div class="editor-content">
+          <div class="prose-area">
+            <h2>The Detection Dead End</h2>
+            <p>The most common response to AI-generated content has been detection — tools like GPTZero and Originality.ai that analyze text and assign probability scores. But detection has a fundamental problem: it's an arms race that defenders are losing.</p>
+            <p>GPTZero achieves 99.3% accuracy on raw AI-generated text. Impressive, until you learn that accuracy drops to 18% when the text has been processed through a humanizer tool.</p>
+            <p>More critically, detection tools produce false positives at rates that make them unreliable for high-stakes decisions.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="collapse-toggle" style="right: 0; top: 50%; border-right: none; border-radius: 4px 0 0 4px;">‹</div>
+  </div>
+
+  <div class="mockup-notes">
+    <h4>Design notes</h4>
+    <ul>
+      <li>Option 1 (toolbar button): Most discoverable. Shows keyboard shortcut inline. Consistent with editor toolbar patterns.</li>
+      <li>Option 2 (edge toggle): Subtler. VS Code/Cursor pattern. Less clutter but less discoverable.</li>
+      <li>Recommendation: Use both — toolbar button as primary, edge toggle as secondary hover target</li>
+      <li>⌘L is the recommended shortcut (matches Cursor convention for chat panel)</li>
+      <li>When panel re-opens, it should restore to its previous width and conversation state</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- EXPLORE MODE (Full-width chat)                                  -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section id="explore" class="mockup-section">
+  <h2>Explore Mode — Full-Width Chat</h2>
+  <p class="desc">
+    When the editor panel is collapsed, the chat takes full width. This is the "I want to explore with AI before I start writing" mode. The conversation area gets a comfortable max-width and centers itself. A small button lets you bring the editor back.
+  </p>
+  <div class="frame">
+    <div class="top-nav">
+      <a class="back" href="#">← Dashboard</a>
+      <input class="title-input" value="The Case for Process-Based Provenance" readonly>
+      <span class="save-status">Saved</span>
+      <button class="badge-btn">Generate Badge</button>
+    </div>
+    <div class="split-layout">
+      <div class="chat-panel minimal full-chat">
+        <div class="chat-header" style="justify-content: center; position: relative;">
+          <button class="mode-tab" style="position: absolute; left: 12px; font-size: 12px; color: var(--gray-400); border: 1px solid var(--gray-200); padding: 3px 10px;" title="Show editor">◀ Editor</button>
+          <button class="mode-tab active">Ask</button>
+          <button class="mode-tab">Edit</button>
+          <select class="model-select" style="position: absolute; right: 44px;">
+            <option>Claude Sonnet 4.5</option>
+          </select>
+        </div>
+        <div class="chat-body" style="padding: 32px;">
+          <div style="max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px;">
+            <div class="message user flat">
+              <div class="msg-role">You</div>
+              <div class="msg-body">
+                <p>I'm writing an article about why process-based provenance is a better solution than AI text detection for establishing content authenticity. Before I start drafting, I want to map out the landscape. What are the main approaches people are taking to this problem in 2026?</p>
+              </div>
+            </div>
+            <div class="message assistant flat">
+              <div class="msg-role">Claude</div>
+              <div class="msg-body">
+                <p>The content authenticity space in 2026 breaks down into four main approaches, each with different assumptions about what problem they're solving:</p>
+                <p><strong>1. Probabilistic Detection (GPTZero, Originality.ai, Turnitin)</strong><br>
+                Analyzes finished text to estimate AI involvement. Still the most widely deployed approach, despite well-documented accuracy limitations. The assumption: you can tell AI-written text from human-written text by statistical analysis.</p>
+                <p><strong>2. Watermarking (Google SynthID, OpenAI internal efforts)</strong><br>
+                Embeds invisible statistical patterns in AI-generated text at the model level. The assumption: if all AI providers watermark their output, you can verify origin. Major challenge: requires universal provider adoption and is defeated by paraphrasing.</p>
+                <p><strong>3. Content Credentials / C2PA</strong><br>
+                Attaches cryptographic metadata (provenance chain) to content. Originally built for images/video, with text support added in C2PA 2.2-2.3. The assumption: content should carry a chain of custody from creation to publication.</p>
+                <p><strong>4. Process-Based Provenance (your territory)</strong><br>
+                Records the writing process itself — keystrokes, revisions, AI interactions, timing data — as evidence of how content was made. The assumption: the process tells you more than the product.</p>
+                <p>The interesting dynamic is that approaches 3 and 4 are converging. C2PA is moving toward process documentation, and process-based tools are adopting cryptographic verification. Your article could position this convergence as the winning direction.</p>
+              </div>
+              <div class="msg-actions" style="opacity: 1;">
+                <button class="msg-action-btn">📋 Copy</button>
+                <button class="msg-action-btn">📌 Keep</button>
+              </div>
+            </div>
+            <div class="message user flat">
+              <div class="msg-role">You</div>
+              <div class="msg-body">
+                <p>That's a great map. Let me drill into the convergence between 3 and 4. What specifically is C2PA doing with text?</p>
+              </div>
+            </div>
+            <div class="message assistant flat">
+              <div class="msg-role">Claude</div>
+              <div class="msg-body">
+                <p>C2PA's text support is still the least mature content modality, but here's where they are:<span class="streaming-cursor"></span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-area" style="max-width: 640px; margin: 0 auto; width: 100%;">
+          <div class="context-chip">
+            <span class="dot"></span>
+            Document: "The Case for Process-Based Provenance" · 0 words (empty draft)
+          </div>
+          <div class="chat-input-wrap">
+            <textarea rows="1" placeholder="Continue exploring..."></textarea>
+            <button class="send-btn">↑</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-notes">
+    <h4>Design notes</h4>
+    <ul>
+      <li>Chat content centered at max-width 640px — comfortable reading width, matching ChatGPT/Claude</li>
+      <li>"◀ Editor" button in header to bring the editor pane back</li>
+      <li>Context chip shows the document is empty — the user is exploring before writing</li>
+      <li>This mode supports the "research first, write later" workflow from Flow 4</li>
+      <li>The conversation persists when switching between explore mode and split mode</li>
+      <li>The full-width layout makes long AI responses much easier to read</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- CRITICAL READER FLOW                                            -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section id="critique" class="mockup-section">
+  <h2>Critical Reader Flow (Flow 1)</h2>
+  <p class="desc">
+    The writer asks for critique. The AI responds with structured annotations that reference specific parts of the document. Each annotation could eventually become an inline comment on the left margin.
+  </p>
+  <div class="frame">
+    <div class="top-nav">
+      <a class="back" href="#">← Dashboard</a>
+      <input class="title-input" value="The Case for Process-Based Provenance" readonly>
+      <span class="save-status">Saved</span>
+      <button class="badge-btn">Generate Badge</button>
+    </div>
+    <div class="split-layout">
+      <div class="editor-pane">
+        <div class="editor-toolbar">
+          <button class="tbtn"><b>B</b></button>
+          <button class="tbtn"><i>I</i></button>
+          <button class="tbtn"><s>S</s></button>
+          <div class="sep"></div>
+          <button class="tbtn">H1</button>
+          <button class="tbtn">H2</button>
+          <button class="tbtn">H3</button>
+          <div class="spacer"></div>
+          <button class="lens-btn">👁 Lens</button>
+          <button class="tbtn">🕐</button>
+        </div>
+        <div class="editor-content">
+          <div class="prose-area">
+            <h2>The Detection Dead End</h2>
+            <p>The most common response to AI-generated content has been detection — tools like GPTZero and Originality.ai that analyze text and assign probability scores. But detection has a fundamental problem: <span style="background: rgba(139,92,246,0.1); border-bottom: 2px solid rgba(139,92,246,0.3); padding: 0 2px;">it's an arms race that defenders are losing.</span></p>
+            <p>GPTZero achieves 99.3% accuracy on raw AI-generated text. Impressive, until you learn that accuracy drops to 18% when the text has been processed through a humanizer tool. <span style="background: rgba(249,115,22,0.1); border-bottom: 2px solid rgba(249,115,22,0.3); padding: 0 2px;">These tools are free, widely available, and trivially easy to use.</span></p>
+            <p>More critically, <span style="background: rgba(239,68,68,0.08); border-bottom: 2px solid rgba(239,68,68,0.25); padding: 0 2px;">detection tools produce false positives at rates that make them unreliable for high-stakes decisions. Multiple documented cases show students falsely accused of AI use.</span></p>
+            <p>The MLA-CCCC Joint Task Force put it bluntly: AI text detection is "inaccurate, biased, easily circumvented, and not transparent."</p>
+          </div>
+        </div>
+      </div>
+      <div class="resize-handle"></div>
+      <div class="chat-panel tinted">
+        <div class="chat-header">
+          <span class="panel-title">AI</span>
+          <div class="mode-pills">
+            <button class="mode-pill active">Ask</button>
+            <button class="mode-pill">Edit</button>
+          </div>
+          <select class="model-select">
+            <option>Claude Sonnet 4.5</option>
+          </select>
+          <button class="close-btn">×</button>
+        </div>
+        <div class="chat-body">
+          <div class="message user card">
+            <div class="msg-role">You</div>
+            <div class="msg-body">
+              <p>Read my "Detection Dead End" section and critique the argument. Where is it weak?</p>
+            </div>
+          </div>
+          <div class="message assistant card">
+            <div class="msg-role">Claude</div>
+            <div class="msg-body">
+              <p>I found three issues, ordered by severity:</p>
+            </div>
+          </div>
+
+          <div class="annotation-card">
+            <div class="annotation-ref">¶1 · "it's an arms race that defenders are losing"</div>
+            <p><strong>Unsupported assertion.</strong> You declare the arms race lost without evidence. The reader hasn't been given any reason to believe this yet — you need the 18% stat here, not two paragraphs later. Consider restructuring: lead with the dramatic number, then explain what it means.</p>
+          </div>
+
+          <div class="annotation-card" style="border-left-color: var(--gray-400);">
+            <div class="annotation-ref" style="color: var(--gray-500);">¶2 · "These tools are free, widely available..."</div>
+            <p><strong>Vague handwaving.</strong> Name one humanizer tool. Link to it. Show that it's literally a "paste text, click button" interaction. The specificity makes the argument undeniable; the vagueness makes it dismissible.</p>
+          </div>
+
+          <div class="annotation-card" style="border-left-color: #ef4444;">
+            <div class="annotation-ref" style="color: #ef4444;">¶3 · "Multiple documented cases..."</div>
+            <p><strong>Weakest point in the section.</strong> "Multiple documented cases" is academic throat-clearing. Pick your two strongest examples and name them: "In 2024, a UC Davis professor accused [name] of using AI based on Turnitin scores; the student was later exonerated." Concrete > abstract.</p>
+          </div>
+
+          <div class="message assistant card" style="margin-top: 8px;">
+            <div class="msg-body">
+              <p>The MLA quote at the end is your strongest piece of evidence. Consider whether it should come earlier — right now the reader has to push through two weak paragraphs before reaching your best material.</p>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <div class="context-chip">
+            <span class="dot"></span>
+            Full document · 1,247 words
+          </div>
+          <div class="chat-input-wrap">
+            <textarea rows="1" placeholder="Ask a follow-up..."></textarea>
+            <button class="send-btn disabled">↑</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-notes">
+    <h4>Design notes</h4>
+    <ul>
+      <li>Annotations are structured cards with a left border — visually distinct from regular chat messages</li>
+      <li>Each annotation references a specific paragraph + quotes the relevant text</li>
+      <li>Different border colors could indicate severity (violet = suggestion, gray = note, red = issue)</li>
+      <li>In the editor, the referenced text gets a subtle highlight so the writer can see what's being discussed</li>
+      <li>This is the Critical Reader flow (Flow 1) — comments, not rewrites. The writer makes their own edits.</li>
+      <li>Future: clicking an annotation could scroll the editor to the referenced passage</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- THREAD HISTORY                                                  -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section id="threads" class="mockup-section">
+  <h2>Persistent Conversation Threads</h2>
+  <p class="desc">
+    Conversations persist across sessions (the Zed model). A thread selector lets the writer switch between past conversations or start a new one. Each thread has auto-generated title based on the first message.
+  </p>
+  <div class="frame">
+    <div class="top-nav">
+      <a class="back" href="#">← Dashboard</a>
+      <input class="title-input" value="The Case for Process-Based Provenance" readonly>
+      <span class="save-status">Saved</span>
+      <button class="badge-btn">Generate Badge</button>
+    </div>
+    <div class="split-layout">
+      <div class="editor-pane">
+        <div class="editor-toolbar">
+          <button class="tbtn"><b>B</b></button>
+          <button class="tbtn"><i>I</i></button>
+          <button class="tbtn"><s>S</s></button>
+          <div class="sep"></div>
+          <button class="tbtn">H1</button>
+          <button class="tbtn">H2</button>
+          <button class="tbtn">H3</button>
+          <div class="spacer"></div>
+          <button class="lens-btn">👁 Lens</button>
+          <button class="tbtn">🕐</button>
+        </div>
+        <div class="editor-content">
+          <div class="prose-area">
+            <h2>The Detection Dead End</h2>
+            <p>The most common response to AI-generated content has been detection — tools like GPTZero and Originality.ai that analyze text and assign probability scores.</p>
+          </div>
+        </div>
+      </div>
+      <div class="resize-handle"></div>
+      <div class="chat-panel tinted">
+        <div class="chat-header">
+          <span class="panel-title">AI</span>
+          <div class="mode-pills">
+            <button class="mode-pill active">Ask</button>
+            <button class="mode-pill">Edit</button>
+          </div>
+          <select class="model-select">
+            <option>Claude Sonnet 4.5</option>
+          </select>
+          <button class="close-btn">×</button>
+        </div>
+        <div class="thread-selector">
+          <button class="thread-pill active">Detection research</button>
+          <button class="thread-pill">Argument critique</button>
+          <button class="thread-pill">C2PA landscape</button>
+          <button class="thread-pill new">+ New</button>
+        </div>
+        <div class="chat-body">
+          <div class="message user card">
+            <div class="msg-role">You</div>
+            <div class="msg-body">
+              <p>What research exists on the effectiveness of AI text detection tools in 2026?</p>
+            </div>
+          </div>
+          <div class="message assistant card">
+            <div class="msg-role">Claude</div>
+            <div class="msg-body">
+              <p>Here's what the current research shows:</p>
+              <p><strong>Accuracy on raw AI text:</strong> Weber-Wulff et al. (2023) tested 14 detectors and found accuracy rates between 55-96%.</p>
+              <p><strong>After paraphrasing:</strong> Sadasivan et al. (2023) showed that simple paraphrasing attacks reduce all detector accuracy to near-random.</p>
+              <p><strong>False positive rates:</strong> Liang et al. (2023) found detectors were significantly biased against non-native English speakers.</p>
+            </div>
+            <div class="msg-actions" style="opacity: 1;">
+              <button class="msg-action-btn">📋 Copy</button>
+              <button class="msg-action-btn">📌 Keep</button>
+            </div>
+          </div>
+          <div class="message user card">
+            <div class="msg-role">You</div>
+            <div class="msg-body">
+              <p>Are there any 2025-2026 papers specifically on humanizer tools defeating detection?</p>
+            </div>
+          </div>
+          <div class="message assistant card">
+            <div class="msg-role">Claude</div>
+            <div class="msg-body">
+              <p>The most relevant recent work:</p>
+              <p><strong>Krishna et al. (2025)</strong> — "Paraphrase Attacks on AI Text Detectors" — showed that even simple T5-based paraphrasing reduces detection rates below 25% across all tested tools, including GPTZero v3 and Turnitin's 2025 detector.</p>
+              <p><strong>Mitchell & Manning (2025)</strong> — Found that detection accuracy degrades more sharply on non-English text, which is problematic for global adoption.</p>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <div class="context-chip">
+            <span class="dot"></span>
+            Full document · 1,247 words
+          </div>
+          <div class="chat-input-wrap">
+            <textarea rows="1" placeholder="Continue this thread..."></textarea>
+            <button class="send-btn disabled">↑</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-notes">
+    <h4>Design notes</h4>
+    <ul>
+      <li>Thread pills sit below the header — compact, scrollable horizontally if needed</li>
+      <li>Auto-generated thread titles from the first user message (editable on click)</li>
+      <li>"+ New" starts a fresh conversation with document context</li>
+      <li>Threads are per-document — switching documents shows that document's threads</li>
+      <li>All threads are persisted in the database and logged in the audit trail</li>
+      <li>Thread switching is instant — messages loaded from local cache, synced with DB</li>
+      <li>The audit trail captures which thread each interaction belongs to</li>
+    </ul>
+  </div>
+</section>
+
+<script>
+  function showSection(id) {
+    document.querySelectorAll('.mockup-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.mockup-nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+  }
+</script>
+
+</body>
+</html>
