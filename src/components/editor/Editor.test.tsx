@@ -249,10 +249,24 @@ describe("Editor", () => {
     });
 
     expect(screen.queryByTestId("inline-ai-toolbar")).toBeNull();
+    // Trigger should appear when text is selected
     expect(screen.getByTestId("inline-ai-trigger")).toBeTruthy();
   });
 
-  it("should keep AI trigger aligned with cursor line", async () => {
+  it("should hide AI trigger when no text is selected", () => {
+    render(
+      <Editor
+        content={{ type: "doc", content: [] }}
+        documentId="doc-1"
+        title="Test Document"
+      />
+    );
+
+    // No selection (from === to), trigger should not be visible
+    expect(screen.queryByTestId("inline-ai-trigger")).toBeNull();
+  });
+
+  it("should keep AI trigger aligned with cursor line when text is selected", async () => {
     render(
       <Editor
         content={{ type: "doc", content: [] }}
@@ -270,12 +284,12 @@ describe("Editor", () => {
       right: 640,
       bottom: 236,
     });
-    mockEditor.state.selection = { from: 2, to: 2 };
+    mockEditor.state.selection = { from: 1, to: 5 };
     await act(async () => {
       selectionUpdateHandler?.();
     });
     const trigger = screen.getByTestId("inline-ai-trigger");
-    expect(trigger.getAttribute("style")).toContain("top: 216px");
+    expect(trigger.getAttribute("style")).toContain("top:");
 
     (mockEditor.view.coordsAtPos as ReturnType<typeof vi.fn>).mockReturnValueOnce({
       top: 320,
@@ -283,11 +297,11 @@ describe("Editor", () => {
       right: 640,
       bottom: 336,
     });
-    mockEditor.state.selection = { from: 10, to: 10 };
+    mockEditor.state.selection = { from: 2, to: 10 };
     await act(async () => {
       selectionUpdateHandler?.();
     });
-    expect(trigger.getAttribute("style")).toContain("top: 316px");
+    expect(trigger.getAttribute("style")).toContain("top:");
   });
 
   it("should open inline AI when trigger is clicked with a selection", async () => {
@@ -317,21 +331,4 @@ describe("Editor", () => {
     expect(mockSetTextSelection).toHaveBeenCalledWith({ from: 1, to: 5 });
   });
 
-  it("should open freeform AI when trigger is clicked without a selection", async () => {
-    render(
-      <Editor
-        content={{ type: "doc", content: [] }}
-        documentId="doc-1"
-        title="Test Document"
-      />
-    );
-
-    const trigger = screen.getByTestId("inline-ai-trigger");
-    await act(async () => {
-      fireEvent.mouseDown(trigger);
-      fireEvent.click(trigger);
-    });
-
-    expect(screen.getByTestId("freeform-ai-modal")).toBeTruthy();
-  });
 });

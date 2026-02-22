@@ -16,7 +16,6 @@ import { logPasteEvent } from "@/app/actions/paste-events";
 import { useRevisions } from "@/hooks/useRevisions";
 import { Toolbar } from "./Toolbar";
 import { InlineAI } from "./InlineAI";
-import { FreeformAI } from "./FreeformAI";
 import { TimelineModal } from "./TimelineModal";
 import { ChatPanel } from "./chat/ChatPanel";
 import {
@@ -70,7 +69,6 @@ export function Editor({
 }: EditorProps) {
   const [selection, setSelection] = useState<TextSelection | null>(null);
   const [showInlineAI, setShowInlineAI] = useState(false);
-  const [showFreeform, setShowFreeform] = useState(false);
   const [showTimeline, setShowTimeline] = useState(false);
   const [showLens, setShowLens] = useState(false);
   const [triggerPosition, setTriggerPosition] = useState<TriggerPosition>({
@@ -275,28 +273,14 @@ export function Editor({
   }, []);
 
   const handleAITriggerClick = useCallback(() => {
-    if (selection?.text.trim()) {
-      editor
-        ?.chain()
-        .focus()
-        .setTextSelection({ from: selection.from, to: selection.to })
-        .run();
-      setShowInlineAI(true);
-      return;
-    }
-    setShowFreeform(true);
+    if (!selection?.text.trim()) return;
+    editor
+      ?.chain()
+      .focus()
+      .setTextSelection({ from: selection.from, to: selection.to })
+      .run();
+    setShowInlineAI(true);
   }, [editor, selection]);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        setShowFreeform((prev) => !prev);
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
 
   // Sync chatOpen prop with imperative panel handle
   useEffect(() => {
@@ -371,31 +355,25 @@ export function Editor({
               </div>
             </div>
 
-            <button
-              type="button"
-              onMouseDown={(e) => {
-                e.preventDefault();
-              }}
-              onClick={handleAITriggerClick}
-              className="absolute z-40 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-violet-200 bg-background text-violet-600 shadow-sm transition-colors hover:bg-violet-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-provenance-500"
-              style={{
-                top: `${triggerPosition.top}px`,
-                left: `${triggerPosition.left}px`,
-              }}
-              aria-label={
-                selection?.text.trim()
-                  ? "Modify selected text with AI"
-                  : "Open AI assistant"
-              }
-              title={
-                selection?.text.trim()
-                  ? "Modify selected text"
-                  : "Open AI assistant"
-              }
-              data-testid="inline-ai-trigger"
-            >
-              <Sparkles className="h-4 w-4" />
-            </button>
+            {selection?.text.trim() && (
+              <button
+                type="button"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                }}
+                onClick={handleAITriggerClick}
+                className="absolute z-40 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-violet-200 bg-background text-violet-600 shadow-sm transition-colors hover:bg-violet-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-provenance-500"
+                style={{
+                  top: `${triggerPosition.top}px`,
+                  left: `${triggerPosition.left}px`,
+                }}
+                aria-label="Modify selected text with AI"
+                title="Modify selected text"
+                data-testid="inline-ai-trigger"
+              >
+                <Sparkles className="h-4 w-4" />
+              </button>
+            )}
           </main>
         </ResizablePanel>
 
@@ -439,16 +417,6 @@ export function Editor({
           anchorRight={triggerPosition.right}
           onDismiss={handleDismissInlineAI}
           onAIResponse={handleAIResponse}
-        />
-      )}
-      {showFreeform && (
-        <FreeformAI
-          documentId={documentId}
-          provider={provider}
-          model={model}
-          getDocumentContent={getDocumentContent}
-          onAIResponse={handleAIResponse}
-          onClose={() => setShowFreeform(false)}
         />
       )}
       <TimelineModal
