@@ -56,6 +56,7 @@ vi.mock("@/lib/metrics", () => ({
     external_paste_percentage: 5,
     total_characters: 100,
   })),
+  estimateRetainedAiCharactersFromAcceptedResponses: vi.fn(() => 0),
 }));
 
 vi.mock("@/lib/tiptap-utils", () => ({
@@ -64,6 +65,10 @@ vi.mock("@/lib/tiptap-utils", () => ({
 
 import { db } from "@/lib/db";
 import { requireDocumentOwner } from "@/lib/auth/authorize";
+import {
+  calculateMetrics,
+  estimateRetainedAiCharactersFromAcceptedResponses,
+} from "@/lib/metrics";
 
 describe("generateBadge", () => {
   beforeEach(() => {
@@ -171,5 +176,43 @@ describe("generateBadge", () => {
     expect(result.badgeHtml).toContain("abc123def456ghi789012");
     expect(result.badgeMarkdown).toBeDefined();
     expect(result.badgeMarkdown).toContain("abc123def456ghi789012");
+  });
+
+  it("should use fallback AI estimation when mark-based AI percentage is zero", async () => {
+    const mockDb = db as unknown as Record<string, ReturnType<typeof vi.fn>>;
+    mockDb.where
+      .mockResolvedValueOnce([
+        {
+          mode: "inline",
+          action: "accepted",
+          response: "Hello world",
+          charactersInserted: 11,
+          provider: "anthropic",
+          model: "claude",
+          prompt: "rewrite",
+          selectedText: "hi",
+          createdAt: new Date(),
+        },
+      ])
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([]);
+
+    vi.mocked(calculateMetrics).mockReturnValueOnce({
+      ai_percentage: 0,
+      external_paste_percentage: 0,
+      total_characters: 100,
+    });
+    vi.mocked(estimateRetainedAiCharactersFromAcceptedResponses).mockReturnValueOnce(40);
+
+    await generateBadge("doc-1");
+
+    expect(mockDb.values).toHaveBeenCalledWith(
+      expect.objectContaining({
+        stats: expect.objectContaining({
+          ai_percentage: 40,
+        }),
+      })
+    );
   });
 });

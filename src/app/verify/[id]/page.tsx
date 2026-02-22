@@ -3,6 +3,11 @@ import { badges } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import {
+  calculateMetrics,
+  estimateRetainedAiCharactersFromAcceptedResponses,
+} from "@/lib/metrics";
+import { extractPlainText } from "@/lib/tiptap-utils";
 
 export const revalidate = 86400; // 24h cache — badge data is immutable; takedown triggers on-demand revalidation
 import { StatsSummary } from "@/components/verify/StatsSummary";
@@ -79,6 +84,37 @@ export default async function VerifyPage({
 
   const stats = badge.stats as BadgeStats;
   const auditTrail = badge.auditTrail as AuditTrail;
+  const documentContent =
+    badge.documentContent as Parameters<typeof calculateMetrics>[0];
+
+  const calculatedMetrics = calculateMetrics(documentContent);
+  const finalTextSnapshot =
+    badge.documentText ?? extractPlainText(documentContent);
+  const fallbackAiChars = estimateRetainedAiCharactersFromAcceptedResponses(
+    finalTextSnapshot,
+    auditTrail.ai_interactions ?? []
+  );
+  const fallbackAiPercentage =
+    calculatedMetrics.total_characters > 0
+      ? Math.floor(
+          (Math.min(fallbackAiChars, calculatedMetrics.total_characters) /
+            calculatedMetrics.total_characters) *
+            100
+        )
+      : 0;
+  const resolvedAiPercentage = Math.max(
+    stats.ai_percentage ?? stats.aiPercentage ?? 0,
+    calculatedMetrics.ai_percentage,
+    fallbackAiPercentage
+  );
+  const resolvedExternalPastePercentage = Math.max(
+    stats.external_paste_percentage ?? 0,
+    calculatedMetrics.external_paste_percentage
+  );
+  const resolvedTotalCharacters = Math.max(
+    stats.total_characters ?? 0,
+    calculatedMetrics.total_characters
+  );
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-6 sm:py-8">
@@ -109,12 +145,12 @@ export default async function VerifyPage({
       <section className="mb-6 sm:mb-8">
         <StatsSummary
           stats={{
-            ai_percentage: stats.ai_percentage ?? stats.aiPercentage ?? 0,
-            external_paste_percentage: stats.external_paste_percentage ?? 0,
+            ai_percentage: resolvedAiPercentage,
+            external_paste_percentage: resolvedExternalPastePercentage,
             interaction_count: stats.interaction_count ?? 0,
             session_count: stats.session_count ?? 0,
             total_active_seconds: stats.total_active_seconds ?? 0,
-            total_characters: stats.total_characters ?? 0,
+            total_characters: resolvedTotalCharacters,
           }}
         />
       </section>

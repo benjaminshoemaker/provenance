@@ -23,8 +23,6 @@ export function StatsSummary({ stats }: StatsSummaryProps) {
   const humanWords = Math.round(totalWords * (humanPercentage / 100));
   const aiWords = Math.round(totalWords * (stats.ai_percentage / 100));
   const pasteWords = Math.round(totalWords * (stats.external_paste_percentage / 100));
-  const hasAiInteractionsWithoutRetainedText =
-    stats.ai_percentage === 0 && stats.interaction_count > 0;
 
   return (
     <div data-testid="stats-summary">
@@ -132,16 +130,6 @@ export function StatsSummary({ stats }: StatsSummaryProps) {
         ~{aiWords.toLocaleString()} generated or rewritten by AI
         {pasteWords > 0 && <>, ~{pasteWords.toLocaleString()} pasted from external sources</>}.
       </p>
-      {hasAiInteractionsWithoutRetainedText && (
-        <p
-          className="mb-5 text-center text-xs text-gray-500"
-          data-testid="zero-ai-explainer"
-        >
-          {stats.interaction_count} AI interaction{stats.interaction_count !== 1 ? "s" : ""}{" "}
-          {stats.interaction_count === 1 ? "was" : "were"} logged, but none of that AI text
-          remained in this final snapshot.
-        </p>
-      )}
 
       {/* Secondary stats — compact horizontal row */}
       <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-gray-500" data-testid="secondary-stats">

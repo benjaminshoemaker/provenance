@@ -16,6 +16,11 @@ interface BadgeStats {
   total_characters: number;
 }
 
+interface AiInteractionLike {
+  action?: string | null;
+  response?: string | null;
+}
+
 /** Count characters as Unicode code points, not UTF-16 code units. */
 function countChars(text: string): number {
   let count = 0;
@@ -68,6 +73,72 @@ export function editDistance(a: string, b: string): number {
   }
 
   return prev[n];
+}
+
+const MIN_RESPONSE_MATCH_CHARS = 20;
+
+function findNonOverlappingMatch(
+  text: string,
+  pattern: string,
+  occupied: boolean[]
+): number {
+  let fromIndex = 0;
+  const maxStart = text.length - pattern.length;
+  while (fromIndex <= maxStart) {
+    const idx = text.indexOf(pattern, fromIndex);
+    if (idx === -1) return -1;
+
+    let overlaps = false;
+    for (let i = idx; i < idx + pattern.length; i++) {
+      if (occupied[i]) {
+        overlaps = true;
+        break;
+      }
+    }
+
+    if (!overlaps) return idx;
+    fromIndex = idx + 1;
+  }
+
+  return -1;
+}
+
+/**
+ * Fallback estimator for legacy snapshots that have missing/stripped origin attrs.
+ * Counts accepted AI responses that are still present verbatim in final text.
+ */
+export function estimateRetainedAiCharactersFromAcceptedResponses(
+  documentText: string,
+  interactions: AiInteractionLike[]
+): number {
+  if (!documentText || interactions.length === 0) return 0;
+
+  const acceptedResponses = interactions
+    .filter(
+      (interaction) =>
+        interaction.action === "accepted" &&
+        typeof interaction.response === "string"
+    )
+    .map((interaction) => interaction.response?.trim() ?? "")
+    .filter((response) => countChars(response) >= MIN_RESPONSE_MATCH_CHARS)
+    .sort((a, b) => countChars(b) - countChars(a));
+
+  if (acceptedResponses.length === 0) return 0;
+
+  const occupied = new Array(documentText.length).fill(false);
+  let retainedChars = 0;
+
+  for (const response of acceptedResponses) {
+    const matchStart = findNonOverlappingMatch(documentText, response, occupied);
+    if (matchStart === -1) continue;
+
+    for (let i = matchStart; i < matchStart + response.length; i++) {
+      occupied[i] = true;
+    }
+    retainedChars += countChars(response);
+  }
+
+  return retainedChars;
 }
 
 export function calculateMetrics(doc: TipTapNode): BadgeStats {

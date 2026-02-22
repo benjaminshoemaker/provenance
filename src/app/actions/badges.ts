@@ -9,7 +9,10 @@ import {
   revisions,
 } from "@/lib/db/schema";
 import { requireDocumentOwner } from "@/lib/auth/authorize";
-import { calculateMetrics } from "@/lib/metrics";
+import {
+  calculateMetrics,
+  estimateRetainedAiCharactersFromAcceptedResponses,
+} from "@/lib/metrics";
 import { extractPlainText } from "@/lib/tiptap-utils";
 import { generateBadgeHtml, generateBadgeMarkdown } from "@/lib/badge-snippets";
 import { nanoid } from "nanoid";
@@ -43,6 +46,19 @@ export async function generateBadge(documentId: string) {
   const content = document.content as Parameters<typeof extractPlainText>[0];
   const documentText = extractPlainText(content);
   const metrics = calculateMetrics(content);
+  const fallbackAiChars = estimateRetainedAiCharactersFromAcceptedResponses(
+    documentText,
+    interactions
+  );
+  const fallbackAiPct =
+    metrics.total_characters > 0
+      ? Math.floor(
+          (Math.min(fallbackAiChars, metrics.total_characters) /
+            metrics.total_characters) *
+            100
+        )
+      : 0;
+  const resolvedAiPercentage = Math.max(metrics.ai_percentage, fallbackAiPct);
 
   // Calculate stats
   const totalActiveSeconds = sessions.reduce(
@@ -51,7 +67,7 @@ export async function generateBadge(documentId: string) {
   );
 
   const stats = {
-    ai_percentage: metrics.ai_percentage,
+    ai_percentage: resolvedAiPercentage,
     external_paste_percentage: metrics.external_paste_percentage,
     interaction_count: interactions.length,
     session_count: sessions.length,
@@ -105,10 +121,10 @@ export async function generateBadge(documentId: string) {
     .returning();
 
   // Generate embed snippets
-  const badgeHtml = generateBadgeHtml(verificationId, metrics.ai_percentage);
+  const badgeHtml = generateBadgeHtml(verificationId, resolvedAiPercentage);
   const badgeMarkdown = generateBadgeMarkdown(
     verificationId,
-    metrics.ai_percentage
+    resolvedAiPercentage
   );
 
   return {
