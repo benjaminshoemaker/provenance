@@ -71,6 +71,7 @@ export function Editor({
   const [showInlineAI, setShowInlineAI] = useState(false);
   const [showTimeline, setShowTimeline] = useState(false);
   const [showLens, setShowLens] = useState(false);
+  const [hasContent, setHasContent] = useState(false);
   const [triggerPosition, setTriggerPosition] = useState<TriggerPosition>({
     top: 96,
     left: 0,
@@ -124,6 +125,7 @@ export function Editor({
     onUpdate: ({ editor }) => {
       const json = editor.getJSON();
       contentRef.current = json;
+      setHasContent(editor.state.doc.textContent.length > 0);
       onUpdate?.(json);
       updateContent(json);
     },
@@ -171,6 +173,12 @@ export function Editor({
     },
     [editor]
   );
+
+  // Initialize hasContent from editor on mount
+  useEffect(() => {
+    if (!editor) return;
+    setHasContent(editor.state.doc.textContent.length > 0);
+  }, [editor]);
 
   useEffect(() => {
     if (!editor) return;
@@ -355,7 +363,7 @@ export function Editor({
               </div>
             </div>
 
-            {selection?.text.trim() && (
+            {hasContent && (
               <button
                 type="button"
                 onMouseDown={(e) => {
@@ -367,8 +375,16 @@ export function Editor({
                   top: `${triggerPosition.top}px`,
                   left: `${triggerPosition.left}px`,
                 }}
-                aria-label="Modify selected text with AI"
-                title="Modify selected text"
+                aria-label={
+                  selection?.text.trim()
+                    ? "Modify selected text with AI"
+                    : "AI assistant"
+                }
+                title={
+                  selection?.text.trim()
+                    ? "Modify selected text"
+                    : "AI assistant"
+                }
                 data-testid="inline-ai-trigger"
               >
                 <Sparkles className="h-4 w-4" />

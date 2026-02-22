@@ -17,6 +17,7 @@ const mockEditor = {
     selection: { from: 0, to: 0 },
     doc: {
       textBetween: vi.fn(() => "selected text"),
+      textContent: "some document text",
     },
   },
   commands: {
@@ -253,7 +254,8 @@ describe("Editor", () => {
     expect(screen.getByTestId("inline-ai-trigger")).toBeTruthy();
   });
 
-  it("should hide AI trigger when no text is selected", () => {
+  it("should hide AI trigger when document is empty", () => {
+    mockEditor.state.doc.textContent = "";
     render(
       <Editor
         content={{ type: "doc", content: [] }}
@@ -262,8 +264,8 @@ describe("Editor", () => {
       />
     );
 
-    // No selection (from === to), trigger should not be visible
     expect(screen.queryByTestId("inline-ai-trigger")).toBeNull();
+    mockEditor.state.doc.textContent = "some document text";
   });
 
   it("should keep AI trigger aligned with cursor line when text is selected", async () => {
