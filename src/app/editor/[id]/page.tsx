@@ -3,8 +3,6 @@ import { db } from "@/lib/db";
 import { documents, users, chatThreads } from "@/lib/db/schema";
 import { eq, and, isNull, desc } from "drizzle-orm";
 import { redirect, notFound } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { EditorShell } from "./editor-shell";
 
 export default async function EditorPage({
@@ -51,15 +49,7 @@ export default async function EditorPage({
   ]);
 
   return (
-    <div className="px-4 py-4">
-      <div className="mb-6 flex items-center gap-4">
-        <Link href="/dashboard">
-          <Button variant="ghost" size="sm">
-            &larr; Dashboard
-          </Button>
-        </Link>
-      </div>
-
+    <div className="flex h-screen flex-col px-4 py-2">
       <EditorShell
         documentId={document.id}
         initialTitle={document.title}
@@ -71,3 +61,4 @@ export default async function EditorPage({
     </div>
   );
 }
+

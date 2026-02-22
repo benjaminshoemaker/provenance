@@ -56,8 +56,8 @@ export function EditorShell({ documentId, initialTitle, initialContent, aiProvid
   }, [isDirty, router]);
 
   return (
-    <div>
-      <nav className="mb-4 flex items-center gap-4" aria-label="Editor navigation">
+    <div className="flex min-h-0 flex-1 flex-col">
+      <nav className="flex shrink-0 items-center gap-4 py-2" aria-label="Editor navigation">
         <BackLink href="/dashboard" />
         <input
           value={title}

@@ -335,7 +335,7 @@ export function Editor({
     <>
       <ResizablePanelGroup
         orientation="horizontal"
-        className="h-[calc(100vh-8rem)] w-full rounded-lg border"
+        className="min-h-0 w-full flex-1 rounded-lg border"
       >
         <ResizablePanel defaultSize={65} minSize={40}>
           <main
