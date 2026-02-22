@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { useCompletion } from "@ai-sdk/react";
 import { logAIInteraction } from "@/app/actions/ai-interactions";
+import { Button } from "@/components/ui/button";
 
 // freeform command palette for AI prompts
 interface FreeformAIProps {
@@ -134,12 +135,13 @@ export function FreeformAI({
               >
                 Dismiss
               </button>
-              <button
+              <Button
+                variant="provenance"
+                size="sm"
                 onClick={handleCopy}
-                className="rounded-md bg-provenance-600 px-3 py-1 text-sm text-white hover:bg-provenance-700 transition-colors duration-150"
               >
                 Copy
-              </button>
+              </Button>
             </div>
           </div>
         )}

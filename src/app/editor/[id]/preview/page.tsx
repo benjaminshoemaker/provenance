@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { generateBadge } from "@/app/actions/badges";
 import Link from "next/link";
 import { AlertTriangle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface PreviewPageProps {
   params: Promise<{ id: string }>;
@@ -236,13 +237,14 @@ function PreviewContent({ params }: PreviewPageProps) {
         </section>
       ) : (
         <div className="flex justify-end">
-          <button
+          <Button
+            variant="provenance"
+            size="lg"
             onClick={handleConfirm}
             disabled={generating}
-            className="rounded-lg bg-provenance-600 px-6 py-3 text-sm font-medium text-white hover:bg-provenance-700 disabled:opacity-50 transition-colors duration-150"
           >
             {generating ? "Generating..." : "Confirm & Generate Badge"}
-          </button>
+          </Button>
         </div>
       )}
     </div>
