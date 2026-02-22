@@ -1,9 +1,12 @@
 import { ImageResponse } from "@vercel/og";
-import { getAIPercentageColor } from "./badge-colors";
+
+// Brand colors — neutral regardless of AI percentage ("court reporter, not judge")
+const BRAND_LABEL_BG = "#1e2a4a"; // dark indigo
+const BRAND_LABEL_TEXT = "#bac8ff"; // light indigo
+const BRAND_VALUE_BG = "#3b5bdb"; // provenance-600
+const BRAND_VALUE_TEXT = "#ffffff";
 
 export function generateBadgeImage(aiPercentage: number): ImageResponse {
-  const color = getAIPercentageColor(aiPercentage);
-
   return new ImageResponse(
     (
       <div
@@ -19,18 +22,18 @@ export function generateBadgeImage(aiPercentage: number): ImageResponse {
           boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
         }}
       >
-        {/* Left section: Provenance */}
+        {/* Left section: Provenance ✓ */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
             padding: "0 8px",
             height: "100%",
-            backgroundColor: "#374151",
-            color: "#f3f4f6",
+            backgroundColor: BRAND_LABEL_BG,
+            color: BRAND_LABEL_TEXT,
           }}
         >
-          Provenance
+          Provenance ✓
         </div>
         {/* Right section: AI% */}
         <div
@@ -39,14 +42,14 @@ export function generateBadgeImage(aiPercentage: number): ImageResponse {
             alignItems: "center",
             padding: "0 8px",
             height: "100%",
-            backgroundColor: color.hex,
-            color: "#ffffff",
+            backgroundColor: BRAND_VALUE_BG,
+            color: BRAND_VALUE_TEXT,
           }}
         >
           {aiPercentage}% AI
         </div>
       </div>
     ),
-    { width: 160, height: 28 }
+    { width: 170, height: 28 }
   );
 }
