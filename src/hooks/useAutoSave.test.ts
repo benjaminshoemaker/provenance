@@ -222,4 +222,62 @@ describe("useAutoSave", () => {
       wordCount: 2,
     });
   });
+
+  it("should normalize null-prototype mark attrs before saving", async () => {
+    const { result } = renderHook(() =>
+      useAutoSave({ documentId: "doc-1", title: "Test" })
+    );
+
+    const nullProtoAttrs = Object.create(null) as Record<string, unknown>;
+    nullProtoAttrs.type = "external_paste";
+    nullProtoAttrs.sourceId = "paste-1";
+    nullProtoAttrs.originalLength = 12;
+
+    const contentWithOrigin = {
+      type: "doc",
+      content: [
+        {
+          type: "paragraph",
+          content: [
+            {
+              type: "text",
+              text: "pasted text!!",
+              marks: [
+                {
+                  type: "origin",
+                  attrs: nullProtoAttrs,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    act(() => {
+      result.current.save(contentWithOrigin);
+    });
+
+    await act(async () => {
+      vi.advanceTimersByTime(1000);
+    });
+
+    const savePayload = mockUpdateDocument.mock.calls[0][1] as {
+      content: {
+        content: Array<{
+          content: Array<{
+            marks: Array<{ attrs: Record<string, unknown> }>;
+          }>;
+        }>;
+      };
+    };
+
+    const attrs = savePayload.content.content[0].content[0].marks[0].attrs;
+    expect(Object.getPrototypeOf(attrs)).toBe(Object.prototype);
+    expect(attrs).toEqual({
+      type: "external_paste",
+      sourceId: "paste-1",
+      originalLength: 12,
+    });
+  });
 });

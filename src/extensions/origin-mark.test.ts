@@ -3,7 +3,7 @@ import { Editor } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 import { OriginMark } from "./origin-mark";
 
-function createEditor(content?: Record<string, unknown>) {
+function createEditor(content?: Record<string, unknown> | string) {
   return new Editor({
     element: document.createElement("div"),
     extensions: [StarterKit, OriginMark],
@@ -66,6 +66,100 @@ describe("OriginMark", () => {
     const textNode2 = json2.content?.[0]?.content?.[0];
     expect(textNode2?.marks).toEqual(textNode?.marks);
     editor2.destroy();
+  });
+
+  it("should preserve attrs through HTML round-trip parsing", () => {
+    editor = createEditor({
+      type: "doc",
+      content: [
+        {
+          type: "paragraph",
+          content: [
+            {
+              type: "text",
+              text: "pasted text",
+              marks: [
+                {
+                  type: "origin",
+                  attrs: {
+                    type: "external_paste",
+                    sourceId: "paste-123",
+                    originalLength: 11,
+                    originalText: "pasted text",
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    const html = editor.getHTML();
+
+    const editor2 = createEditor(html);
+    const json2 = editor2.getJSON();
+    const textNode2 = json2.content?.[0]?.content?.[0];
+
+    expect(textNode2?.marks).toEqual([
+      {
+        type: "origin",
+        attrs: {
+          type: "external_paste",
+          sourceId: "paste-123",
+          originalLength: 11,
+          originalText: "pasted text",
+        },
+      },
+    ]);
+
+    editor2.destroy();
+  });
+
+  it("should preserve attrs when editor root class is mutated", () => {
+    editor = createEditor({
+      type: "doc",
+      content: [
+        {
+          type: "paragraph",
+          content: [
+            {
+              type: "text",
+              text: "AI generated text",
+              marks: [
+                {
+                  type: "origin",
+                  attrs: {
+                    type: "ai",
+                    sourceId: "interaction-123",
+                    originalLength: 17,
+                    originalText: "AI generated text",
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    editor.view.dom.classList.add("lens-off");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (editor.view as any).domObserver?.flush?.();
+
+    const json = editor.getJSON();
+    const textNode = json.content?.[0]?.content?.[0];
+    expect(textNode?.marks).toEqual([
+      {
+        type: "origin",
+        attrs: {
+          type: "ai",
+          sourceId: "interaction-123",
+          originalLength: 17,
+          originalText: "AI generated text",
+        },
+      },
+    ]);
   });
 
   it("should apply origin mark with type='ai' and sourceId for AI text insertion", () => {

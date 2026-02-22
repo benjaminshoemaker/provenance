@@ -166,4 +166,61 @@ describe("PasteHandler extension", () => {
       "AI response 1",
     ]);
   });
+
+  it("should include origin attrs when handling real paste events", () => {
+    const onExternalPaste = vi.fn();
+
+    editor = new Editor({
+      element: document.createElement("div"),
+      extensions: [
+        StarterKit,
+        OriginMark,
+        PasteHandler.configure({
+          documentId: "doc-1",
+          onExternalPaste,
+          recentAIResponses: [],
+        }),
+      ],
+      content: {
+        type: "doc",
+        content: [{ type: "paragraph" }],
+      },
+    });
+
+    const pastePlugin = editor.state.plugins.find(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (plugin: any) => plugin.key?.startsWith("pasteHandler$")
+    );
+
+    expect(pastePlugin).toBeTruthy();
+
+    const handled = pastePlugin?.props.handlePaste?.call(
+      pastePlugin,
+      editor.view,
+      {
+        clipboardData: {
+          getData: (type: string) =>
+            type === "text/plain" ? "external paste text" : "",
+        },
+      } as ClipboardEvent,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      null as any
+    );
+
+    expect(handled).toBe(true);
+
+    const json = editor.getJSON();
+    const textContent = json.content?.[0]?.content?.[0];
+    expect(textContent?.marks?.[0]).toEqual(
+      expect.objectContaining({
+        type: "origin",
+        attrs: expect.objectContaining({
+          type: "external_paste",
+          sourceId: expect.any(String),
+          originalLength: 19,
+        }),
+      })
+    );
+    expect(onExternalPaste).toHaveBeenCalledWith("external paste text", 19);
+  });
 });

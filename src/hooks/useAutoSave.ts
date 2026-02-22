@@ -12,6 +12,14 @@ interface UseAutoSaveOptions {
   maxRetries?: number;
 }
 
+function normalizeSerializableContent(
+  content: Record<string, unknown>
+): Record<string, unknown> {
+  // TipTap can emit null-prototype objects in mark attrs.
+  // Normalize to plain JSON objects before crossing the Server Action boundary.
+  return JSON.parse(JSON.stringify(content)) as Record<string, unknown>;
+}
+
 function countWords(content: Record<string, unknown>): number {
   const extractText = (node: Record<string, unknown>): string => {
     if (node.type === "text" && typeof node.text === "string") {
@@ -85,14 +93,15 @@ export function useAutoSave({
 
   const save = useCallback(
     (content: Record<string, unknown>) => {
-      lastContentRef.current = content;
+      const normalizedContent = normalizeSerializableContent(content);
+      lastContentRef.current = normalizedContent;
       setIsDirty(true);
       if (timerRef.current) {
         clearTimeout(timerRef.current);
       }
 
       timerRef.current = setTimeout(() => {
-        executeSave(content);
+        executeSave(normalizedContent);
       }, debounceMs);
     },
     [debounceMs, executeSave]
@@ -114,16 +123,37 @@ export function useAutoSave({
     }
   }, [save, status]);
 
-  // beforeunload guard
+  // Flush pending save on page hide (tab switch, navigation, refresh).
+  // visibilitychange fires reliably and browsers keep async requests alive briefly after it.
   useEffect(() => {
+    const flushPendingSave = () => {
+      if (timerRef.current && lastContentRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+        executeSave(lastContentRef.current);
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        flushPendingSave();
+      }
+    };
+
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      flushPendingSave();
       if (isDirty) {
         e.preventDefault();
       }
     };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
     window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, [isDirty]);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [isDirty, executeSave]);
 
   return { save, status, retry, isDirty };
 }
