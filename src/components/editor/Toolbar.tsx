@@ -151,7 +151,7 @@ export function Toolbar({ editor, onHistoryClick, showLens, onLensToggle, chatOp
   ];
 
   return (
-    <div className="flex min-h-12 items-center gap-1 overflow-x-auto bg-[#fcfcfd] p-2">
+    <div className="flex min-h-12 items-center gap-1 overflow-x-auto border-b border-gray-200 bg-[#fcfcfd] p-2">
       {/* Formatting tools */}
       <div className="flex flex-wrap gap-1">
         {items.map((item, index) => {

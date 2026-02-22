@@ -336,16 +336,14 @@ export function Editor({
             className="relative flex h-full w-full flex-col"
             role="main"
           >
-            <div className="border-b">
-              <Toolbar
-                editor={editor}
-                onHistoryClick={() => setShowTimeline(true)}
-                showLens={showLens}
-                onLensToggle={handleLensToggle}
-                chatOpen={chatOpen}
-                onChatToggle={onChatToggle}
-              />
-            </div>
+            <Toolbar
+              editor={editor}
+              onHistoryClick={() => setShowTimeline(true)}
+              showLens={showLens}
+              onLensToggle={handleLensToggle}
+              chatOpen={chatOpen}
+              onChatToggle={onChatToggle}
+            />
             <div
               ref={scrollAreaRef}
               className="flex-1 cursor-text overflow-auto"
