@@ -117,6 +117,97 @@ describe("OriginMark", () => {
     expect(textNode?.marks).toBeUndefined();
   });
 
+  it("should render AI text with origin-ai CSS class", () => {
+    editor = createEditor({
+      type: "doc",
+      content: [
+        {
+          type: "paragraph",
+          content: [
+            {
+              type: "text",
+              text: "ai text",
+              marks: [
+                {
+                  type: "origin",
+                  attrs: {
+                    type: "ai",
+                    sourceId: "s1",
+                    originalLength: 7,
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    const html = editor.getHTML();
+    expect(html).toContain('class="origin-ai"');
+  });
+
+  it("should render pasted text with origin-paste CSS class", () => {
+    editor = createEditor({
+      type: "doc",
+      content: [
+        {
+          type: "paragraph",
+          content: [
+            {
+              type: "text",
+              text: "pasted text",
+              marks: [
+                {
+                  type: "origin",
+                  attrs: {
+                    type: "external_paste",
+                    sourceId: "p1",
+                    originalLength: 11,
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    const html = editor.getHTML();
+    expect(html).toContain('class="origin-paste"');
+  });
+
+  it("should render human text without origin CSS class", () => {
+    editor = createEditor({
+      type: "doc",
+      content: [
+        {
+          type: "paragraph",
+          content: [
+            {
+              type: "text",
+              text: "human text",
+              marks: [
+                {
+                  type: "origin",
+                  attrs: {
+                    type: "human",
+                    sourceId: null,
+                    originalLength: null,
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    const html = editor.getHTML();
+    expect(html).not.toContain("origin-ai");
+    expect(html).not.toContain("origin-paste");
+  });
+
   it("should render with data-origin attribute (invisible mark)", () => {
     editor = createEditor({
       type: "doc",

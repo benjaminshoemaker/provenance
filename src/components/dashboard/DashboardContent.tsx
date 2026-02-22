@@ -1,0 +1,150 @@
+"use client";
+
+import { useState, useCallback, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { Sidebar, type SidebarFilter } from "./Sidebar";
+import { DocumentRow } from "./DocumentRow";
+import { deleteDocument } from "@/app/actions/documents";
+import { Search } from "lucide-react";
+
+type FilterChip = "all" | "drafts" | "has-badge" | "archived";
+
+interface DocumentData {
+  id: string;
+  title: string;
+  updatedAt: string | Date | null;
+  wordCount: number | null;
+  deletedAt: string | Date | null;
+  preview?: string;
+  aiPercentage?: number | null;
+  badgeCount: number;
+}
+
+interface DashboardContentProps {
+  documents: DocumentData[];
+  createAction: () => Promise<void>;
+}
+
+export function DashboardContent({ documents, createAction }: DashboardContentProps) {
+  const [sidebarFilter, setSidebarFilter] = useState<SidebarFilter>("all");
+  const [chipFilter, setChipFilter] = useState<FilterChip>("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
+
+  const handleDelete = useCallback(async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this document?")) return;
+    await deleteDocument(id);
+    router.refresh();
+  }, [router]);
+
+  const sevenDaysAgo = useMemo(() => Date.now() - 7 * 24 * 60 * 60 * 1000, []);
+
+  const filteredDocs = documents.filter((doc) => {
+    // Sidebar filter
+    if (sidebarFilter === "trash") return doc.deletedAt != null;
+    if (doc.deletedAt != null) return false;
+
+    if (sidebarFilter === "archive") return false; // No archive feature yet, show none
+    if (sidebarFilter === "recent") {
+      return doc.updatedAt && new Date(doc.updatedAt).getTime() > sevenDaysAgo;
+    }
+
+    // Chip filter
+    if (chipFilter === "drafts") return doc.badgeCount === 0;
+    if (chipFilter === "has-badge") return doc.badgeCount > 0;
+    if (chipFilter === "archived") return false;
+
+    return true;
+  }).filter((doc) => {
+    if (!searchQuery.trim()) return true;
+    return doc.title.toLowerCase().includes(searchQuery.toLowerCase());
+  });
+
+  const chips: { id: FilterChip; label: string }[] = [
+    { id: "all", label: "All" },
+    { id: "drafts", label: "Drafts" },
+    { id: "has-badge", label: "Has Badge" },
+    { id: "archived", label: "Archived" },
+  ];
+
+  return (
+    <div className="flex h-[calc(100vh-4rem)]">
+      <Sidebar
+        activeFilter={sidebarFilter}
+        onFilterChange={(f) => {
+          setSidebarFilter(f);
+          setChipFilter("all");
+        }}
+        onSettingsClick={() => router.push("/settings")}
+      />
+
+      <main className="flex-1 overflow-auto p-6">
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="text-2xl font-bold">Documents</h1>
+          <form action={createAction}>
+            <button
+              type="submit"
+              className="rounded-lg bg-provenance-600 px-4 py-2 text-sm font-medium text-white hover:bg-provenance-700"
+            >
+              New Document
+            </button>
+          </form>
+        </div>
+
+        {/* Search bar */}
+        <div className="relative mb-4">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search documents..."
+            className="w-full rounded-lg border border-gray-200 py-2 pl-10 pr-4 text-sm outline-none focus:border-provenance-500 focus:ring-2 focus:ring-provenance-500/20"
+          />
+        </div>
+
+        {/* Filter chips */}
+        {sidebarFilter !== "trash" && (
+          <div className="mb-4 flex gap-2">
+            {chips.map((chip) => (
+              <button
+                key={chip.id}
+                onClick={() => setChipFilter(chip.id)}
+                className={`rounded-full px-3 py-1 text-xs font-medium ${
+                  chipFilter === chip.id
+                    ? "bg-provenance-50 text-provenance-700"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
+              >
+                {chip.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Document list */}
+        {filteredDocs.length === 0 ? (
+          <p className="py-8 text-center text-sm text-muted-foreground">
+            No documents found.
+          </p>
+        ) : (
+          <div className="rounded-lg border border-gray-100">
+            {filteredDocs.map((doc) => (
+              <DocumentRow
+                key={doc.id}
+                id={doc.id}
+                title={doc.title}
+                updatedAt={doc.updatedAt}
+                wordCount={doc.wordCount}
+                preview={doc.preview}
+                aiPercentage={doc.aiPercentage}
+                hasBadge={doc.badgeCount > 0}
+                onClick={() => router.push(`/editor/${doc.id}`)}
+                onDelete={handleDelete}
+              />
+            ))}
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}

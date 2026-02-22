@@ -13,9 +13,21 @@ export const OriginMark = Mark.create({
   },
 
   renderHTML({ HTMLAttributes }) {
+    const originType = HTMLAttributes.type as string;
+    const cssClass =
+      originType === "ai"
+        ? "origin-ai"
+        : originType === "external_paste"
+          ? "origin-paste"
+          : undefined;
+
     return [
       "span",
-      mergeAttributes({ "data-origin": "" }, HTMLAttributes),
+      mergeAttributes(
+        { "data-origin": "" },
+        HTMLAttributes,
+        cssClass ? { class: cssClass } : {}
+      ),
       0,
     ];
   },

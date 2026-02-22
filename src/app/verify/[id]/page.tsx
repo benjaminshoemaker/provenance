@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { badges } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 
 export const revalidate = 86400; // 24h cache — badge data is immutable; takedown triggers on-demand revalidation
 import { StatsSummary } from "@/components/verify/StatsSummary";
@@ -81,12 +82,26 @@ export default async function VerifyPage({
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-6 sm:py-8">
-      <header className="mb-6 text-center sm:mb-8">
-        <div className="mb-2 text-sm font-medium text-primary">
-          ◆ Provenance
-        </div>
-        <h1 className="text-xl font-bold sm:text-2xl">Verified Writing Process</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+      {/* Sticky mobile header */}
+      <nav className="sticky top-0 z-10 -mx-4 mb-4 border-b bg-background px-4 py-2 sm:hidden" aria-label="Site navigation">
+        <Link href="/" className="flex items-center justify-center gap-2">
+          <span className="text-base font-bold text-provenance-700">◆</span>
+          <span className="text-xs font-medium text-provenance-700">Provenance</span>
+          <span className="font-mono text-[10px] text-muted-foreground">{id.slice(0, 8)}...</span>
+        </Link>
+      </nav>
+
+      {/* Verification header with logo + ID */}
+      <header className="mb-6 sm:mb-8">
+        <Link href="/" className="flex items-center justify-center gap-2 mb-2">
+          <span className="text-lg font-bold text-provenance-700">◆</span>
+          <span className="text-sm font-medium text-provenance-700">Provenance</span>
+        </Link>
+        <h1 className="text-center text-xl font-bold sm:text-2xl">Verified Writing Process</h1>
+        <p className="mt-1 text-center font-mono text-xs text-muted-foreground">
+          {id}
+        </p>
+        <p className="mt-1 text-center text-sm text-muted-foreground">
           {badge.documentTitle}
         </p>
       </header>
@@ -105,7 +120,6 @@ export default async function VerifyPage({
       </section>
 
       <section className="mb-6 sm:mb-8">
-        {/* Scope certification and methodology */}
         <ScopeStatement />
       </section>
 
@@ -128,7 +142,11 @@ export default async function VerifyPage({
       </section>
 
       <footer className="border-t pt-4 text-center text-xs text-muted-foreground">
-        Powered by Provenance — Transparent AI writing verification
+        Powered by{" "}
+        <Link href="/" className="font-medium text-provenance-700 hover:underline">
+          Provenance
+        </Link>
+        {" "}— Transparent AI writing verification
       </footer>
     </div>
   );

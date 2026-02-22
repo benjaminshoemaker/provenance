@@ -89,18 +89,6 @@ vi.mock("@ai-sdk/react", () => ({
     handleInputChange: vi.fn(),
     handleSubmit: vi.fn(),
   })),
-  useChat: vi.fn(() => ({
-    messages: [],
-    sendMessage: vi.fn(),
-    status: "ready",
-    stop: vi.fn(),
-    setMessages: vi.fn(),
-    error: null,
-  })),
-}));
-
-vi.mock("ai", () => ({
-  DefaultChatTransport: vi.fn().mockImplementation(function (this: Record<string, unknown>, opts: Record<string, unknown>) { Object.assign(this, opts); }),
 }));
 
 vi.mock("@/app/actions/ai-interactions", () => ({
@@ -113,25 +101,8 @@ vi.mock("next/link", () => ({
   ),
 }));
 
-// Mock PanelLayout to simplify Editor tests
-vi.mock("./PanelLayout", () => ({
-  PanelLayout: ({
-    editorContent,
-    aiChatContent,
-    freeformContent,
-  }: {
-    editorContent: React.ReactNode;
-    aiChatContent: React.ReactNode;
-    freeformContent?: React.ReactNode;
-  }) => (
-    <div data-testid="panel-layout">
-      <div data-testid="editor-panel">{editorContent}</div>
-      <div data-testid="ai-chat-panel">{aiChatContent}</div>
-      {freeformContent && (
-        <div data-testid="freeform-panel">{freeformContent}</div>
-      )}
-    </div>
-  ),
+vi.mock("./TimelineModal", () => ({
+  TimelineModal: () => null,
 }));
 
 import { Editor } from "./Editor";
@@ -205,7 +176,7 @@ describe("Editor", () => {
     );
   });
 
-  it("should render content inside PanelLayout", () => {
+  it("should render editor content full-width without panels", () => {
     render(
       <Editor
         content={{ type: "doc", content: [] }}
@@ -214,8 +185,6 @@ describe("Editor", () => {
       />
     );
 
-    expect(screen.getByTestId("panel-layout")).toBeTruthy();
-    expect(screen.getByTestId("editor-panel")).toBeTruthy();
-    expect(screen.getByTestId("ai-chat-panel")).toBeTruthy();
+    expect(screen.getByTestId("editor-content")).toBeTruthy();
   });
 });

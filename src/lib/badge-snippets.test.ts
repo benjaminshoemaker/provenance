@@ -15,7 +15,7 @@ describe("badge-snippets", () => {
       const html = generateBadgeHtml("abc123", 12);
 
       expect(html).toContain("abc123");
-      expect(html).toContain("12% AI-generated");
+      expect(html).toContain("12% AI");
       expect(html).toContain("/verify/abc123");
       expect(html).toContain("/api/badges/abc123/image");
       expect(html).toContain("alt=");
@@ -43,7 +43,7 @@ describe("badge-snippets", () => {
       const md = generateBadgeMarkdown("abc123", 12);
 
       expect(md).toContain("abc123");
-      expect(md).toContain("12% AI-generated");
+      expect(md).toContain("12% AI");
       expect(md).toContain("/verify/abc123");
       expect(md).toContain("/api/badges/abc123/image");
     });

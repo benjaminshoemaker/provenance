@@ -45,6 +45,12 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+  --color-provenance-50: var(--provenance-50);
+  --color-provenance-100: var(--provenance-100);
+  --color-provenance-500: var(--provenance-500);
+  --color-provenance-600: var(--provenance-600);
+  --color-provenance-700: var(--provenance-700);
+  --color-provenance-900: var(--provenance-900);
 }
 
 :root {
@@ -123,4 +129,38 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Provenance brand color tokens */
+:root {
+  --provenance-50: #f0f4ff;
+  --provenance-100: #dbe4ff;
+  --provenance-500: #4c6ef5;
+  --provenance-600: #3b5bdb;
+  --provenance-700: #364fc7;
+  --provenance-900: #1c2541;
+}
+
+/* Origin mark classes */
+.origin-ai {
+  background: rgba(139, 92, 246, 0.08);
+  border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.origin-paste {
+  background: rgba(249, 115, 22, 0.08);
+  border-bottom: 1px solid rgba(249, 115, 22, 0.15);
+}
+
+/* Diff classes for track-changes */
+.diff-remove {
+  text-decoration: line-through;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.diff-add {
+  color: #059669;
+  background: rgba(5, 150, 105, 0.08);
+  text-decoration: underline;
 }
