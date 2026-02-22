@@ -25,14 +25,14 @@ export default async function Home() {
           share a verified badge anyone can audit.
         </p>
         <Link href="/login">
-          <Button size="lg">Get Started</Button>
+          <Button size="lg" variant="provenance">Get Started</Button>
         </Link>
       </section>
 
       {/* How it Works */}
       <section className="border-t bg-muted/30 px-4 py-16">
         <div className="mx-auto max-w-4xl">
-          <h2 className="mb-12 text-center text-2xl font-bold">
+          <h2 className="mb-12 text-center text-2xl font-bold tracking-tight">
             How it Works
           </h2>
 

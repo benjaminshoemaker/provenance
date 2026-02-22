@@ -7,6 +7,7 @@ import { useAutoSave } from "@/hooks/useAutoSave";
 import { useSession } from "@/hooks/useSession";
 import { SaveIndicator } from "@/components/editor/SaveIndicator";
 import { BackLink } from "@/components/ui/BackLink";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 interface EditorShellProps {
@@ -56,12 +57,11 @@ export function EditorShell({ documentId, initialTitle, initialContent, aiProvid
           placeholder="Untitled"
         />
         <SaveIndicator status={status} onRetry={retry} />
-        <Link
-          href={`/editor/${documentId}/preview`}
-          className="shrink-0 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
-        >
-          Generate Badge
-        </Link>
+        <Button variant="provenance" size="sm" asChild>
+          <Link href={`/editor/${documentId}/preview`}>
+            Generate Badge
+          </Link>
+        </Button>
       </nav>
       <Editor
         content={initialContent}

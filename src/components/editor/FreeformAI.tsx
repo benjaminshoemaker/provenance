@@ -106,8 +106,11 @@ export function FreeformAI({
   }, [completion, documentId, promptText, provider, model, setCompletion, onClose]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 pt-[20vh]">
-      <div className="w-full max-w-lg rounded-lg border bg-background shadow-2xl">
+    <div
+      className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 pt-[20vh]"
+      data-testid="freeform-ai-modal"
+    >
+      <div className="w-full max-w-lg rounded-lg border bg-background shadow-lg">
         <form onSubmit={handleSubmit} className="p-4">
           <input
             ref={inputRef}
@@ -127,13 +130,13 @@ export function FreeformAI({
             <div className="flex justify-end gap-2">
               <button
                 onClick={handleDismiss}
-                className="rounded-md border px-3 py-1 text-sm hover:bg-accent"
+                className="rounded-md border px-3 py-1 text-sm hover:bg-accent transition-colors duration-150"
               >
                 Dismiss
               </button>
               <button
                 onClick={handleCopy}
-                className="rounded-md bg-primary px-3 py-1 text-sm text-primary-foreground hover:bg-primary/90"
+                className="rounded-md bg-provenance-600 px-3 py-1 text-sm text-white hover:bg-provenance-700 transition-colors duration-150"
               >
                 Copy
               </button>

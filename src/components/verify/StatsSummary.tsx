@@ -34,7 +34,7 @@ export function StatsSummary({ stats }: StatsSummaryProps) {
         {/* Desktop: hover tooltip */}
         <span className="relative ml-2 hidden sm:inline-block" data-testid="methodology-tooltip">
           <span className="group cursor-help">
-            <span className="inline-flex items-center gap-1 text-sm text-[#4c6ef5] decoration-dashed underline underline-offset-2">
+            <span className="inline-flex items-center gap-1 text-sm text-provenance-500 decoration-dashed underline underline-offset-2">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clipRule="evenodd" />
               </svg>
@@ -47,7 +47,7 @@ export function StatsSummary({ stats }: StatsSummaryProps) {
                 and remained substantially unchanged (&lt;20% modification). Text typed by the author,
                 or AI text modified by more than 20%, is classified as human-written.
               </p>
-              <div className="border-t pt-2 text-[10px] leading-relaxed text-gray-400">
+              <div className="border-t pt-2 text-[11px] leading-relaxed text-gray-500">
                 Does not account for: AI used outside this tool, pre-writing research,
                 or ideas from AI conversation typed manually.
               </div>
@@ -58,7 +58,7 @@ export function StatsSummary({ stats }: StatsSummaryProps) {
         {/* Mobile: inline expandable */}
         <div className="mt-2 sm:hidden" data-testid="methodology-mobile">
           <details className="inline-block text-left">
-            <summary className="cursor-pointer text-sm text-[#4c6ef5] decoration-dashed underline underline-offset-2">
+            <summary className="cursor-pointer text-sm text-provenance-500 decoration-dashed underline underline-offset-2">
               <span className="inline-flex items-center gap-1">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clipRule="evenodd" />
@@ -73,7 +73,7 @@ export function StatsSummary({ stats }: StatsSummaryProps) {
                 and remained substantially unchanged (&lt;20% modification). Text typed by the author,
                 or AI text modified by more than 20%, is classified as human-written.
               </p>
-              <div className="border-t pt-2 text-[10px] leading-relaxed text-gray-400">
+              <div className="border-t pt-2 text-[11px] leading-relaxed text-gray-500">
                 Does not account for: AI used outside this tool, pre-writing research,
                 or ideas from AI conversation typed manually.
               </div>

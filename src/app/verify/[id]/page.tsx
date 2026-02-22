@@ -92,12 +92,12 @@ export default async function VerifyPage({
       </nav>
 
       {/* Verification header with logo + ID */}
-      <header className="mb-6 sm:mb-8">
+      <header className="mb-6 sm:mb-8 -mx-4 px-4 pt-6 pb-8 bg-gradient-to-b from-provenance-50/60 to-transparent">
         <Link href="/" className="flex items-center justify-center gap-2 mb-2">
           <span className="text-lg font-bold text-provenance-700">◆</span>
           <span className="text-sm font-medium text-provenance-700">Provenance</span>
         </Link>
-        <h1 className="text-center text-xl font-bold sm:text-2xl">Verified Writing Process</h1>
+        <h1 className="text-center text-xl font-bold tracking-tight sm:text-2xl">Verified Writing Process</h1>
         <p className="mt-1 text-center font-mono text-xs text-muted-foreground">
           {id}
         </p>
@@ -124,7 +124,7 @@ export default async function VerifyPage({
       </section>
 
       <section className="mb-6 sm:mb-8">
-        <h2 className="mb-3 text-lg font-semibold">Document</h2>
+        <h2 className="mb-3 text-lg font-semibold tracking-tight">Document</h2>
         <DocumentText
           title={badge.documentTitle}
           text={badge.documentText}
@@ -132,7 +132,7 @@ export default async function VerifyPage({
       </section>
 
       <section className="mb-6 sm:mb-8">
-        <h2 className="mb-3 text-lg font-semibold">Audit Timeline</h2>
+        <h2 className="mb-3 text-lg font-semibold tracking-tight">Audit Timeline</h2>
         <AuditTimeline
           interactions={auditTrail.ai_interactions ?? []}
           pasteEvents={auditTrail.paste_events ?? []}

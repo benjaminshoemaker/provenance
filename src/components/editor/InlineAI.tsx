@@ -257,7 +257,7 @@ export function InlineAI({
   if (stage === "toolbar") {
     return (
       <div
-        className="floating-toolbar absolute z-50 mt-1 w-full max-w-md rounded-lg border bg-background p-3 shadow-lg"
+        className="floating-toolbar absolute bottom-16 right-4 z-50 w-[calc(100%-2rem)] max-w-md rounded-lg border bg-background p-3 shadow-lg"
         data-testid="inline-ai-toolbar"
       >
         <div className="mb-2 flex items-center gap-2 text-xs text-muted-foreground">
@@ -272,7 +272,7 @@ export function InlineAI({
             <button
               key={preset.label}
               onClick={() => handleSubmit(preset.prompt, preset.label)}
-              className="rounded-md border px-2 py-1 text-xs hover:bg-accent"
+              className="rounded-md border px-2 py-1 text-xs hover:bg-accent transition-colors duration-150"
             >
               {preset.label}
             </button>
@@ -297,7 +297,7 @@ export function InlineAI({
         <div className="mt-2 flex justify-end">
           <button
             onClick={handleDismiss}
-            className="text-xs text-muted-foreground hover:text-foreground"
+            className="text-xs text-muted-foreground hover:text-foreground transition-colors duration-150"
           >
             Cancel
           </button>
@@ -311,7 +311,7 @@ export function InlineAI({
 
   return (
     <div
-      className="floating-toolbar absolute z-50 mt-1 w-full max-w-lg overflow-hidden rounded-xl border bg-background shadow-lg"
+      className="floating-toolbar absolute bottom-16 right-4 z-50 w-[calc(100%-2rem)] max-w-lg overflow-hidden rounded-xl border bg-background shadow-lg"
       data-testid="inline-ai-chooser"
     >
       {/* Header bar */}
@@ -353,14 +353,14 @@ export function InlineAI({
               onClick={() => setSelectedChoiceId(choice.id)}
               className={`relative w-full rounded-lg border-2 p-3 text-left text-sm transition-colors ${
                 isSelected
-                  ? "border-[#4c6ef5] bg-[#4c6ef5]/5"
+                  ? "border-provenance-500 bg-provenance-500/5"
                   : "border-gray-200 hover:border-violet-300"
               }`}
               data-testid={`choice-${choice.id}`}
             >
               {/* Selection checkmark */}
               {isSelected && (
-                <div className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#4c6ef5] text-white">
+                <div className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-provenance-500 text-white">
                   <Check className="h-3 w-3" />
                 </div>
               )}
@@ -368,14 +368,14 @@ export function InlineAI({
               {/* Label */}
               <div className="mb-1 flex items-center gap-2">
                 <span
-                  className={`text-[10px] font-semibold uppercase tracking-wider ${
-                    choice.isOriginal ? "text-gray-400" : "text-violet-500"
+                  className={`text-[11px] font-semibold uppercase tracking-wider ${
+                    choice.isOriginal ? "text-gray-500" : "text-violet-500"
                   }`}
                 >
                   {choice.label}
                 </span>
                 {choice.sublabel && (
-                  <span className="text-[10px] text-gray-400">
+                  <span className="text-[11px] text-gray-500">
                     {choice.sublabel}
                   </span>
                 )}
@@ -393,7 +393,7 @@ export function InlineAI({
       {/* Footer bar */}
       {choices.length > 0 && (
         <div className="flex items-center justify-between border-t bg-gray-50 px-4 py-2">
-          <span className="text-[10px] text-muted-foreground">
+          <span className="text-[11px] text-muted-foreground">
             <kbd className="rounded border px-1">↑↓</kbd> navigate ·{" "}
             <kbd className="rounded border px-1">Enter</kbd> confirm ·{" "}
             <kbd className="rounded border px-1">Esc</kbd> dismiss
@@ -401,7 +401,7 @@ export function InlineAI({
           <button
             onClick={handleConfirm}
             disabled={isLoading}
-            className="rounded-md bg-primary px-3 py-1 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+            className="rounded-md bg-provenance-600 px-3 py-1 text-sm font-medium text-white hover:bg-provenance-700 disabled:opacity-50 transition-colors duration-150"
           >
             Confirm Selection
           </button>

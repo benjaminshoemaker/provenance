@@ -239,7 +239,7 @@ function PreviewContent({ params }: PreviewPageProps) {
           <button
             onClick={handleConfirm}
             disabled={generating}
-            className="rounded-lg bg-provenance-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-provenance-700 disabled:opacity-50"
+            className="rounded-lg bg-provenance-600 px-6 py-3 text-sm font-medium text-white hover:bg-provenance-700 disabled:opacity-50 transition-colors duration-150"
           >
             {generating ? "Generating..." : "Confirm & Generate Badge"}
           </button>

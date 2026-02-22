@@ -6,6 +6,7 @@ import { Sidebar, type SidebarFilter } from "./Sidebar";
 import { DocumentRow } from "./DocumentRow";
 import { deleteDocument } from "@/app/actions/documents";
 import { Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 type FilterChip = "all" | "drafts" | "has-badge" | "archived";
 
@@ -80,20 +81,17 @@ export function DashboardContent({ documents, createAction }: DashboardContentPr
 
       <main className="flex-1 overflow-auto p-6">
         <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Documents</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Documents</h1>
           <form action={createAction}>
-            <button
-              type="submit"
-              className="rounded-lg bg-provenance-600 px-4 py-2 text-sm font-medium text-white hover:bg-provenance-700"
-            >
+            <Button variant="provenance" type="submit">
               New Document
-            </button>
+            </Button>
           </form>
         </div>
 
         {/* Search bar */}
         <div className="relative mb-4">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
           <input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -109,7 +107,7 @@ export function DashboardContent({ documents, createAction }: DashboardContentPr
               <button
                 key={chip.id}
                 onClick={() => setChipFilter(chip.id)}
-                className={`rounded-full px-3 py-1 text-xs font-medium ${
+                className={`rounded-full px-3 py-1 text-xs font-medium transition-colors duration-150 ${
                   chipFilter === chip.id
                     ? "bg-provenance-50 text-provenance-700"
                     : "bg-gray-100 text-gray-600 hover:bg-gray-200"

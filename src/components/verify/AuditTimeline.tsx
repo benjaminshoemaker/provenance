@@ -117,7 +117,7 @@ export function AuditTimeline(props: AuditTimelineProps) {
           <button
             key={chip.id}
             onClick={() => setActiveFilter(chip.id)}
-            className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${
+            className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-colors duration-150 ${
               activeFilter === chip.id
                 ? "bg-gray-200 text-gray-900"
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -125,7 +125,7 @@ export function AuditTimeline(props: AuditTimelineProps) {
           >
             <span className={`inline-block h-2 w-2 rounded-full ${chip.dotColor}`} />
             {chip.label}
-            <span className="text-gray-400">({chip.count})</span>
+            <span className="font-mono tabular-nums text-gray-400">({chip.count})</span>
           </button>
         ))}
       </div>
@@ -260,10 +260,10 @@ function EventRow({
         <div className="rounded-lg border border-violet-200/50 bg-violet-50/30 p-3">
           <button
             onClick={onToggle}
-            className="flex w-full items-center justify-between text-left text-sm"
+            className="flex w-full items-center justify-between text-left text-sm transition-colors duration-150"
           >
             <div className="flex items-center gap-2">
-              <span className="rounded bg-violet-100 px-1.5 py-0.5 text-[10px] font-medium text-violet-700">
+              <span className="rounded bg-violet-100 px-1.5 py-0.5 text-[11px] font-medium text-violet-700">
                 {String(event.data.mode)}
               </span>
               <span className="truncate text-gray-700">
@@ -271,7 +271,7 @@ function EventRow({
                 {String(event.data.prompt).length > 60 ? "..." : ""}
               </span>
             </div>
-            <span className="ml-2 shrink-0 text-xs text-gray-400">
+            <span className="ml-2 shrink-0 text-xs text-gray-500">
               {formatTime(event.timestamp)}
             </span>
           </button>
@@ -314,13 +314,13 @@ function EventRow({
       <div className="relative flex items-center gap-3 py-1">
         {/* Dot */}
         <div className="absolute -left-[31px] top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full bg-orange-400" />
-        <span className="rounded bg-orange-100 px-1.5 py-0.5 text-[10px] font-medium text-orange-700">
+        <span className="rounded bg-orange-100 px-1.5 py-0.5 text-[11px] font-medium text-orange-700">
           paste
         </span>
         <span className="text-sm text-gray-600">
           {String(event.data.sourceType)} — {String(event.data.characterCount)} chars
         </span>
-        <span className="ml-auto text-xs text-gray-400">
+        <span className="ml-auto text-xs text-gray-500">
           {formatTime(event.timestamp)}
         </span>
       </div>
@@ -331,10 +331,10 @@ function EventRow({
   return (
     <div className="relative flex items-center gap-3 py-0.5">
       <div className="absolute -left-[31px] top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full bg-gray-300" />
-      <span className="text-xs text-gray-400">
+      <span className="text-xs text-gray-500">
         Revision saved — {String(event.data.trigger)}
       </span>
-      <span className="ml-auto text-xs text-gray-400">
+      <span className="ml-auto text-xs text-gray-500">
         {formatTime(event.timestamp)}
       </span>
     </div>
@@ -345,7 +345,7 @@ function RevisionClusterRow({ cluster }: { cluster: RevisionCluster }) {
   return (
     <div className="relative flex items-center gap-3 py-0.5">
       <div className="absolute -left-[31px] top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full bg-gray-300" />
-      <span className="text-xs text-gray-400">
+      <span className="text-xs text-gray-500">
         {cluster.count} revisions over {cluster.durationMinutes}min
       </span>
     </div>

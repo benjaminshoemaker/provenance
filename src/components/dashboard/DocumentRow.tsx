@@ -16,6 +16,13 @@ interface DocumentRowProps {
   onDelete?: (id: string) => void;
 }
 
+function getAIBadgeColor(percentage: number): string {
+  if (percentage <= 25) return "bg-emerald-50 text-emerald-700";
+  if (percentage <= 50) return "bg-amber-50 text-amber-700";
+  if (percentage <= 75) return "bg-orange-50 text-orange-700";
+  return "bg-red-50 text-red-700";
+}
+
 function relativeDate(date: string | Date | null): string {
   if (!date) return "";
   const d = new Date(date);
@@ -51,7 +58,7 @@ export function DocumentRow({
       tabIndex={0}
       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onClick?.(); }}
       className={cn(
-        "flex w-full items-start gap-3 border-b border-gray-100 px-4 py-3.5 text-left hover:bg-gray-50 cursor-pointer",
+        "flex w-full items-start gap-3 border-b border-gray-100 px-4 py-3 text-left hover:bg-gray-50 cursor-pointer transition-colors duration-150",
         isArchived && "opacity-60"
       )}
     >
@@ -67,7 +74,7 @@ export function DocumentRow({
         <div className="flex items-center justify-between gap-2">
           <span className="truncate text-sm font-medium">{title || "Untitled"}</span>
           <div className="flex shrink-0 items-center gap-2">
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-gray-500">
               {relativeDate(updatedAt)}
             </span>
             {onDelete && (
@@ -76,7 +83,7 @@ export function DocumentRow({
                   e.stopPropagation();
                   onDelete(id);
                 }}
-                className="rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-600"
+                className="rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-600 transition-colors duration-150"
                 aria-label={`Delete ${title || "Untitled"}`}
               >
                 <Trash2 className="h-3.5 w-3.5" />
@@ -86,17 +93,17 @@ export function DocumentRow({
         </div>
 
         {preview && (
-          <p className="mt-0.5 truncate text-xs text-gray-400">{preview}</p>
+          <p className="mt-0.5 truncate text-xs text-gray-500">{preview}</p>
         )}
 
         <div className="mt-1 flex items-center gap-2">
           {aiPercentage != null && (
-            <span className="rounded bg-emerald-50 px-1.5 py-0.5 text-[10px] font-medium text-emerald-700">
+            <span className={`rounded px-1.5 py-0.5 text-[11px] font-medium font-mono tabular-nums ${getAIBadgeColor(aiPercentage)}`}>
               {aiPercentage}% AI
             </span>
           )}
           {wordCount != null && (
-            <span className="text-[10px] text-gray-400">
+            <span className="text-[11px] text-gray-500 font-mono tabular-nums">
               {wordCount.toLocaleString()} words
             </span>
           )}

@@ -111,7 +111,7 @@ export function TimelineModal({ documentId, isOpen, onClose }: TimelineModalProp
       aria-label="Document History"
       ref={dialogRef}
     >
-      <div className="relative max-h-[80vh] w-full max-w-2xl overflow-auto rounded-lg border bg-background p-6 shadow-2xl">
+      <div className="relative max-h-[80vh] w-full max-w-2xl overflow-auto rounded-lg border bg-background p-6 shadow-lg">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold" id="timeline-modal-title">Document History</h2>
           <button

@@ -34,7 +34,7 @@ export function Sidebar({ activeFilter, onFilterChange, onSettingsClick }: Sideb
               key={item.id}
               onClick={() => onFilterChange(item.id)}
               className={cn(
-                "flex items-center gap-2 rounded-md px-3 py-2 text-sm",
+                "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors duration-150",
                 isActive
                   ? "bg-provenance-50 font-medium text-provenance-700"
                   : "text-gray-600 hover:bg-gray-100"
@@ -50,7 +50,7 @@ export function Sidebar({ activeFilter, onFilterChange, onSettingsClick }: Sideb
       <div className="mt-auto">
         <button
           onClick={onSettingsClick}
-          className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-100"
+          className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 transition-colors duration-150"
         >
           <Settings className="h-4 w-4" />
           Settings
