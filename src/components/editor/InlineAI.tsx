@@ -6,6 +6,7 @@ import type { Editor } from "@tiptap/react";
 import { nanoid } from "nanoid";
 import { logAIInteraction } from "@/app/actions/ai-interactions";
 import { Sparkles, Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const PRESETS = [
   { label: "Improve", prompt: "Improve this text while keeping the same meaning" },
@@ -24,6 +25,8 @@ interface InlineAIProps {
   selectedText: string;
   selectionFrom: number;
   selectionTo: number;
+  anchorTop?: number;
+  anchorRight?: number;
   onDismiss: () => void;
   onAIResponse?: (responseText: string) => void;
 }
@@ -42,6 +45,54 @@ function wordCount(text: string): number {
   return text.split(/\s+/).filter(Boolean).length;
 }
 
+function cleanSuggestionText(text: string): string {
+  return text
+    .replace(/^\s*(SUGGESTION|OPTION)\s*\d+\s*:\s*/i, "")
+    .trim();
+}
+
+function parseSuggestions(rawCompletion: string): [string, string] {
+  const completion = rawCompletion.trim();
+  if (!completion) return ["", ""];
+
+  const delimiterMatch = completion
+    .split(/\n-{3,}\n/)
+    .map((part) => cleanSuggestionText(part))
+    .filter(Boolean);
+  if (delimiterMatch.length >= 2) {
+    return [delimiterMatch[0], delimiterMatch[1]];
+  }
+
+  const explicitMatch = completion.match(
+    /SUGGESTION\s*1\s*:\s*([\s\S]*?)\n+\s*SUGGESTION\s*2\s*:\s*([\s\S]*)/i
+  );
+  if (explicitMatch) {
+    return [
+      cleanSuggestionText(explicitMatch[1]),
+      cleanSuggestionText(explicitMatch[2]),
+    ];
+  }
+
+  const blocks = completion
+    .split(/\n{2,}/)
+    .map((part) => cleanSuggestionText(part))
+    .filter(Boolean);
+  if (blocks.length >= 2) {
+    return [blocks[0], blocks[1]];
+  }
+
+  return [cleanSuggestionText(completion), cleanSuggestionText(completion)];
+}
+
+function suggestionDeltaLabel(originalText: string, suggestionText: string): string | undefined {
+  const originalWords = wordCount(originalText);
+  const suggestionWords = wordCount(suggestionText);
+  const diff = originalWords - suggestionWords;
+  if (diff > 0) return `· ${diff} fewer word${diff !== 1 ? "s" : ""}`;
+  if (diff < 0) return `· ${Math.abs(diff)} more word${Math.abs(diff) !== 1 ? "s" : ""}`;
+  return undefined;
+}
+
 export function InlineAI({
   editor,
   documentId,
@@ -50,6 +101,8 @@ export function InlineAI({
   selectedText,
   selectionFrom,
   selectionTo,
+  anchorTop = 96,
+  anchorRight = 24,
   onDismiss,
   onAIResponse,
 }: InlineAIProps) {
@@ -79,15 +132,7 @@ export function InlineAI({
   // Build choices when completion arrives
   useEffect(() => {
     if (!completion) return;
-    const originalWords = wordCount(selectedText);
-    const suggestionWords = wordCount(completion);
-    const diff = originalWords - suggestionWords;
-    const sublabel =
-      diff > 0
-        ? `· ${diff} fewer word${diff !== 1 ? "s" : ""}`
-        : diff < 0
-          ? `· ${Math.abs(diff)} more word${Math.abs(diff) !== 1 ? "s" : ""}`
-          : undefined;
+    const [suggestionOne, suggestionTwo] = parseSuggestions(completion);
 
     setChoices([
       {
@@ -99,8 +144,15 @@ export function InlineAI({
       {
         id: "suggestion-1",
         label: "SUGGESTION 1",
-        sublabel,
-        text: completion,
+        sublabel: suggestionDeltaLabel(selectedText, suggestionOne),
+        text: suggestionOne,
+        isOriginal: false,
+      },
+      {
+        id: "suggestion-2",
+        label: "SUGGESTION 2",
+        sublabel: suggestionDeltaLabel(selectedText, suggestionTwo),
+        text: suggestionTwo,
         isOriginal: false,
       },
     ]);
@@ -113,7 +165,17 @@ export function InlineAI({
       setError(null);
       setStage("choosing");
       setSelectedChoiceId("original"); // Original starts selected
-      await complete(prompt, {
+      const dualSuggestionPrompt = `${prompt}
+
+Return exactly TWO distinct rewritten options for the selected text.
+Do not include explanations.
+Use this format exactly:
+SUGGESTION 1:
+<text>
+---
+SUGGESTION 2:
+<text>`;
+      await complete(dualSuggestionPrompt, {
         body: {
           mode: "inline",
           provider,
@@ -257,7 +319,8 @@ export function InlineAI({
   if (stage === "toolbar") {
     return (
       <div
-        className="floating-toolbar absolute bottom-16 right-4 z-50 w-[calc(100%-2rem)] max-w-md rounded-lg border bg-background p-3 shadow-lg"
+        className="floating-toolbar absolute z-50 w-[calc(100%-2rem)] max-w-md rounded-lg border bg-background p-3 shadow-lg"
+        style={{ top: `${anchorTop + 36}px`, right: `${anchorRight}px` }}
         data-testid="inline-ai-toolbar"
       >
         <div className="mb-2 flex items-center gap-2 text-xs text-muted-foreground">
@@ -311,7 +374,8 @@ export function InlineAI({
 
   return (
     <div
-      className="floating-toolbar absolute bottom-16 right-4 z-50 w-[calc(100%-2rem)] max-w-lg overflow-hidden rounded-xl border bg-background shadow-lg"
+      className="floating-toolbar absolute z-50 w-[calc(100%-2rem)] max-w-lg overflow-hidden rounded-xl border bg-background shadow-lg"
+      style={{ top: `${anchorTop + 36}px`, right: `${anchorRight}px` }}
       data-testid="inline-ai-chooser"
     >
       {/* Header bar */}
@@ -398,13 +462,14 @@ export function InlineAI({
             <kbd className="rounded border px-1">Enter</kbd> confirm ·{" "}
             <kbd className="rounded border px-1">Esc</kbd> dismiss
           </span>
-          <button
+          <Button
+            variant="provenance"
+            size="sm"
             onClick={handleConfirm}
             disabled={isLoading}
-            className="rounded-md bg-provenance-600 px-3 py-1 text-sm font-medium text-white hover:bg-provenance-700 disabled:opacity-50 transition-colors duration-150"
           >
             Confirm Selection
-          </button>
+          </Button>
         </div>
       )}
     </div>

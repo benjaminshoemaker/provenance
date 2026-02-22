@@ -144,6 +144,34 @@ describe("InlineAI", () => {
     expect(screen.getByText("Confirm Selection")).toBeDefined();
   });
 
+  it("should render two AI suggestion cards when completion includes two suggestions", async () => {
+    mocks.completionValue = `SUGGESTION 1:
+First rewrite option.
+---
+SUGGESTION 2:
+Second rewrite option.`;
+    const editor = createMockEditor();
+
+    render(
+      <InlineAI
+        editor={editor as never}
+        documentId="doc-1"
+        provider="anthropic"
+        selectedText="original text"
+        selectionFrom={0}
+        selectionTo={13}
+        onDismiss={vi.fn()}
+      />
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByText("Improve"));
+    });
+
+    expect(screen.getByTestId("choice-suggestion-1").textContent).toContain("First rewrite option.");
+    expect(screen.getByTestId("choice-suggestion-2").textContent).toContain("Second rewrite option.");
+  });
+
   it("should confirm original text and log as rejected", async () => {
     mocks.completionValue = "improved AI text";
     const onDismiss = vi.fn();

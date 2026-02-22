@@ -59,6 +59,7 @@ describe("StatsSummary", () => {
     expect(secondary.textContent).toContain("8 AI interactions");
     expect(secondary.textContent).toContain("3 sessions");
     expect(secondary.textContent).toContain("2h 14m active time");
+    expect(secondary.querySelectorAll("svg")).toHaveLength(4);
   });
 
   it("should handle zero paste percentage gracefully", () => {
@@ -88,5 +89,23 @@ describe("StatsSummary", () => {
     const mobile = screen.getByTestId("methodology-mobile");
     expect(mobile).toBeTruthy();
     expect(mobile.textContent).toContain("How is this calculated?");
+  });
+
+  it("should explain why AI-assisted can be 0% when interactions exist", () => {
+    render(
+      <StatsSummary
+        stats={{
+          ...defaultStats,
+          ai_percentage: 0,
+          interaction_count: 6,
+        }}
+      />
+    );
+
+    const explainer = screen.getByTestId("zero-ai-explainer");
+    expect(explainer.textContent).toContain("6 AI interactions");
+    expect(explainer.textContent).toContain(
+      "none of that AI text remained in this final snapshot"
+    );
   });
 });

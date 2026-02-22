@@ -125,7 +125,7 @@ export function AuditTimeline(props: AuditTimelineProps) {
           >
             <span className={`inline-block h-2 w-2 rounded-full ${chip.dotColor}`} />
             {chip.label}
-            <span className="font-mono tabular-nums text-gray-400">({chip.count})</span>
+            <span className="font-mono tabular-nums text-gray-500">({chip.count})</span>
           </button>
         ))}
       </div>

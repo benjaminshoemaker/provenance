@@ -1,3 +1,5 @@
+import { Clock3, FileText, Sparkles, Timer } from "lucide-react";
+
 interface StatsSummaryProps {
   stats: {
     ai_percentage: number;
@@ -21,6 +23,8 @@ export function StatsSummary({ stats }: StatsSummaryProps) {
   const humanWords = Math.round(totalWords * (humanPercentage / 100));
   const aiWords = Math.round(totalWords * (stats.ai_percentage / 100));
   const pasteWords = Math.round(totalWords * (stats.external_paste_percentage / 100));
+  const hasAiInteractionsWithoutRetainedText =
+    stats.ai_percentage === 0 && stats.interaction_count > 0;
 
   return (
     <div data-testid="stats-summary">
@@ -34,7 +38,7 @@ export function StatsSummary({ stats }: StatsSummaryProps) {
         {/* Desktop: hover tooltip */}
         <span className="relative ml-2 hidden sm:inline-block" data-testid="methodology-tooltip">
           <span className="group cursor-help">
-            <span className="inline-flex items-center gap-1 text-sm text-provenance-500 decoration-dashed underline underline-offset-2">
+            <span className="inline-flex items-center gap-1 text-sm text-provenance-600 decoration-dashed underline underline-offset-2">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clipRule="evenodd" />
               </svg>
@@ -58,7 +62,7 @@ export function StatsSummary({ stats }: StatsSummaryProps) {
         {/* Mobile: inline expandable */}
         <div className="mt-2 sm:hidden" data-testid="methodology-mobile">
           <details className="inline-block text-left">
-            <summary className="cursor-pointer text-sm text-provenance-500 decoration-dashed underline underline-offset-2">
+            <summary className="cursor-pointer text-sm text-provenance-600 decoration-dashed underline underline-offset-2">
               <span className="inline-flex items-center gap-1">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clipRule="evenodd" />
@@ -123,21 +127,40 @@ export function StatsSummary({ stats }: StatsSummaryProps) {
       </div>
 
       {/* Plain-language sentence */}
-      <p className="mb-5 text-center text-sm text-gray-500" data-testid="plain-language">
+      <p className="mb-3 text-center text-sm text-gray-500" data-testid="plain-language">
         Of {totalWords.toLocaleString()} words: ~{humanWords.toLocaleString()} written by the author,
         ~{aiWords.toLocaleString()} generated or rewritten by AI
         {pasteWords > 0 && <>, ~{pasteWords.toLocaleString()} pasted from external sources</>}.
       </p>
+      {hasAiInteractionsWithoutRetainedText && (
+        <p
+          className="mb-5 text-center text-xs text-gray-500"
+          data-testid="zero-ai-explainer"
+        >
+          {stats.interaction_count} AI interaction{stats.interaction_count !== 1 ? "s" : ""}{" "}
+          {stats.interaction_count === 1 ? "was" : "were"} logged, but none of that AI text
+          remained in this final snapshot.
+        </p>
+      )}
 
       {/* Secondary stats — compact horizontal row */}
-      <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm text-gray-500" data-testid="secondary-stats">
-        <span>{stats.interaction_count} AI interaction{stats.interaction_count !== 1 ? "s" : ""}</span>
-        <span className="text-gray-300">·</span>
-        <span>{stats.session_count} session{stats.session_count !== 1 ? "s" : ""}</span>
-        <span className="text-gray-300">·</span>
-        <span>{timeDisplay} active time</span>
-        <span className="text-gray-300">·</span>
-        <span>{totalWords.toLocaleString()} words</span>
+      <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-gray-500" data-testid="secondary-stats">
+        <span className="inline-flex items-center gap-1.5">
+          <Sparkles className="h-4 w-4 text-gray-400" aria-hidden="true" />
+          {stats.interaction_count} AI interaction{stats.interaction_count !== 1 ? "s" : ""}
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <Clock3 className="h-4 w-4 text-gray-400" aria-hidden="true" />
+          {stats.session_count} session{stats.session_count !== 1 ? "s" : ""}
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <Timer className="h-4 w-4 text-gray-400" aria-hidden="true" />
+          {timeDisplay} active time
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <FileText className="h-4 w-4 text-gray-400" aria-hidden="true" />
+          {totalWords.toLocaleString()} words
+        </span>
       </div>
     </div>
   );

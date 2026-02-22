@@ -19,6 +19,12 @@ export function classifyPaste(
 }
 
 declare module "@tiptap/core" {
+  interface Storage {
+    pasteHandler: {
+      recentAIResponses: string[];
+    };
+  }
+
   interface Commands<ReturnType> {
     pasteHandler: {
       addRecentAIResponse: (text: string) => ReturnType;
