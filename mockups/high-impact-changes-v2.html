@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Provenance — High-Impact Changes (v2)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwindcss.config = {
+      theme: {
+        extend: {
+          colors: {
+            prov: {
+              50: '#f0f4ff',
+              100: '#dbe4ff',
+              200: '#bac8ff',
+              300: '#91a7ff',
+              400: '#748ffc',
+              500: '#4c6ef5',
+              600: '#3b5bdb',
+              700: '#364fc7',
+              800: '#2b3f9e',
+              900: '#1c2541',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'DM Sans', sans-serif; }
+    code, .mono { font-family: 'DM Mono', monospace; }
+
+    .section-divider {
+      background: linear-gradient(90deg, transparent, #e5e7eb 20%, #e5e7eb 80%, transparent);
+      height: 1px;
+    }
+
+    .label-before {
+      background: linear-gradient(135deg, #fee2e2, #fecaca);
+      color: #991b1b;
+    }
+    .label-after {
+      background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+      color: #065f46;
+    }
+
+    /* Tooltip */
+    .info-tooltip { position: relative; cursor: help; }
+    .info-tooltip .tooltip-content {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 320px;
+      z-index: 50;
+    }
+    .info-tooltip:hover .tooltip-content,
+    .info-tooltip:focus .tooltip-content {
+      display: block;
+    }
+    .info-tooltip .tooltip-content::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: white;
+    }
+
+    /* Alt card hover */
+    .alt-card { transition: all 0.15s ease; }
+    .alt-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    /* Diff styling */
+    .diff-remove {
+      text-decoration: line-through;
+      text-decoration-color: rgba(220, 38, 38, 0.5);
+      color: #b91c1c;
+      background: rgba(254, 202, 202, 0.3);
+      padding: 0 1px;
+      border-radius: 2px;
+    }
+    .diff-add {
+      color: #047857;
+      background: rgba(167, 243, 208, 0.3);
+      text-decoration: underline;
+      text-decoration-color: rgba(5, 150, 105, 0.4);
+      text-underline-offset: 2px;
+      padding: 0 1px;
+      border-radius: 2px;
+    }
+
+    html { scroll-behavior: smooth; }
+  </style>
+</head>
+<body class="bg-stone-50 text-gray-900 antialiased">
+
+<!-- ========= NAV ========= -->
+<nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/60">
+  <div class="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-2.5">
+      <div class="w-5 h-5 bg-prov-700 rotate-45 rounded-[3px]"></div>
+      <span class="font-semibold text-sm tracking-tight">Provenance</span>
+      <span class="text-gray-300 mx-1">·</span>
+      <span class="text-xs text-gray-400 font-medium">High-Impact Modifications v2</span>
+    </div>
+    <div class="flex gap-1 text-xs">
+      <a href="#change-1" class="px-2.5 py-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors">1 Badges</a>
+      <a href="#change-2" class="px-2.5 py-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors">2 Stacked Bar</a>
+      <a href="#change-3" class="px-2.5 py-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors">3 Keep Original</a>
+      <a href="#change-4" class="px-2.5 py-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors">4 Co-located ℹ️</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ========= INTRO ========= -->
+<header class="max-w-6xl mx-auto px-6 pt-16 pb-6">
+  <h1 class="text-3xl font-bold tracking-tight text-gray-900">High-Impact UI Modifications</h1>
+  <p class="text-gray-500 mt-2 max-w-2xl leading-relaxed">Four targeted changes based on convergent findings from three independent competitive analyses. Each addresses a specific trust, comprehension, or usability risk.</p>
+</header>
+
+<!-- ========= COLOR SYSTEM REFERENCE ========= -->
+<div class="max-w-6xl mx-auto px-6 pb-12">
+  <div class="bg-white rounded-xl border border-gray-200 p-5">
+    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Unified Origin Color System — Used Across All Surfaces</p>
+    <div class="flex items-center gap-8">
+      <div class="flex items-center gap-2.5">
+        <div class="w-4 h-4 rounded-sm bg-gray-700"></div>
+        <div>
+          <span class="text-sm font-medium text-gray-800">Human-written</span>
+          <span class="text-xs text-gray-400 ml-1.5">gray-700</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2.5">
+        <div class="w-4 h-4 rounded-sm bg-violet-500"></div>
+        <div>
+          <span class="text-sm font-medium text-gray-800">AI-generated</span>
+          <span class="text-xs text-gray-400 ml-1.5">violet-500</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2.5">
+        <div class="w-4 h-4 rounded-sm bg-orange-400"></div>
+        <div>
+          <span class="text-sm font-medium text-gray-800">Pasted</span>
+          <span class="text-xs text-gray-400 ml-1.5">orange-400</span>
+        </div>
+      </div>
+      <div class="ml-auto text-xs text-gray-400 max-w-xs">Same colors in badges, stacked bars, timeline events, and badge preview origin marks.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CHANGE 1: NEUTRAL BADGE COLORS WITH ORIGIN BREAKDOWN
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="change-1" class="py-16">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="flex items-start gap-4 mb-10">
+      <div class="w-10 h-10 rounded-xl bg-prov-600 text-white flex items-center justify-center font-bold text-lg flex-shrink-0">1</div>
+      <div>
+        <h2 class="text-xl font-bold">Neutral Badge Colors with Origin Breakdown</h2>
+        <p class="text-gray-500 text-sm mt-1 max-w-xl">Remove the green→red judgment scale. Use the unified origin colors (human/AI/paste) to show the three-way composition instead of a single "AI %" that implies good/bad.</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-8">
+      <!-- BEFORE -->
+      <div>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md label-before text-xs font-medium mb-4">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          Before — Green-to-red color scale
+        </div>
+        <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
+          <p class="text-xs text-gray-400 mb-2">Traffic-light framing implies some percentages are "better"</p>
+          <div class="flex items-center gap-3 flex-wrap">
+            <div class="inline-flex items-center rounded overflow-hidden text-xs font-medium shadow-sm">
+              <span class="px-2.5 py-1.5 bg-gray-700 text-gray-100">Provenance</span>
+              <span class="px-2.5 py-1.5 bg-emerald-600 text-white">0% AI</span>
+            </div>
+            <div class="inline-flex items-center rounded overflow-hidden text-xs font-medium shadow-sm">
+              <span class="px-2.5 py-1.5 bg-gray-700 text-gray-100">Provenance</span>
+              <span class="px-2.5 py-1.5 bg-emerald-600 text-white">12% AI</span>
+            </div>
+            <div class="inline-flex items-center rounded overflow-hidden text-xs font-medium shadow-sm">
+              <span class="px-2.5 py-1.5 bg-gray-700 text-gray-100">Provenance</span>
+              <span class="px-2.5 py-1.5 bg-amber-500 text-white">45% AI</span>
+            </div>
+            <div class="inline-flex items-center rounded overflow-hidden text-xs font-medium shadow-sm">
+              <span class="px-2.5 py-1.5 bg-gray-700 text-gray-100">Provenance</span>
+              <span class="px-2.5 py-1.5 bg-orange-500 text-white">73% AI</span>
+            </div>
+            <div class="inline-flex items-center rounded overflow-hidden text-xs font-medium shadow-sm">
+              <span class="px-2.5 py-1.5 bg-gray-700 text-gray-100">Provenance</span>
+              <span class="px-2.5 py-1.5 bg-red-500 text-white">95% AI</span>
+            </div>
+          </div>
+          <p class="text-xs text-red-600 flex items-start gap-1.5">
+            <svg class="w-3.5 h-3.5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+            <span>Reader instinct: "Green = good writer, red = lazy." This frames AI usage as inherently negative.</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- AFTER -->
+      <div>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md label-after text-xs font-medium mb-4">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          After — Neutral brand color, consistent regardless of %
+        </div>
+        <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
+          <p class="text-xs text-gray-400 mb-2">Same badge color at every percentage — "verified process," not "acceptable score"</p>
+          <div class="flex items-center gap-3 flex-wrap">
+            <div class="inline-flex items-center rounded overflow-hidden text-xs font-medium shadow-sm">
+              <span class="px-2.5 py-1.5 bg-prov-800 text-prov-200">Provenance ✓</span>
+              <span class="px-2.5 py-1.5 bg-prov-600 text-white">0% AI</span>
+            </div>
+            <div class="inline-flex items-center rounded overflow-hidden text-xs font-medium shadow-sm">
+              <span class="px-2.5 py-1.5 bg-prov-800 text-prov-200">Provenance ✓</span>
+              <span class="px-2.5 py-1.5 bg-prov-600 text-white">12% AI</span>
+            </div>
+            <div class="inline-flex items-center rounded overflow-hidden text-xs font-medium shadow-sm">
+              <span class="px-2.5 py-1.5 bg-prov-800 text-prov-200">Provenance ✓</span>
+              <span class="px-2.5 py-1.5 bg-prov-600 text-white">45% AI</span>
+            </div>
+            <div class="inline-flex items-center rounded overflow-hidden text-xs font-medium shadow-sm">
+              <span class="px-2.5 py-1.5 bg-prov-800 text-prov-200">Provenance ✓</span>
+              <span class="px-2.5 py-1.5 bg-prov-600 text-white">73% AI</span>
+            </div>
+            <div class="inline-flex items-center rounded overflow-hidden text-xs font-medium shadow-sm">
+              <span class="px-2.5 py-1.5 bg-prov-800 text-prov-200">Provenance ✓</span>
+              <span class="px-2.5 py-1.5 bg-prov-600 text-white">95% AI</span>
+            </div>
+          </div>
+          <p class="text-xs text-prov-700 flex items-start gap-1.5">
+            <svg class="w-3.5 h-3.5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span>Every badge says the same thing: "process recorded." The % is data, not a verdict.</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPANDED BADGE: Three-way breakdown -->
+    <div class="mt-10">
+      <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Extended badge with origin breakdown</p>
+      <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-6">
+
+        <p class="text-sm text-gray-600">Since Provenance tracks three origin types, the badge can communicate all three — using the same origin colors from the timeline and editor.</p>
+
+        <!-- Standard: just AI% -->
+        <div>
+          <p class="text-xs text-gray-400 mb-2">Standard badge (simple)</p>
+          <div class="inline-flex items-center rounded overflow-hidden text-xs font-medium shadow-sm">
+            <span class="px-2.5 py-1.5 bg-prov-800 text-prov-200">Provenance ✓</span>
+            <span class="px-2.5 py-1.5 bg-prov-600 text-white">12% AI-assisted</span>
+          </div>
+        </div>
+
+        <!-- Extended: three-way split with mini stacked bar -->
+        <div>
+          <p class="text-xs text-gray-400 mb-2">Extended badge (three-way composition)</p>
+          <div class="inline-flex items-center rounded-lg overflow-hidden text-xs font-medium shadow-sm border border-gray-200">
+            <!-- Brand label -->
+            <span class="px-2.5 py-2 bg-prov-800 text-prov-200 flex items-center gap-1.5">
+              <div class="w-3 h-3 bg-prov-500 rotate-45 rounded-[2px]"></div>
+              Provenance ✓
+            </span>
+            <!-- Composition bar -->
+            <span class="px-3 py-2 bg-white flex items-center gap-2.5">
+              <span class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-sm bg-gray-700"></span>
+                <span class="text-gray-700">85%</span>
+              </span>
+              <span class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-sm bg-violet-500"></span>
+                <span class="text-violet-700">12%</span>
+              </span>
+              <span class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-sm bg-orange-400"></span>
+                <span class="text-orange-600">3%</span>
+              </span>
+              <!-- Mini stacked bar -->
+              <span class="flex h-2 w-16 rounded-full overflow-hidden ml-1">
+                <span class="bg-gray-700" style="width:85%"></span>
+                <span class="bg-violet-500" style="width:12%"></span>
+                <span class="bg-orange-400" style="width:3%"></span>
+              </span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Compact branded variant -->
+        <div>
+          <p class="text-xs text-gray-400 mb-2">Compact branded (hover-to-expand on web)</p>
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-gray-200 bg-white text-xs shadow-sm">
+            <div class="w-3 h-3 bg-prov-700 rotate-45 rounded-[2px] flex-shrink-0"></div>
+            <span class="font-medium text-gray-700">Verified</span>
+            <span class="text-gray-300">·</span>
+            <!-- Mini bar inline -->
+            <span class="flex h-2 w-12 rounded-full overflow-hidden">
+              <span class="bg-gray-700" style="width:85%"></span>
+              <span class="bg-violet-500" style="width:12%"></span>
+              <span class="bg-orange-400" style="width:3%"></span>
+            </span>
+            <span class="text-gray-500">12% AI</span>
+          </div>
+        </div>
+
+        <!-- At different compositions -->
+        <div>
+          <p class="text-xs text-gray-400 mb-3">Same visual language across compositions</p>
+          <div class="flex items-center gap-4 flex-wrap">
+            <!-- 0% AI, 0% paste -->
+            <div class="inline-flex items-center rounded overflow-hidden text-xs font-medium shadow-sm border border-gray-200">
+              <span class="px-2.5 py-1.5 bg-prov-800 text-prov-200">Provenance ✓</span>
+              <span class="px-2.5 py-1.5 bg-white text-gray-700 flex items-center gap-2">
+                <span class="flex h-2 w-12 rounded-full overflow-hidden">
+                  <span class="bg-gray-700" style="width:100%"></span>
+                </span>
+                0% AI
+              </span>
+            </div>
+            <!-- 12% AI, 3% paste -->
+            <div class="inline-flex items-center rounded overflow-hidden text-xs font-medium shadow-sm border border-gray-200">
+              <span class="px-2.5 py-1.5 bg-prov-800 text-prov-200">Provenance ✓</span>
+              <span class="px-2.5 py-1.5 bg-white text-gray-700 flex items-center gap-2">
+                <span class="flex h-2 w-12 rounded-full overflow-hidden">
+                  <span class="bg-gray-700" style="width:85%"></span>
+                  <span class="bg-violet-500" style="width:12%"></span>
+                  <span class="bg-orange-400" style="width:3%"></span>
+                </span>
+                12% AI
+              </span>
+            </div>
+            <!-- 45% AI, 5% paste -->
+            <div class="inline-flex items-center rounded overflow-hidden text-xs font-medium shadow-sm border border-gray-200">
+              <span class="px-2.5 py-1.5 bg-prov-800 text-prov-200">Provenance ✓</span>
+              <span class="px-2.5 py-1.5 bg-white text-gray-700 flex items-center gap-2">
+                <span class="flex h-2 w-12 rounded-full overflow-hidden">
+                  <span class="bg-gray-700" style="width:50%"></span>
+                  <span class="bg-violet-500" style="width:45%"></span>
+                  <span class="bg-orange-400" style="width:5%"></span>
+                </span>
+                45% AI
+              </span>
+            </div>
+            <!-- 73% AI, 2% paste -->
+            <div class="inline-flex items-center rounded overflow-hidden text-xs font-medium shadow-sm border border-gray-200">
+              <span class="px-2.5 py-1.5 bg-prov-800 text-prov-200">Provenance ✓</span>
+              <span class="px-2.5 py-1.5 bg-white text-gray-700 flex items-center gap-2">
+                <span class="flex h-2 w-12 rounded-full overflow-hidden">
+                  <span class="bg-gray-700" style="width:25%"></span>
+                  <span class="bg-violet-500" style="width:73%"></span>
+                  <span class="bg-orange-400" style="width:2%"></span>
+                </span>
+                73% AI
+              </span>
+            </div>
+            <!-- 95% AI, 0% paste -->
+            <div class="inline-flex items-center rounded overflow-hidden text-xs font-medium shadow-sm border border-gray-200">
+              <span class="px-2.5 py-1.5 bg-prov-800 text-prov-200">Provenance ✓</span>
+              <span class="px-2.5 py-1.5 bg-white text-gray-700 flex items-center gap-2">
+                <span class="flex h-2 w-12 rounded-full overflow-hidden">
+                  <span class="bg-gray-700" style="width:5%"></span>
+                  <span class="bg-violet-500" style="width:95%"></span>
+                </span>
+                95% AI
+              </span>
+            </div>
+          </div>
+          <p class="text-xs text-gray-500 mt-3">The mini bar shifts shape as the composition changes, but no color carries moral weight. A 95% AI document has the same brand treatment as a 0% AI document — both are transparently recorded.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider max-w-5xl mx-auto"></div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CHANGE 2: STACKED BAR WITH ORIGIN COLORS
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="change-2" class="py-16">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="flex items-start gap-4 mb-10">
+      <div class="w-10 h-10 rounded-xl bg-prov-600 text-white flex items-center justify-center font-bold text-lg flex-shrink-0">2</div>
+      <div>
+        <h2 class="text-xl font-bold">Stacked Bar Hero with Three-Way Origin Colors</h2>
+        <p class="text-gray-500 text-sm mt-1 max-w-xl">Replace the separate stat cards with a stacked bar using the same human/AI/paste colors. Shows the three-way composition at a glance, with a plain-language sentence for clarity.</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-8">
+      <!-- BEFORE -->
+      <div>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md label-before text-xs font-medium mb-4">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          Before — Separate stat cards, binary split
+        </div>
+        <div class="bg-white rounded-xl border border-gray-200 p-6">
+          <h3 class="text-base font-bold text-gray-900 mb-5">Why I Still Write My Own Blog Posts in the Age of AI</h3>
+          <div class="grid grid-cols-5 gap-3">
+            <div class="bg-gradient-to-br from-emerald-50 to-emerald-100/50 rounded-xl p-4 text-center border border-emerald-200/50">
+              <div class="text-3xl font-bold text-emerald-700">12%</div>
+              <div class="text-[10px] text-emerald-600 mt-0.5 font-medium">AI-Generated</div>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4 text-center">
+              <div class="text-xl font-semibold text-gray-800">88%</div>
+              <div class="text-[10px] text-gray-500 mt-0.5">Human</div>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4 text-center">
+              <div class="text-xl font-semibold text-gray-800">8</div>
+              <div class="text-[10px] text-gray-500 mt-0.5">AI Chats</div>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4 text-center">
+              <div class="text-xl font-semibold text-gray-800">3</div>
+              <div class="text-[10px] text-gray-500 mt-0.5">Sessions</div>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4 text-center">
+              <div class="text-xl font-semibold text-gray-800">2h 14m</div>
+              <div class="text-[10px] text-gray-500 mt-0.5">Active Time</div>
+            </div>
+          </div>
+          <p class="text-xs text-red-600 mt-4 flex items-start gap-1.5">
+            <svg class="w-3.5 h-3.5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+            <span>Binary split (AI vs human) misses pasted content entirely. Emerald gradient on 12% implies it's a "good" score. No part-to-whole visual.</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- AFTER -->
+      <div>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md label-after text-xs font-medium mb-4">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          After — Three-way stacked bar with origin colors
+        </div>
+        <div class="bg-white rounded-xl border border-gray-200 p-6">
+          <h3 class="text-base font-bold text-gray-900 mb-5">Why I Still Write My Own Blog Posts in the Age of AI</h3>
+
+          <!-- Hero: Headline stat -->
+          <div class="mb-5">
+            <div class="flex items-baseline gap-3 mb-3">
+              <span class="text-4xl font-bold text-gray-900">12%</span>
+              <span class="text-sm text-gray-500">AI-assisted</span>
+            </div>
+
+            <!-- Stacked bar: THREE segments -->
+            <div class="flex h-4 rounded-full overflow-hidden bg-gray-100 mb-2.5">
+              <div class="bg-gray-700 rounded-l-full" style="width: 85%"></div>
+              <div class="bg-violet-500" style="width: 12%"></div>
+              <div class="bg-orange-400 rounded-r-full" style="width: 3%"></div>
+            </div>
+
+            <!-- Legend -->
+            <div class="flex items-center gap-5 text-xs text-gray-500 mb-3">
+              <span class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-sm bg-gray-700"></span>
+                Human-written · 85%
+              </span>
+              <span class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-sm bg-violet-500"></span>
+                AI-assisted · 12%
+              </span>
+              <span class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-sm bg-orange-400"></span>
+                Pasted · 3%
+              </span>
+            </div>
+
+            <!-- Plain language -->
+            <p class="text-sm text-gray-600">Of 2,847 words: ~2,420 written by the author, ~340 generated or rewritten by AI, ~87 pasted from external sources.</p>
+          </div>
+
+          <!-- Secondary stats (compact row) -->
+          <div class="flex items-center gap-6 pt-4 border-t border-gray-100">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+              <span class="text-sm text-gray-700 font-medium">8</span>
+              <span class="text-xs text-gray-400">AI interactions</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <span class="text-sm text-gray-700 font-medium">3</span>
+              <span class="text-xs text-gray-400">sessions</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <span class="text-sm text-gray-700 font-medium">2h 14m</span>
+              <span class="text-xs text-gray-400">active time</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              <span class="text-sm text-gray-700 font-medium">2,847</span>
+              <span class="text-xs text-gray-400">words</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile version -->
+    <div class="mt-10">
+      <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Mobile verification — same three-way bar</p>
+      <div class="mx-auto bg-gray-900 rounded-[2.5rem] p-2.5 shadow-xl" style="width: 340px;">
+        <div class="bg-white rounded-[2rem] overflow-hidden p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-1.5">
+              <div class="w-3.5 h-3.5 bg-prov-700 rotate-45 rounded-[2px]"></div>
+              <span class="text-xs font-semibold">Provenance</span>
+            </div>
+            <span class="text-[10px] text-gray-400 mono">k8xYm2nP9qR</span>
+          </div>
+
+          <h4 class="text-sm font-bold text-gray-900 leading-tight">Why I Still Write My Own Blog Posts in the Age of AI</h4>
+
+          <div class="text-center py-4">
+            <div class="text-4xl font-bold text-gray-900">12%</div>
+            <div class="text-xs text-gray-500 mt-0.5">AI-assisted</div>
+          </div>
+
+          <!-- Mobile stacked bar -->
+          <div class="flex h-3 rounded-full overflow-hidden bg-gray-100">
+            <div class="bg-gray-700 rounded-l-full" style="width:85%"></div>
+            <div class="bg-violet-500" style="width:12%"></div>
+            <div class="bg-orange-400 rounded-r-full" style="width:3%"></div>
+          </div>
+          <div class="flex items-center justify-between text-[10px] text-gray-400">
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-sm bg-gray-700"></span> 85% written</span>
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-sm bg-violet-500"></span> 12% AI</span>
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-sm bg-orange-400"></span> 3% pasted</span>
+          </div>
+          <p class="text-xs text-gray-500">~340 of 2,847 words were AI-generated or AI-rewritten.</p>
+
+          <div class="grid grid-cols-3 gap-2">
+            <div class="text-center p-2 bg-gray-50 rounded-lg">
+              <div class="text-sm font-bold text-gray-800">8</div>
+              <div class="text-[10px] text-gray-400">AI chats</div>
+            </div>
+            <div class="text-center p-2 bg-gray-50 rounded-lg">
+              <div class="text-sm font-bold text-gray-800">3</div>
+              <div class="text-[10px] text-gray-400">sessions</div>
+            </div>
+            <div class="text-center p-2 bg-gray-50 rounded-lg">
+              <div class="text-sm font-bold text-gray-800">2h 14m</div>
+              <div class="text-[10px] text-gray-400">active</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider max-w-5xl mx-auto"></div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CHANGE 3: KEEP ORIGINAL AS FIRST-CLASS CHOICE
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="change-3" class="py-16">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="flex items-start gap-4 mb-10">
+      <div class="w-10 h-10 rounded-xl bg-prov-600 text-white flex items-center justify-center font-bold text-lg flex-shrink-0">3</div>
+      <div>
+        <h2 class="text-xl font-bold">Inline AI: "Keep Original" as a First-Class Choice</h2>
+        <p class="text-gray-500 text-sm mt-1 max-w-xl">Shift from "accept/reject this AI change" to "choose among options including your own text." The writer's original is always a valid choice, not just the absence of action.</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-8">
+      <!-- BEFORE -->
+      <div>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md label-before text-xs font-medium mb-4">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          Before — Accept/Reject binary
+        </div>
+        <div class="bg-white rounded-xl border border-gray-200 p-6">
+          <div class="text-sm leading-6 text-gray-800 space-y-3">
+            <p>In a world where anyone can generate a passable blog post in seconds, I find myself returning to the keyboard with renewed purpose.</p>
+
+            <div class="border-l-4 border-violet-400 bg-violet-50/50 rounded-r-lg p-4 space-y-3">
+              <div class="flex items-center gap-2 text-xs">
+                <span class="px-1.5 py-0.5 bg-violet-100 text-violet-700 rounded font-medium">AI Suggestion</span>
+                <span class="text-gray-400">Simplify</span>
+              </div>
+              <p class="text-sm leading-6">
+                <span class="diff-remove">Writing forces you to confront the gaps in your understanding. When you sit down to explain something, you quickly discover what you don't actually know.</span>
+                <span class="diff-add">Writing reveals what you don't actually understand. The moment you try to explain something clearly, you discover where your knowledge falls short.</span>
+              </p>
+              <div class="flex items-center gap-2 pt-1">
+                <button class="px-3 py-1.5 text-xs font-medium bg-violet-600 text-white rounded-md">Accept</button>
+                <button class="px-3 py-1.5 text-xs font-medium bg-white border border-gray-200 text-gray-600 rounded-md">Reject</button>
+                <button class="px-3 py-1.5 text-xs text-gray-500">Refine...</button>
+              </div>
+            </div>
+          </div>
+          <p class="text-xs text-red-600 mt-4 flex items-start gap-1.5">
+            <svg class="w-3.5 h-3.5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+            <span>Accept/Reject frames AI as the default. Original text isn't visible as a choice. Diff shows only the AI option.</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- AFTER -->
+      <div>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md label-after text-xs font-medium mb-4">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          After — Choose among equals (including original)
+        </div>
+        <div class="bg-white rounded-xl border border-gray-200 p-6">
+          <div class="text-sm leading-6 text-gray-800 space-y-3">
+            <p>In a world where anyone can generate a passable blog post in seconds, I find myself returning to the keyboard with renewed purpose.</p>
+
+            <div class="border border-gray-200 rounded-xl overflow-hidden">
+              <!-- Header -->
+              <div class="px-4 py-2.5 bg-gray-50 flex items-center justify-between border-b border-gray-200">
+                <div class="flex items-center gap-2 text-xs">
+                  <span class="px-1.5 py-0.5 bg-violet-100 text-violet-700 rounded font-medium">Simplify</span>
+                  <span class="text-gray-400">·</span>
+                  <span class="text-gray-400">Selection · 2 sentences</span>
+                </div>
+                <button class="text-xs text-gray-400 hover:text-gray-600">Refine prompt...</button>
+              </div>
+
+              <!-- Options -->
+              <div class="p-3 space-y-2">
+                <!-- Original -->
+                <div class="alt-card border-2 border-prov-500 rounded-lg p-3 bg-prov-50/30 cursor-pointer relative">
+                  <div class="absolute -top-0.5 -right-0.5">
+                    <div class="w-5 h-5 bg-prov-600 rounded-full flex items-center justify-center">
+                      <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2 mb-1.5">
+                    <span class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Your original</span>
+                  </div>
+                  <p class="text-sm leading-relaxed text-gray-700">Writing forces you to confront the gaps in your understanding. When you sit down to explain something, you quickly discover what you don't actually know.</p>
+                </div>
+
+                <!-- Suggestion 1 -->
+                <div class="alt-card border border-gray-200 rounded-lg p-3 hover:border-violet-300 cursor-pointer">
+                  <div class="flex items-center gap-2 mb-1.5">
+                    <span class="text-[10px] font-semibold text-violet-600 uppercase tracking-wider">Suggestion 1</span>
+                    <span class="text-[10px] text-gray-400">· shorter by 14 words</span>
+                  </div>
+                  <p class="text-sm leading-relaxed text-gray-700">Writing reveals what you don't actually understand. The moment you try to explain something clearly, you discover where your knowledge falls short.</p>
+                </div>
+
+                <!-- Suggestion 2 -->
+                <div class="alt-card border border-gray-200 rounded-lg p-3 hover:border-violet-300 cursor-pointer">
+                  <div class="flex items-center gap-2 mb-1.5">
+                    <span class="text-[10px] font-semibold text-violet-600 uppercase tracking-wider">Suggestion 2</span>
+                    <span class="text-[10px] text-gray-400">· shorter by 8 words</span>
+                  </div>
+                  <p class="text-sm leading-relaxed text-gray-700">Writing exposes gaps in your thinking. Explaining an idea forces you to reckon with what you truly know versus what you only think you know.</p>
+                </div>
+              </div>
+
+              <!-- Footer -->
+              <div class="px-4 py-2.5 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
+                <div class="flex items-center gap-1.5 text-xs text-gray-400">
+                  <span class="mono">↑↓</span> navigate
+                  <span class="text-gray-300 mx-1">·</span>
+                  <span class="mono">Enter</span> confirm
+                  <span class="text-gray-300 mx-1">·</span>
+                  <span class="mono">Esc</span> dismiss
+                </div>
+                <button class="px-3 py-1.5 text-xs font-medium bg-prov-600 text-white rounded-md hover:bg-prov-700 transition-colors">Confirm Selection</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider max-w-5xl mx-auto"></div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CHANGE 4: CO-LOCATED METHODOLOGY
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="change-4" class="py-16">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="flex items-start gap-4 mb-10">
+      <div class="w-10 h-10 rounded-xl bg-prov-600 text-white flex items-center justify-center font-bold text-lg flex-shrink-0">4</div>
+      <div>
+        <h2 class="text-xl font-bold">Co-Locate Methodology Next to the Number</h2>
+        <p class="text-gray-500 text-sm mt-1 max-w-xl">When the definition is in a separate collapsed section below the fold, most viewers never see it. The meaning of "12% AI" must be immediately adjacent via an inline tooltip.</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-8">
+      <!-- BEFORE -->
+      <div>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md label-before text-xs font-medium mb-4">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          Before — Methodology buried below the fold
+        </div>
+        <div class="bg-white rounded-xl border border-gray-200 p-6">
+          <!-- Hero stat, no explanation -->
+          <div class="text-center py-5 mb-4 bg-gradient-to-br from-emerald-50 to-emerald-100/50 rounded-xl border border-emerald-200/50">
+            <div class="text-5xl font-bold text-emerald-700">12%</div>
+            <div class="text-sm text-emerald-600 mt-1">AI-Generated</div>
+          </div>
+          <!-- Spacer representing content between -->
+          <div class="space-y-3 mb-3">
+            <div class="h-3 bg-gray-100 rounded w-full"></div>
+            <div class="h-3 bg-gray-100 rounded w-4/5"></div>
+            <div class="h-3 bg-gray-100 rounded w-full"></div>
+            <div class="h-3 bg-gray-100 rounded w-3/4"></div>
+          </div>
+          <div class="text-[10px] text-gray-300 text-center mb-3">↕ content between stat and explanation</div>
+          <div class="space-y-3 mb-4">
+            <div class="h-3 bg-gray-100 rounded w-full"></div>
+            <div class="h-3 bg-gray-100 rounded w-5/6"></div>
+          </div>
+          <!-- Methodology far below -->
+          <details class="border border-gray-200 rounded-lg">
+            <summary class="px-4 py-3 text-sm font-medium text-gray-700 cursor-pointer hover:bg-gray-50">How the AI percentage is calculated</summary>
+            <div class="px-4 pb-3 text-xs text-gray-500 border-t border-gray-100 pt-2">
+              The AI-generated percentage represents the proportion of final document characters that originated from accepted AI suggestions...
+            </div>
+          </details>
+          <p class="text-xs text-red-600 mt-4 flex items-start gap-1.5">
+            <svg class="w-3.5 h-3.5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+            <span>Most viewers see the number, form an opinion, and never scroll to the methodology.</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- AFTER -->
+      <div>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md label-after text-xs font-medium mb-4">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          After — Definition inline, immediately accessible
+        </div>
+        <div class="bg-white rounded-xl border border-gray-200 p-6">
+          <!-- Hero with co-located info -->
+          <div class="mb-6">
+            <div class="flex items-baseline gap-3 mb-2">
+              <span class="text-4xl font-bold text-gray-900">12%</span>
+              <span class="text-sm text-gray-500">AI-assisted</span>
+
+              <!-- Inline info trigger -->
+              <span class="info-tooltip" tabindex="0">
+                <span class="inline-flex items-center gap-1 text-xs text-prov-600 hover:text-prov-800 cursor-help border-b border-dashed border-prov-300">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  How is this calculated?
+                </span>
+                <span class="tooltip-content">
+                  <span class="bg-white border border-gray-200 rounded-xl shadow-xl p-4 block text-left">
+                    <span class="text-xs font-semibold text-gray-800 block mb-2">About this percentage</span>
+                    <span class="text-xs text-gray-600 leading-relaxed block mb-2">Represents the proportion of final text that originated from accepted AI suggestions and remained substantially unchanged (&lt;20% modification).</span>
+                    <span class="text-xs text-gray-600 leading-relaxed block mb-3">Text typed by the author, or AI text modified by more than 20%, is classified as human-written.</span>
+                    <span class="block border-t border-gray-100 pt-2">
+                      <span class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block mb-1">Does not account for</span>
+                      <span class="text-[10px] text-gray-400 leading-relaxed block">AI used outside this tool, pre-writing research, or ideas from AI conversation typed manually.</span>
+                    </span>
+                  </span>
+                </span>
+              </span>
+            </div>
+
+            <!-- Three-way bar -->
+            <div class="flex h-3.5 rounded-full overflow-hidden bg-gray-100 mb-2">
+              <div class="bg-gray-700 rounded-l-full" style="width: 85%"></div>
+              <div class="bg-violet-500" style="width: 12%"></div>
+              <div class="bg-orange-400 rounded-r-full" style="width: 3%"></div>
+            </div>
+            <div class="flex items-center gap-4 text-xs text-gray-500 mb-3">
+              <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-sm bg-gray-700"></span> 85% written</span>
+              <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-sm bg-violet-500"></span> 12% AI</span>
+              <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-sm bg-orange-400"></span> 3% pasted</span>
+            </div>
+
+            <p class="text-sm text-gray-600">Of 2,847 words, ~340 were AI-generated or AI-rewritten, ~87 pasted from external sources.</p>
+          </div>
+
+          <!-- Secondary stats -->
+          <div class="flex items-center gap-5 pt-4 border-t border-gray-100 mb-6">
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-700 font-medium">8</span>
+              <span class="text-xs text-gray-400">AI interactions</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-700 font-medium">3</span>
+              <span class="text-xs text-gray-400">sessions</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-700 font-medium">2h 14m</span>
+              <span class="text-xs text-gray-400">active</span>
+            </div>
+          </div>
+
+          <!-- Rest of page -->
+          <div class="space-y-3">
+            <div class="h-3 bg-gray-100 rounded w-full"></div>
+            <div class="h-3 bg-gray-100 rounded w-4/5"></div>
+            <div class="h-3 bg-gray-100 rounded w-full"></div>
+          </div>
+
+          <p class="text-xs text-prov-700 mt-5 flex items-start gap-1.5">
+            <svg class="w-3.5 h-3.5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span>Hover "How is this calculated?" to see the full definition. Even in screenshots, the link text signals that context exists.</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ========= SUMMARY ========= -->
+<section class="py-16 bg-gray-900 text-white mt-16">
+  <div class="max-w-4xl mx-auto px-6 text-center">
+    <h2 class="text-2xl font-bold mb-3">Summary</h2>
+    <p class="text-gray-400 text-sm mb-10 max-w-lg mx-auto">Four changes, one principle: Provenance records the process without judging it.</p>
+
+    <div class="grid grid-cols-4 gap-4 text-left">
+      <div class="bg-gray-800/50 rounded-xl p-4 border border-gray-700/50">
+        <div class="text-prov-400 font-bold text-lg mb-2">01</div>
+        <div class="text-sm font-medium mb-1">Neutral badges</div>
+        <div class="text-xs text-gray-400 leading-relaxed">Single brand color + origin color mini-bar. No traffic-light judgment.</div>
+      </div>
+      <div class="bg-gray-800/50 rounded-xl p-4 border border-gray-700/50">
+        <div class="text-prov-400 font-bold text-lg mb-2">02</div>
+        <div class="text-sm font-medium mb-1">Three-way bar</div>
+        <div class="text-xs text-gray-400 leading-relaxed">Human + AI + paste as a stacked bar with plain-language summary.</div>
+      </div>
+      <div class="bg-gray-800/50 rounded-xl p-4 border border-gray-700/50">
+        <div class="text-prov-400 font-bold text-lg mb-2">03</div>
+        <div class="text-sm font-medium mb-1">Choose, don't accept</div>
+        <div class="text-xs text-gray-400 leading-relaxed">Original text as first-class option alongside AI alternatives.</div>
+      </div>
+      <div class="bg-gray-800/50 rounded-xl p-4 border border-gray-700/50">
+        <div class="text-prov-400 font-bold text-lg mb-2">04</div>
+        <div class="text-sm font-medium mb-1">Inline methodology</div>
+        <div class="text-xs text-gray-400 leading-relaxed">Definition co-located with the number via hover tooltip.</div>
+      </div>
+    </div>
+
+    <!-- Note about Write/Review -->
+    <div class="mt-10 bg-gray-800/30 rounded-lg p-4 text-left max-w-2xl mx-auto border border-gray-700/30">
+      <p class="text-xs text-gray-400 leading-relaxed">
+        <span class="text-gray-300 font-medium">On Write/Review mode (originally Change 4):</span> Downgraded. Since Provenance isn't the publishing platform, persistent editor origin marks serve as self-awareness tooling with no functional output. The stronger version: origin marks surface during the <span class="text-gray-300">pre-badge review flow</span> (which the existing badge preview mockup already handles) rather than as a persistent editor toggle.
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer class="py-6 text-center text-xs text-gray-400">
+  Provenance High-Impact Modifications v2 · Feb 2026
+</footer>
+
+</body>
+</html>
