@@ -20,7 +20,7 @@ interface SidebarProps {
 
 export function Sidebar({ activeFilter, onFilterChange, onSettingsClick }: SidebarProps) {
   return (
-    <div className="flex w-56 flex-col border-r border-gray-100 bg-gray-50/50 p-4" role="navigation" aria-label="Sidebar">
+    <div className="flex w-56 flex-col border-r border-border bg-muted/50 p-4" role="navigation" aria-label="Sidebar">
       <div className="mb-4 flex items-center gap-2 px-3">
         <span className="text-lg font-bold text-provenance-700">◆</span>
         <span className="text-sm font-semibold text-provenance-900">Provenance</span>
@@ -37,7 +37,7 @@ export function Sidebar({ activeFilter, onFilterChange, onSettingsClick }: Sideb
                 "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors duration-150",
                 isActive
                   ? "bg-provenance-50 font-medium text-provenance-700"
-                  : "text-gray-600 hover:bg-gray-100"
+                  : "text-muted-foreground hover:bg-accent"
               )}
             >
               <Icon className="h-4 w-4" />
@@ -50,7 +50,7 @@ export function Sidebar({ activeFilter, onFilterChange, onSettingsClick }: Sideb
       <div className="mt-auto">
         <button
           onClick={onSettingsClick}
-          className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 transition-colors duration-150"
+          className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-accent transition-colors duration-150"
         >
           <Settings className="h-4 w-4" />
           Settings

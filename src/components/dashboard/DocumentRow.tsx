@@ -58,7 +58,7 @@ export function DocumentRow({
       tabIndex={0}
       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onClick?.(); }}
       className={cn(
-        "flex w-full items-start gap-3 border-b border-gray-100 px-4 py-3 text-left hover:bg-gray-50 cursor-pointer transition-colors duration-150",
+        "flex w-full items-start gap-3 border-b border-border px-4 py-3 text-left hover:bg-muted cursor-pointer transition-colors duration-150",
         isArchived && "opacity-60"
       )}
     >
@@ -66,7 +66,7 @@ export function DocumentRow({
       <span
         className={cn(
           "mt-1.5 inline-block h-2.5 w-2.5 shrink-0 rounded-full",
-          hasBadge ? "bg-emerald-500" : isArchived ? "bg-gray-200" : "bg-gray-300"
+          hasBadge ? "bg-emerald-500" : isArchived ? "bg-muted-foreground/30" : "bg-muted-foreground/50"
         )}
       />
 
@@ -74,7 +74,7 @@ export function DocumentRow({
         <div className="flex items-center justify-between gap-2">
           <span className="truncate text-sm font-medium">{title || "Untitled"}</span>
           <div className="flex shrink-0 items-center gap-2">
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-muted-foreground">
               {relativeDate(updatedAt)}
             </span>
             {onDelete && (
@@ -83,7 +83,7 @@ export function DocumentRow({
                   e.stopPropagation();
                   onDelete(id);
                 }}
-                className="rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-600 transition-colors duration-150"
+                className="rounded p-1 text-muted-foreground hover:bg-red-50 hover:text-red-600 transition-colors duration-150"
                 aria-label={`Delete ${title || "Untitled"}`}
               >
                 <Trash2 className="h-3.5 w-3.5" />
@@ -93,17 +93,17 @@ export function DocumentRow({
         </div>
 
         {preview && (
-          <p className="mt-0.5 truncate text-xs text-gray-500">{preview}</p>
+          <p className="mt-0.5 truncate text-xs text-muted-foreground">{preview}</p>
         )}
 
         <div className="mt-1 flex items-center gap-2">
           {aiPercentage != null && (
-            <span className={`rounded px-1.5 py-0.5 text-[11px] font-medium font-mono tabular-nums ${getAIBadgeColor(aiPercentage)}`}>
+            <span className={`rounded px-1.5 py-0.5 text-xs font-medium font-mono tabular-nums ${getAIBadgeColor(aiPercentage)}`}>
               {aiPercentage}% AI
             </span>
           )}
           {wordCount != null && (
-            <span className="text-[11px] text-gray-500 font-mono tabular-nums">
+            <span className="text-xs text-muted-foreground font-mono tabular-nums">
               {wordCount.toLocaleString()} words
             </span>
           )}

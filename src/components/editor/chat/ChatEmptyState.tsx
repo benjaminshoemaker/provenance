@@ -28,7 +28,7 @@ export function ChatEmptyState({ onSuggestionClick }: ChatEmptyStateProps) {
       </h3>
 
       {/* Description */}
-      <p className="max-w-[280px] text-[13px] leading-snug text-muted-foreground">
+      <p className="max-w-[280px] text-sm leading-snug text-muted-foreground">
         Get critique, explore ideas, or research topics. Your full document is
         loaded as context.
       </p>
@@ -43,7 +43,7 @@ export function ChatEmptyState({ onSuggestionClick }: ChatEmptyStateProps) {
             className="flex items-center gap-2 rounded-lg border border-border bg-white px-3 py-2 text-left transition-colors hover:border-ring hover:bg-muted"
           >
             <s.icon className="h-4 w-4 shrink-0 text-muted-foreground" />
-            <span className="text-[13px] font-medium text-foreground">
+            <span className="text-sm font-medium text-foreground">
               {s.text}
             </span>
           </button>

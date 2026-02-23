@@ -123,7 +123,7 @@ export default async function VerifyPage({
         <Link href="/" className="flex items-center justify-center gap-2">
           <span className="text-base font-bold text-provenance-700">◆</span>
           <span className="text-xs font-medium text-provenance-700">Provenance</span>
-          <span className="font-mono text-[11px] text-muted-foreground">{id.slice(0, 8)}...</span>
+          <span className="font-mono text-xs text-muted-foreground">{id.slice(0, 8)}...</span>
         </Link>
       </nav>
 

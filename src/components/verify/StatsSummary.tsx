@@ -28,10 +28,10 @@ export function StatsSummary({ stats }: StatsSummaryProps) {
     <div data-testid="stats-summary">
       {/* Headline stat — no color judgment */}
       <div className="mb-4 text-center" data-testid="hero-stat">
-        <span className="text-4xl font-bold tabular-nums text-gray-900 sm:text-5xl">
+        <span className="text-4xl font-bold tabular-nums text-foreground sm:text-5xl">
           {stats.ai_percentage}%
         </span>
-        <span className="ml-2 text-lg text-gray-500">AI-assisted</span>
+        <span className="ml-2 text-lg text-muted-foreground">AI-assisted</span>
 
         {/* Desktop: hover tooltip */}
         <span className="relative ml-2 hidden sm:inline-block" data-testid="methodology-tooltip">
@@ -43,13 +43,13 @@ export function StatsSummary({ stats }: StatsSummaryProps) {
               How is this calculated?
             </span>
             <div className="pointer-events-none absolute left-1/2 top-full z-20 mt-2 w-80 -translate-x-1/2 rounded-lg border bg-white p-4 text-left shadow-lg opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
-              <div className="mb-2 text-sm font-semibold text-gray-900">About this percentage</div>
-              <p className="mb-3 text-xs leading-relaxed text-gray-600">
+              <div className="mb-2 text-sm font-semibold text-foreground">About this percentage</div>
+              <p className="mb-3 text-xs leading-relaxed text-muted-foreground">
                 Represents the proportion of final text that originated from accepted AI suggestions
                 and remained substantially unchanged (&lt;20% modification). Text typed by the author,
                 or AI text modified by more than 20%, is classified as human-written.
               </p>
-              <div className="border-t pt-2 text-[11px] leading-relaxed text-gray-500">
+              <div className="border-t pt-2 text-xs leading-relaxed text-muted-foreground">
                 Does not account for: AI used outside this tool, pre-writing research,
                 or ideas from AI conversation typed manually.
               </div>
@@ -68,14 +68,14 @@ export function StatsSummary({ stats }: StatsSummaryProps) {
                 How is this calculated?
               </span>
             </summary>
-            <div className="mt-2 rounded-lg border bg-gray-50 p-3">
-              <div className="mb-1 text-xs font-semibold text-gray-900">About this percentage</div>
-              <p className="mb-2 text-xs leading-relaxed text-gray-600">
+            <div className="mt-2 rounded-lg border bg-muted p-3">
+              <div className="mb-1 text-xs font-semibold text-foreground">About this percentage</div>
+              <p className="mb-2 text-xs leading-relaxed text-muted-foreground">
                 Represents the proportion of final text that originated from accepted AI suggestions
                 and remained substantially unchanged (&lt;20% modification). Text typed by the author,
                 or AI text modified by more than 20%, is classified as human-written.
               </p>
-              <div className="border-t pt-2 text-[11px] leading-relaxed text-gray-500">
+              <div className="border-t pt-2 text-xs leading-relaxed text-muted-foreground">
                 Does not account for: AI used outside this tool, pre-writing research,
                 or ideas from AI conversation typed manually.
               </div>
@@ -86,7 +86,7 @@ export function StatsSummary({ stats }: StatsSummaryProps) {
 
       {/* Three-way stacked bar */}
       <div className="mb-3" data-testid="stacked-bar">
-        <div className="flex h-4 overflow-hidden rounded-full bg-gray-100">
+        <div className="flex h-4 overflow-hidden rounded-full bg-secondary">
           {humanPercentage > 0 && (
             <div
               className="bg-gray-700 first:rounded-l-full last:rounded-r-full"
@@ -109,7 +109,7 @@ export function StatsSummary({ stats }: StatsSummaryProps) {
       </div>
 
       {/* Legend */}
-      <div className="mb-4 flex flex-wrap justify-center gap-x-6 gap-y-1 text-sm text-gray-600">
+      <div className="mb-4 flex flex-wrap justify-center gap-x-6 gap-y-1 text-sm text-muted-foreground">
         <span className="flex items-center gap-1.5">
           <span className="inline-block h-2.5 w-2.5 rounded-full bg-gray-700" />
           Human-written · {humanPercentage}%
@@ -125,28 +125,28 @@ export function StatsSummary({ stats }: StatsSummaryProps) {
       </div>
 
       {/* Plain-language sentence */}
-      <p className="mb-3 text-center text-sm text-gray-500" data-testid="plain-language">
+      <p className="mb-3 text-center text-sm text-muted-foreground" data-testid="plain-language">
         Of {totalWords.toLocaleString()} words: ~{humanWords.toLocaleString()} written by the author,
         ~{aiWords.toLocaleString()} generated or rewritten by AI
         {pasteWords > 0 && <>, ~{pasteWords.toLocaleString()} pasted from external sources</>}.
       </p>
 
       {/* Secondary stats — compact horizontal row */}
-      <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-gray-500" data-testid="secondary-stats">
+      <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-muted-foreground" data-testid="secondary-stats">
         <span className="inline-flex items-center gap-1.5">
-          <Sparkles className="h-4 w-4 text-gray-400" aria-hidden="true" />
+          <Sparkles className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
           {stats.interaction_count} AI interaction{stats.interaction_count !== 1 ? "s" : ""}
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <Clock3 className="h-4 w-4 text-gray-400" aria-hidden="true" />
+          <Clock3 className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
           {stats.session_count} session{stats.session_count !== 1 ? "s" : ""}
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <Timer className="h-4 w-4 text-gray-400" aria-hidden="true" />
+          <Timer className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
           {timeDisplay} active time
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <FileText className="h-4 w-4 text-gray-400" aria-hidden="true" />
+          <FileText className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
           {totalWords.toLocaleString()} words
         </span>
       </div>

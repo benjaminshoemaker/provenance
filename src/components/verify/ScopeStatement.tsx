@@ -1,7 +1,7 @@
 export function ScopeStatement() {
   return (
     <div className="space-y-3" data-testid="scope-statement">
-      <details className="rounded-lg border border-gray-200">
+      <details className="rounded-lg border border-border">
         <summary className="cursor-pointer px-4 py-3 text-sm font-semibold">
           What this badge certifies
         </summary>
@@ -13,7 +13,7 @@ export function ScopeStatement() {
         </div>
       </details>
 
-      <details className="rounded-lg border border-gray-200">
+      <details className="rounded-lg border border-border">
         <summary className="cursor-pointer px-4 py-3 text-sm font-semibold">
           How the AI percentage is calculated
         </summary>

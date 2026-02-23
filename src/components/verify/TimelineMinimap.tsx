@@ -85,13 +85,13 @@ export function TimelineMinimap({ interactions, pasteEvents, sessions }: Timelin
       </div>
 
       {/* Date labels */}
-      <div className="mt-1 flex justify-between text-[11px] text-gray-500">
+      <div className="mt-1 flex justify-between text-xs text-muted-foreground">
         <span>{startDate}</span>
         <span>{endDate}</span>
       </div>
 
       {/* Legend */}
-      <div className="mt-2 flex gap-4 text-xs text-gray-500">
+      <div className="mt-2 flex gap-4 text-xs text-muted-foreground">
         <span className="flex items-center gap-1">
           <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" />
           Writing

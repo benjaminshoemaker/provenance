@@ -32,7 +32,7 @@ export default async function Home() {
       {/* How it Works */}
       <section className="border-t bg-muted/30 px-4 py-16">
         <div className="mx-auto max-w-4xl">
-          <h2 className="mb-12 text-center text-2xl font-bold tracking-tight">
+          <h2 className="mb-12 text-center text-2xl font-semibold tracking-tight">
             How it Works
           </h2>
 

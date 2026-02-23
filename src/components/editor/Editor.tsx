@@ -454,7 +454,10 @@ export function Editor({
         ref={scrollAreaRef}
         className="flex-1 cursor-text overflow-auto"
         onClick={(e) => {
-          if (e.target === scrollAreaRef.current || e.target === proseAreaRef.current) {
+          if (
+            (e.target === scrollAreaRef.current || e.target === proseAreaRef.current) &&
+            !editor?.state.selection.content().size
+          ) {
             editor?.chain().focus("end").run();
           }
         }}
@@ -493,6 +496,22 @@ export function Editor({
         >
           <Sparkle className="h-4 w-4" />
         </button>
+      )}
+
+      {showInlineAI && selection && editor && (
+        <InlineAI
+          editor={editor}
+          documentId={documentId}
+          provider={provider}
+          model={model}
+          selectedText={selection.text}
+          selectionFrom={selection.from}
+          selectionTo={selection.to}
+          anchorTop={triggerPosition.top}
+          anchorRight={triggerPosition.right}
+          onDismiss={handleDismissInlineAI}
+          onAIResponse={handleAIResponse}
+        />
       )}
     </main>
   );
@@ -569,22 +588,6 @@ export function Editor({
         </div>
       )}
 
-      {/* Modals render outside the panel group so they overlay correctly */}
-      {showInlineAI && selection && editor && (
-        <InlineAI
-          editor={editor}
-          documentId={documentId}
-          provider={provider}
-          model={model}
-          selectedText={selection.text}
-          selectionFrom={selection.from}
-          selectionTo={selection.to}
-          anchorTop={triggerPosition.top}
-          anchorRight={triggerPosition.right}
-          onDismiss={handleDismissInlineAI}
-          onAIResponse={handleAIResponse}
-        />
-      )}
       <TimelineModal
         documentId={documentId}
         isOpen={showTimeline}

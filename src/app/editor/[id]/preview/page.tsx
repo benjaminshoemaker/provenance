@@ -187,7 +187,7 @@ function PreviewContent({ params }: PreviewPageProps) {
         </details>
       )}
 
-      <details className="mb-6 rounded-lg border border-gray-200">
+      <details className="mb-6 rounded-lg border border-border">
         <summary className="cursor-pointer px-4 py-3 text-sm font-semibold">
           Document Text
         </summary>
@@ -200,7 +200,7 @@ function PreviewContent({ params }: PreviewPageProps) {
       </details>
 
       {/* Permanence note */}
-      <div className="mb-6 rounded-lg bg-gray-50 p-3 text-xs text-gray-500">
+      <div className="mb-6 rounded-lg bg-muted p-3 text-xs text-muted-foreground">
         Once generated, this badge and its audit trail are permanent and cannot be modified or deleted.
         The verification page will be publicly accessible via a unique URL.
       </div>
@@ -221,7 +221,7 @@ function PreviewContent({ params }: PreviewPageProps) {
               <label className="mb-1 block text-xs font-medium text-green-800 dark:text-green-200">
                 HTML Embed
               </label>
-              <pre className="overflow-x-auto rounded bg-white p-2 text-xs dark:bg-gray-900">
+              <pre className="overflow-x-auto rounded bg-white p-2 text-xs dark:bg-secondary">
                 {badgeResult.badgeHtml}
               </pre>
             </div>
@@ -229,7 +229,7 @@ function PreviewContent({ params }: PreviewPageProps) {
               <label className="mb-1 block text-xs font-medium text-green-800 dark:text-green-200">
                 Markdown Embed
               </label>
-              <pre className="overflow-x-auto rounded bg-white p-2 text-xs dark:bg-gray-900">
+              <pre className="overflow-x-auto rounded bg-white p-2 text-xs dark:bg-secondary">
                 {badgeResult.badgeMarkdown}
               </pre>
             </div>

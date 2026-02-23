@@ -32,7 +32,7 @@ describe("DocumentRow", () => {
   it("should show gray dot for draft documents", () => {
     const { container } = render(<DocumentRow {...defaultProps} hasBadge={false} />);
 
-    const dot = container.querySelector(".bg-gray-300");
+    const dot = container.querySelector('[class*="bg-muted-foreground/50"]');
     expect(dot).toBeTruthy();
   });
 
@@ -66,7 +66,7 @@ describe("DocumentRow", () => {
       <DocumentRow {...defaultProps} hasBadge={false} isArchived={true} />
     );
 
-    const dot = container.querySelector(".bg-gray-200");
+    const dot = container.querySelector('[class*="bg-muted-foreground/30"]');
     expect(dot).toBeTruthy();
   });
 });

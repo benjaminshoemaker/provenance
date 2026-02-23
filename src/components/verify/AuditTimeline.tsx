@@ -95,10 +95,10 @@ export function AuditTimeline(props: AuditTimelineProps) {
   }
 
   const filterChips: { id: FilterType; label: string; count: number; dotColor: string }[] = [
-    { id: "all", label: "All", count: counts.ai_interaction + counts.paste + counts.revision, dotColor: "bg-gray-400" },
+    { id: "all", label: "All", count: counts.ai_interaction + counts.paste + counts.revision, dotColor: "bg-muted-foreground" },
     { id: "ai_interaction", label: "AI", count: counts.ai_interaction, dotColor: "bg-violet-400" },
     { id: "paste", label: "Paste", count: counts.paste, dotColor: "bg-orange-400" },
-    { id: "revision", label: "Revisions", count: counts.revision, dotColor: "bg-gray-300" },
+    { id: "revision", label: "Revisions", count: counts.revision, dotColor: "bg-muted-foreground/50" },
   ];
 
   return (
@@ -120,13 +120,13 @@ export function AuditTimeline(props: AuditTimelineProps) {
             onClick={() => setActiveFilter(chip.id)}
             className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-colors duration-150 ${
               activeFilter === chip.id
-                ? "bg-gray-200 text-gray-900"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                ? "bg-secondary text-foreground"
+                : "bg-secondary/50 text-muted-foreground hover:bg-secondary"
             }`}
           >
             <span className={`inline-block h-2 w-2 rounded-full ${chip.dotColor}`} />
             {chip.label}
-            <span className="font-mono tabular-nums text-gray-500">({chip.count})</span>
+            <span className="font-mono tabular-nums text-muted-foreground">({chip.count})</span>
           </button>
         ))}
       </div>
@@ -181,9 +181,9 @@ function DaySection({
     <div>
       {/* Day separator */}
       <div className="flex items-center gap-3 py-2">
-        <div className="h-px flex-1 bg-gray-200" />
-        <span className="text-xs font-medium text-gray-500">{day.label}</span>
-        <div className="h-px flex-1 bg-gray-200" />
+        <div className="h-px flex-1 bg-border" />
+        <span className="text-xs font-medium text-muted-foreground">{day.label}</span>
+        <div className="h-px flex-1 bg-border" />
       </div>
 
       {/* Sessions */}
@@ -201,7 +201,7 @@ function DaySection({
           return (
             <div key={si} className="pl-4">
               {/* Session header */}
-              <div className="mb-2 flex items-center gap-2 text-xs text-gray-500">
+              <div className="mb-2 flex items-center gap-2 text-xs text-muted-foreground">
                 <Play className="h-3 w-3 text-emerald-500" />
                 <span className="font-medium">
                   {formatTime(session.startTime)}
@@ -210,7 +210,7 @@ function DaySection({
               </div>
 
               {/* Timeline rail */}
-              <div className="relative border-l-2 border-gray-200 pl-6 space-y-2">
+              <div className="relative border-l-2 border-border pl-6 space-y-2">
                 {clustered.map((item, ei) => {
                   const key = `${day.date}-${si}-${ei}`;
 
@@ -266,15 +266,15 @@ function EventRow({
             className="flex w-full items-center justify-between text-left text-sm transition-colors duration-150"
           >
             <div className="flex items-center gap-2">
-              <span className="rounded bg-violet-100 px-1.5 py-0.5 text-[11px] font-medium text-violet-700">
+              <span className="rounded bg-violet-100 px-1.5 py-0.5 text-xs font-medium text-violet-700">
                 {String(event.data.mode)}
               </span>
-              <span className="truncate text-gray-700">
+              <span className="truncate text-foreground">
                 {String(event.data.prompt).slice(0, 60)}
                 {String(event.data.prompt).length > 60 ? "..." : ""}
               </span>
             </div>
-            <span className="ml-2 shrink-0 text-xs text-gray-500">
+            <span className="ml-2 shrink-0 text-xs text-muted-foreground">
               {formatTime(event.timestamp)}
             </span>
           </button>
@@ -317,13 +317,13 @@ function EventRow({
       <div className="relative flex items-center gap-3 py-1">
         {/* Dot */}
         <div className="absolute -left-[31px] top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full bg-orange-400" />
-        <span className="rounded bg-orange-100 px-1.5 py-0.5 text-[11px] font-medium text-orange-700">
+        <span className="rounded bg-orange-100 px-1.5 py-0.5 text-xs font-medium text-orange-700">
           paste
         </span>
-        <span className="text-sm text-gray-600">
+        <span className="text-sm text-muted-foreground">
           {String(event.data.sourceType)} — {String(event.data.characterCount)} chars
         </span>
-        <span className="ml-auto text-xs text-gray-500">
+        <span className="ml-auto text-xs text-muted-foreground">
           {formatTime(event.timestamp)}
         </span>
       </div>
@@ -333,11 +333,11 @@ function EventRow({
   // Revision (individual)
   return (
     <div className="relative flex items-center gap-3 py-0.5">
-      <div className="absolute -left-[31px] top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full bg-gray-300" />
-      <span className="text-xs text-gray-500">
+      <div className="absolute -left-[31px] top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full bg-muted-foreground/50" />
+      <span className="text-xs text-muted-foreground">
         Revision saved — {String(event.data.trigger)}
       </span>
-      <span className="ml-auto text-xs text-gray-500">
+      <span className="ml-auto text-xs text-muted-foreground">
         {formatTime(event.timestamp)}
       </span>
     </div>
@@ -347,8 +347,8 @@ function EventRow({
 function RevisionClusterRow({ cluster }: { cluster: RevisionCluster }) {
   return (
     <div className="relative flex items-center gap-3 py-0.5">
-      <div className="absolute -left-[31px] top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full bg-gray-300" />
-      <span className="text-xs text-gray-500">
+      <div className="absolute -left-[31px] top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full bg-muted-foreground/50" />
+      <span className="text-xs text-muted-foreground">
         {cluster.count} revisions over {cluster.durationMinutes}min
       </span>
     </div>

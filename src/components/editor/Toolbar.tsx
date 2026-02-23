@@ -385,7 +385,7 @@ export function Toolbar({ editor, onHistoryClick, showLens, onLensToggle, chatOp
             >
               <Sparkle className="h-3.5 w-3.5" />
               <span>AI</span>
-              <kbd className="rounded border border-border bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+              <kbd className="rounded border border-border bg-secondary px-1.5 py-0.5 text-xs font-medium text-muted-foreground">
                 ⌘L
               </kbd>
             </Button>

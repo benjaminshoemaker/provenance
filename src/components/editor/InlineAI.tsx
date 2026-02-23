@@ -398,12 +398,12 @@ SUGGESTION 2:
 
   return (
     <div
-      className="floating-toolbar absolute z-50 w-[calc(100%-2rem)] max-w-lg overflow-hidden rounded-xl border bg-background shadow-lg"
-      style={{ top: `${anchorTop + 36}px`, right: `${anchorRight}px` }}
+      className="floating-toolbar absolute z-50 flex w-[calc(100%-2rem)] max-w-lg flex-col overflow-hidden rounded-xl border bg-background shadow-lg"
+      style={{ top: `${anchorTop + 36}px`, right: `${anchorRight}px`, maxHeight: `calc(100% - ${anchorTop + 36}px - 8px)` }}
       data-testid="inline-ai-chooser"
     >
       {/* Header bar */}
-      <div className="flex items-center justify-between border-b bg-muted px-4 py-2">
+      <div className="flex shrink-0 items-center justify-between border-b bg-muted px-4 py-2">
         <div className="flex items-center gap-2 text-sm">
           <Sparkles className="h-3.5 w-3.5 text-violet-500" />
           <span className="font-medium">{activeAction}</span>
@@ -414,7 +414,7 @@ SUGGESTION 2:
       </div>
 
       {/* Choice cards */}
-      <div className="p-3 space-y-2">
+      <div className="min-h-0 overflow-y-auto p-3 space-y-2">
         {isLoading && choices.length === 0 && (
           <div className="py-4 text-center text-sm text-muted-foreground">
             Generating suggestion...
@@ -456,14 +456,14 @@ SUGGESTION 2:
               {/* Label */}
               <div className="mb-1 flex items-center gap-2">
                 <span
-                  className={`text-[11px] font-semibold uppercase tracking-wider ${
+                  className={`text-xs font-semibold uppercase tracking-wider ${
                     choice.isOriginal ? "text-muted-foreground" : "text-violet-500"
                   }`}
                 >
                   {choice.label}
                 </span>
                 {choice.sublabel && (
-                  <span className="text-[11px] text-muted-foreground">
+                  <span className="text-xs text-muted-foreground">
                     {choice.sublabel}
                   </span>
                 )}
@@ -484,8 +484,8 @@ SUGGESTION 2:
 
       {/* Footer bar */}
       {choices.length > 0 && (
-        <div className="flex items-center justify-between border-t bg-muted px-4 py-2">
-          <span className="text-[11px] text-muted-foreground">
+        <div className="flex shrink-0 items-center justify-between border-t bg-muted px-4 py-2">
+          <span className="text-xs text-muted-foreground">
             <kbd className="rounded border px-1">↑↓</kbd> navigate ·{" "}
             <kbd className="rounded border px-1">Enter</kbd> confirm ·{" "}
             <kbd className="rounded border px-1">Esc</kbd> dismiss

@@ -20,7 +20,7 @@ export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
     <div className="flex flex-col gap-1">
       {/* Role label */}
       <span
-        className={`text-[11px] font-semibold uppercase tracking-wide ${
+        className={`text-xs font-semibold uppercase tracking-wide ${
           isUser ? "text-muted-foreground" : "text-violet-600"
         }`}
       >
@@ -29,7 +29,7 @@ export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
 
       {/* Message card */}
       <div
-        className={`rounded-lg px-3 py-2.5 text-[14px] leading-relaxed ${
+        className={`rounded-lg px-3 py-2.5 text-sm leading-relaxed ${
           isUser
             ? "bg-secondary text-secondary-foreground"
             : "border border-border bg-white text-foreground"

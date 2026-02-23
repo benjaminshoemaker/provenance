@@ -91,12 +91,12 @@ export function DashboardContent({ documents, createAction }: DashboardContentPr
 
         {/* Search bar */}
         <div className="relative mb-4">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search documents..."
-            className="w-full rounded-lg border border-gray-200 py-2 pl-10 pr-4 text-sm outline-none focus:border-provenance-500 focus:ring-2 focus:ring-provenance-500/20"
+            className="w-full rounded-lg border border-border py-2 pl-10 pr-4 text-sm outline-none focus:border-provenance-500 focus:ring-2 focus:ring-provenance-500/20"
           />
         </div>
 
@@ -110,7 +110,7 @@ export function DashboardContent({ documents, createAction }: DashboardContentPr
                 className={`rounded-full px-3 py-1 text-xs font-medium transition-colors duration-150 ${
                   chipFilter === chip.id
                     ? "bg-provenance-50 text-provenance-700"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    : "bg-secondary text-muted-foreground hover:bg-accent"
                 }`}
               >
                 {chip.label}
@@ -125,7 +125,7 @@ export function DashboardContent({ documents, createAction }: DashboardContentPr
             No documents found.
           </p>
         ) : (
-          <div className="rounded-lg border border-gray-100">
+          <div className="rounded-lg border border-border">
             {filteredDocs.map((doc) => (
               <DocumentRow
                 key={doc.id}

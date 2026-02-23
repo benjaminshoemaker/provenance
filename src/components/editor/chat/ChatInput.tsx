@@ -57,7 +57,7 @@ export function ChatInput({
     <div className="border-t border-border px-4 py-3">
       {/* Context chip — only shown when document has content */}
       {wordCount != null && wordCount > 0 && (
-        <div className="mb-2 inline-flex items-center gap-1.5 rounded border border-border bg-secondary px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+        <div className="mb-2 inline-flex items-center gap-1.5 rounded border border-border bg-secondary px-2 py-0.5 text-xs font-medium text-muted-foreground">
           <span className="h-1.5 w-1.5 rounded-full bg-foreground/40" />
           {`Full document · ${wordCount!.toLocaleString()} words`}
         </div>
@@ -73,7 +73,7 @@ export function ChatInput({
           placeholder="Ask about your writing..."
           rows={1}
           disabled={disabled}
-          className="flex-1 resize-none bg-transparent text-[13px] leading-snug text-foreground outline-none placeholder:text-muted-foreground disabled:opacity-50"
+          className="flex-1 resize-none bg-transparent text-sm leading-snug text-foreground outline-none placeholder:text-muted-foreground disabled:opacity-50"
         />
         {isStreaming ? (
           <Button
@@ -99,15 +99,15 @@ export function ChatInput({
 
       {/* Keyboard hints — hidden once conversation starts */}
       {!hasMessages && (
-        <div className="mt-1.5 flex gap-2 px-0.5 text-[11px] text-muted-foreground">
+        <div className="mt-1.5 flex gap-2 px-0.5 text-xs text-muted-foreground">
           <span>
-            <kbd className="rounded border border-border bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+            <kbd className="rounded border border-border bg-secondary px-1.5 py-0.5 text-xs font-medium text-muted-foreground">
               ⌘ L
             </kbd>{" "}
             toggle
           </span>
           <span>
-            <kbd className="rounded border border-border bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+            <kbd className="rounded border border-border bg-secondary px-1.5 py-0.5 text-xs font-medium text-muted-foreground">
               Enter
             </kbd>{" "}
             send
