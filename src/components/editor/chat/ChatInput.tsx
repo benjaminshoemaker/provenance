@@ -2,6 +2,7 @@
 
 import { useRef, useCallback, useEffect } from "react";
 import { ArrowUp, Square } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface ChatInputProps {
   value: string;
@@ -53,21 +54,17 @@ export function ChatInput({
   );
 
   return (
-    <div className="border-t border-gray-200 px-4 py-3">
-      {/* Context chip */}
-      {wordCount != null && (
-        <div className="mb-2 inline-flex items-center gap-1.5 rounded border border-provenance-100 bg-provenance-50 px-2 py-0.5 text-[11px] font-medium text-provenance-700">
-          <span className="h-1.5 w-1.5 rounded-full bg-provenance-500" />
-          {wordCount > 0
-            ? `Full document · ${wordCount.toLocaleString()} words`
-            : documentTitle
-              ? `Document: "${documentTitle}" · 0 words (empty draft)`
-              : "Empty document"}
+    <div className="border-t border-border px-4 py-3">
+      {/* Context chip — only shown when document has content */}
+      {wordCount != null && wordCount > 0 && (
+        <div className="mb-2 inline-flex items-center gap-1.5 rounded border border-border bg-secondary px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+          <span className="h-1.5 w-1.5 rounded-full bg-foreground/40" />
+          {`Full document · ${wordCount!.toLocaleString()} words`}
         </div>
       )}
 
       {/* Input wrapper */}
-      <div className="flex items-end gap-2 rounded-[10px] border border-gray-200 bg-white px-3 py-2 transition-colors focus-within:border-provenance-500 focus-within:shadow-[0_0_0_3px_rgba(76,110,245,0.08)]">
+      <div className="flex items-end gap-2 rounded-lg border border-border bg-white px-3 py-2 transition-colors focus-within:border-provenance-500 focus-within:shadow-[0_0_0_3px_rgba(76,110,245,0.08)]">
         <textarea
           ref={textareaRef}
           value={value}
@@ -76,41 +73,41 @@ export function ChatInput({
           placeholder="Ask about your writing..."
           rows={1}
           disabled={disabled}
-          className="flex-1 resize-none bg-transparent text-[13px] leading-snug text-gray-800 outline-none placeholder:text-gray-400 disabled:opacity-50"
+          className="flex-1 resize-none bg-transparent text-[13px] leading-snug text-foreground outline-none placeholder:text-muted-foreground disabled:opacity-50"
         />
         {isStreaming ? (
-          <button
-            type="button"
+          <Button
+            variant="provenance"
+            size="icon-xs"
             onClick={onStop}
-            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-provenance-600 text-white transition-colors hover:bg-provenance-700"
             aria-label="Stop generating"
           >
             <Square className="h-3 w-3" />
-          </button>
+          </Button>
         ) : (
-          <button
-            type="button"
+          <Button
+            variant="provenance"
+            size="icon-xs"
             onClick={onSubmit}
             disabled={disabled || !value.trim()}
-            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-provenance-600 text-white transition-colors hover:bg-provenance-700 disabled:bg-gray-200 disabled:text-gray-400"
             aria-label="Send message"
           >
             <ArrowUp className="h-3.5 w-3.5" />
-          </button>
+          </Button>
         )}
       </div>
 
       {/* Keyboard hints — hidden once conversation starts */}
       {!hasMessages && (
-        <div className="mt-1.5 flex gap-2 px-0.5 text-[11px] text-gray-400">
+        <div className="mt-1.5 flex gap-2 px-0.5 text-[11px] text-muted-foreground">
           <span>
-            <kbd className="rounded border border-gray-200 bg-gray-50 px-1 py-px text-[10px] text-gray-500">
+            <kbd className="rounded border border-border bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
               ⌘ L
             </kbd>{" "}
             toggle
           </span>
           <span>
-            <kbd className="rounded border border-gray-200 bg-gray-50 px-1 py-px text-[10px] text-gray-500">
+            <kbd className="rounded border border-border bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
               Enter
             </kbd>{" "}
             send

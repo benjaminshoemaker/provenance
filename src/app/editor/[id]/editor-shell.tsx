@@ -58,16 +58,20 @@ export function EditorShell({ documentId, initialTitle, initialContent, aiProvid
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <nav className="flex shrink-0 items-center gap-4 py-2" aria-label="Editor navigation">
+      <a href="#editor-content" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:rounded-md focus:bg-background focus:px-3 focus:py-2 focus:text-sm focus:shadow-md">
+        Skip to editor
+      </a>
+      <nav className="flex shrink-0 items-center gap-3 border-b border-border px-2 py-1.5" aria-label="Editor navigation">
         <BackLink href="/dashboard" />
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="flex-1 border-b border-transparent bg-transparent text-2xl font-bold outline-none focus:border-border"
+          aria-label="Document title"
+          className="flex-1 rounded-md bg-transparent px-1 text-lg font-semibold outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring/50"
           placeholder="Untitled"
         />
         <SaveIndicator status={status} onRetry={retry} />
-        <Button variant="provenance" size="sm" asChild>
+        <Button variant="outline" size="sm" asChild>
           <Link href={`/editor/${documentId}/preview`}>
             Generate Badge
           </Link>

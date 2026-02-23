@@ -355,13 +355,14 @@ SUGGESTION 2:
 
         <div className="mb-2 flex flex-wrap gap-1">
           {PRESETS.map((preset) => (
-            <button
+            <Button
               key={preset.label}
+              variant="outline"
+              size="xs"
               onClick={() => handleSubmit(preset.prompt, preset.label)}
-              className="rounded-md border px-2 py-1 text-xs hover:bg-accent transition-colors duration-150"
             >
               {preset.label}
-            </button>
+            </Button>
           ))}
         </div>
 
@@ -402,7 +403,7 @@ SUGGESTION 2:
       data-testid="inline-ai-chooser"
     >
       {/* Header bar */}
-      <div className="flex items-center justify-between border-b bg-gray-50 px-4 py-2">
+      <div className="flex items-center justify-between border-b bg-muted px-4 py-2">
         <div className="flex items-center gap-2 text-sm">
           <Sparkles className="h-3.5 w-3.5 text-violet-500" />
           <span className="font-medium">{activeAction}</span>
@@ -441,7 +442,7 @@ SUGGESTION 2:
               className={`relative w-full rounded-lg border-2 p-3 text-left text-sm transition-colors ${
                 isSelected
                   ? "border-provenance-500 bg-provenance-500/5"
-                  : "border-gray-200 hover:border-violet-300"
+                  : "border-border hover:border-violet-300"
               }`}
               data-testid={`choice-${choice.id}`}
             >
@@ -456,20 +457,20 @@ SUGGESTION 2:
               <div className="mb-1 flex items-center gap-2">
                 <span
                   className={`text-[11px] font-semibold uppercase tracking-wider ${
-                    choice.isOriginal ? "text-gray-500" : "text-violet-500"
+                    choice.isOriginal ? "text-muted-foreground" : "text-violet-500"
                   }`}
                 >
                   {choice.label}
                 </span>
                 {choice.sublabel && (
-                  <span className="text-[11px] text-gray-500">
+                  <span className="text-[11px] text-muted-foreground">
                     {choice.sublabel}
                   </span>
                 )}
               </div>
 
               {/* Text content — show inline diff only for light edits */}
-              <div className="text-gray-700">
+              <div className="text-foreground">
                 {choice.isOriginal || changeRatio(selectedText, choice.text) >= DIFF_THRESHOLD ? (
                   <span className="whitespace-pre-wrap">{choice.text}</span>
                 ) : (
@@ -483,7 +484,7 @@ SUGGESTION 2:
 
       {/* Footer bar */}
       {choices.length > 0 && (
-        <div className="flex items-center justify-between border-t bg-gray-50 px-4 py-2">
+        <div className="flex items-center justify-between border-t bg-muted px-4 py-2">
           <span className="text-[11px] text-muted-foreground">
             <kbd className="rounded border px-1">↑↓</kbd> navigate ·{" "}
             <kbd className="rounded border px-1">Enter</kbd> confirm ·{" "}

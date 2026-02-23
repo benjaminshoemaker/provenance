@@ -49,7 +49,7 @@ export default async function EditorPage({
   ]);
 
   return (
-    <div className="flex h-screen flex-col px-4 py-2">
+    <div className="flex h-screen flex-col px-2 py-1">
       <EditorShell
         documentId={document.id}
         initialTitle={document.title}

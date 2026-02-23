@@ -12,7 +12,7 @@ export function CollapseRail({ label, shortcut, onClick }: CollapseRailProps) {
       role="button"
       tabIndex={0}
       aria-label={`Expand ${label} panel`}
-      className="flex h-full w-full cursor-pointer items-center justify-center bg-gray-50 transition-colors hover:bg-muted"
+      className="flex h-full w-full cursor-pointer items-center justify-center bg-muted transition-colors hover:bg-accent"
       onClick={onClick}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {

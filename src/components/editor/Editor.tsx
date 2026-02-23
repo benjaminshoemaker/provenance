@@ -435,7 +435,9 @@ export function Editor({
   const editorContent = (
     <main
       ref={mainRef}
-      className="relative flex h-full w-full flex-col"
+      id="editor-content"
+      tabIndex={-1}
+      className="relative flex h-full w-full flex-col outline-none"
       role="main"
     >
       <Toolbar
@@ -505,7 +507,7 @@ export function Editor({
       <div ref={groupRef} className="flex min-h-0 w-full flex-1">
       <ResizablePanelGroup
         orientation="horizontal"
-        className="min-h-0 w-full flex-1 rounded-lg border"
+        className="min-h-0 w-full flex-1"
       >
         <ResizablePanel
           panelRef={editorPanelRef}

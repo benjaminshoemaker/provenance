@@ -21,7 +21,7 @@ export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
       {/* Role label */}
       <span
         className={`text-[11px] font-semibold uppercase tracking-wide ${
-          isUser ? "text-gray-500" : "text-violet-600"
+          isUser ? "text-muted-foreground" : "text-violet-600"
         }`}
       >
         {isUser ? "You" : "Claude"}
@@ -31,8 +31,8 @@ export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
       <div
         className={`rounded-lg px-3 py-2.5 text-[14px] leading-relaxed ${
           isUser
-            ? "bg-gray-100 text-gray-800"
-            : "border border-gray-200 bg-white text-gray-700"
+            ? "bg-secondary text-secondary-foreground"
+            : "border border-border bg-white text-foreground"
         }`}
       >
         {isUser ? (

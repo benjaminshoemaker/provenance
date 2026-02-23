@@ -248,7 +248,7 @@ export function ChatPanel({
   );
 
   return (
-    <div className="flex h-full flex-col bg-gray-50">
+    <div className="flex h-full flex-col bg-muted">
       <ChatHeader
         threads={threads}
         activeThreadId={activeThreadId}

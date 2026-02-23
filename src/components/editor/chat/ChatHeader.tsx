@@ -1,6 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { providers } from "@/lib/ai/providers";
 
 interface ThreadSummary {
@@ -43,55 +44,32 @@ export function ChatHeader({
     selectedModel ?? providers[selectedProvider]?.defaultModel ?? "";
 
   return (
-    <div className="flex min-h-12 items-center gap-1.5 border-b border-gray-200 bg-gray-50 px-3 py-2">
+    <div className="flex min-h-12 items-center gap-1.5 border-b border-border bg-muted px-4 py-2">
       {/* Left group */}
       <div className="flex items-center gap-1.5">
-        <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-          AI
-        </span>
-
-        {/* Mode segmented control */}
-        <div className="flex gap-px rounded-md bg-gray-200 p-0.5">
-          <button
-            type="button"
-            className="rounded bg-white px-2.5 py-0.5 text-[11px] font-medium text-gray-800 shadow-sm"
+        {threads.length > 0 ? (
+          <select
+            value={activeThreadId ?? ""}
+            onChange={(e) => {
+              const val = e.target.value;
+              if (val === "") {
+                onNewThread();
+              } else {
+                onThreadSelect(val);
+              }
+            }}
+            aria-label="Select chat thread"
+            className="max-w-[140px] cursor-pointer truncate rounded-md border border-border bg-background py-0.5 pl-2 pr-1 text-xs font-medium text-foreground outline-none transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring/50"
           >
-            Ask
-          </button>
-          <button
-            type="button"
-            disabled
-            className="rounded px-2.5 py-0.5 text-[11px] font-medium text-gray-400"
-            title="Edit mode coming soon"
-          >
-            Edit
-          </button>
-        </div>
-
-        {/* Thread dropdown (only when threads exist) */}
-        {threads.length > 0 && (
-          <>
-            <span className="text-xs text-gray-300">·</span>
-            <select
-              value={activeThreadId ?? ""}
-              onChange={(e) => {
-                const val = e.target.value;
-                if (val === "") {
-                  onNewThread();
-                } else {
-                  onThreadSelect(val);
-                }
-              }}
-              className="max-w-[140px] cursor-pointer truncate rounded border border-gray-200 bg-white py-0.5 pl-2 pr-1 text-xs font-medium text-gray-600 outline-none hover:border-gray-300"
-            >
-              <option value="">New chat</option>
-              {threads.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.title}
-                </option>
-              ))}
-            </select>
-          </>
+            <option value="">New chat</option>
+            {threads.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.title}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <span className="text-xs font-medium text-muted-foreground">New chat</span>
         )}
       </div>
 
@@ -104,7 +82,8 @@ export function ChatHeader({
             const model = allModels.find((m) => m.id === e.target.value);
             if (model) onModelChange(model.provider, model.id);
           }}
-          className="max-w-[150px] cursor-pointer truncate rounded border border-gray-200 bg-white px-2 py-0.5 text-[11px] text-gray-500 outline-none"
+          aria-label="Select AI model"
+          className="max-w-[150px] cursor-pointer truncate rounded-md border border-border bg-background px-2 py-0.5 text-xs text-muted-foreground outline-none transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring/50"
           title="AI model"
         >
           {Object.values(providers).map((p) => (
@@ -118,15 +97,15 @@ export function ChatHeader({
           ))}
         </select>
 
-        <button
-          type="button"
+        <Button
+          variant="ghost"
+          size="icon-xs"
           onClick={onClose}
-          className="flex h-7 w-7 items-center justify-center rounded text-gray-400 transition-colors hover:bg-gray-200 hover:text-gray-600"
           aria-label="Close panel"
           title="Close panel"
         >
           <X className="h-3.5 w-3.5" />
-        </button>
+        </Button>
       </div>
     </div>
   );
