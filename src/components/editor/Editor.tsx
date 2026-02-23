@@ -18,6 +18,7 @@ import { Toolbar } from "./Toolbar";
 import { InlineAI } from "./InlineAI";
 import { TimelineModal } from "./TimelineModal";
 import { ChatPanel } from "./chat/ChatPanel";
+import { CollapseRail } from "./CollapseRail";
 import {
   ResizablePanelGroup,
   ResizablePanel,
@@ -41,6 +42,8 @@ interface EditorProps {
   model?: string;
   chatOpen?: boolean;
   onChatToggle?: () => void;
+  editorOpen?: boolean;
+  onEditorToggle?: () => void;
   initialChatThreads?: ThreadSummary[];
   onUpdate?: (json: Record<string, unknown>) => void;
 }
@@ -57,6 +60,8 @@ interface TriggerPosition {
   right: number;
 }
 
+type PendingPanelAction = "collapse" | "expand" | null;
+
 export function Editor({
   content,
   documentId,
@@ -66,6 +71,8 @@ export function Editor({
   model,
   chatOpen = true,
   onChatToggle,
+  editorOpen = true,
+  onEditorToggle,
   initialChatThreads = [],
 }: EditorProps) {
   const [selection, setSelection] = useState<TextSelection | null>(null);
@@ -84,9 +91,43 @@ export function Editor({
   const proseAreaRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<Record<string, unknown>>(content);
   const chatPanelRef = useRef<PanelImperativeHandle>(null);
+  const editorPanelRef = useRef<PanelImperativeHandle>(null);
+  const groupRef = useRef<HTMLDivElement>(null);
+  const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
+  const [editorPanelCollapsible, setEditorPanelCollapsible] = useState(!editorOpen);
+  const [chatPanelCollapsible, setChatPanelCollapsible] = useState(!chatOpen);
+  const [editorPanelAction, setEditorPanelAction] = useState<PendingPanelAction>(null);
+  const [chatPanelAction, setChatPanelAction] = useState<PendingPanelAction>(null);
 
   const getDocumentContent = useCallback(() => contentRef.current, []);
   const handleLensToggle = useCallback(() => setShowLens((v) => !v), []);
+
+  // Animation helpers
+  const clearPanelTransition = useCallback(() => {
+    groupRef.current?.classList.remove("panel-transitioning");
+    if (transitionTimeoutRef.current) {
+      clearTimeout(transitionTimeoutRef.current);
+      transitionTimeoutRef.current = null;
+    }
+  }, []);
+
+  const startPanelTransition = useCallback(() => {
+    const group = groupRef.current;
+    if (!group) return;
+    group.classList.add("panel-transitioning");
+
+    // Listen for transitionend on any panel child
+    const handleEnd = (e: TransitionEvent) => {
+      if ((e.target as HTMLElement)?.hasAttribute("data-panel")) {
+        clearPanelTransition();
+        group.removeEventListener("transitionend", handleEnd);
+      }
+    };
+    group.addEventListener("transitionend", handleEnd);
+
+    // Safety fallback
+    transitionTimeoutRef.current = setTimeout(clearPanelTransition, 300);
+  }, [clearPanelTransition]);
 
   const handleExternalPaste = useCallback(
     (pastedContent: string, characterCount: number) => {
@@ -293,14 +334,80 @@ export function Editor({
 
   // Sync chatOpen prop with imperative panel handle
   useEffect(() => {
+    startPanelTransition();
+    setChatPanelCollapsible(true);
+    setChatPanelAction(chatOpen ? "expand" : "collapse");
+  }, [chatOpen, startPanelTransition]);
+
+  // Sync editorOpen prop with imperative panel handle
+  useEffect(() => {
+    startPanelTransition();
+    setEditorPanelCollapsible(true);
+    setEditorPanelAction(editorOpen ? "expand" : "collapse");
+  }, [editorOpen, startPanelTransition]);
+
+  // Execute chat panel action only after collapsible prop has been committed.
+  useEffect(() => {
+    if (!chatPanelAction) return;
     const panel = chatPanelRef.current;
     if (!panel) return;
-    if (chatOpen) {
-      panel.expand();
-    } else {
+
+    if (chatPanelAction === "collapse") {
       panel.collapse();
+      setChatPanelAction(null);
+      return;
+    }
+
+    panel.expand();
+    const timer = setTimeout(() => {
+      setChatPanelCollapsible(false);
+      setChatPanelAction(null);
+    }, 240);
+    return () => clearTimeout(timer);
+  }, [chatPanelAction]);
+
+  // Execute editor panel action only after collapsible prop has been committed.
+  useEffect(() => {
+    if (!editorPanelAction) return;
+    const panel = editorPanelRef.current;
+    if (!panel) return;
+
+    if (editorPanelAction === "collapse") {
+      panel.collapse();
+      setEditorPanelAction(null);
+      return;
+    }
+
+    panel.expand();
+    const timer = setTimeout(() => {
+      setEditorPanelCollapsible(false);
+      setEditorPanelAction(null);
+    }, 240);
+    return () => clearTimeout(timer);
+  }, [editorPanelAction]);
+
+  // Focus after expand
+  useEffect(() => {
+    if (chatOpen) {
+      // Small delay to let panel animation finish before focusing
+      const timer = setTimeout(() => {
+        const input = groupRef.current?.querySelector<HTMLTextAreaElement>(
+          '[data-testid="chat-input"], textarea'
+        );
+        input?.focus();
+      }, 220);
+      return () => clearTimeout(timer);
     }
   }, [chatOpen]);
+
+  useEffect(() => {
+    if (editorOpen) {
+      const timer = setTimeout(() => {
+        editor?.chain().focus().run();
+      }, 220);
+      return () => clearTimeout(timer);
+    }
+  }, [editorOpen, editor]);
 
   // ⌘L keyboard shortcut to toggle AI chat panel
   useEffect(() => {
@@ -324,88 +431,115 @@ export function Editor({
     [editor, createAIRevision]
   );
 
+  // Editor content JSX — shared between expanded panel and hidden mount
+  const editorContent = (
+    <main
+      ref={mainRef}
+      className="relative flex h-full w-full flex-col"
+      role="main"
+    >
+      <Toolbar
+        editor={editor}
+        onHistoryClick={() => setShowTimeline(true)}
+        showLens={showLens}
+        onLensToggle={handleLensToggle}
+        chatOpen={chatOpen}
+        onChatToggle={onChatToggle}
+        editorOpen={editorOpen}
+        onEditorCollapse={onEditorToggle}
+      />
+      <div
+        ref={scrollAreaRef}
+        className="flex-1 cursor-text overflow-auto"
+        onClick={(e) => {
+          if (e.target === scrollAreaRef.current || e.target === proseAreaRef.current) {
+            editor?.chain().focus("end").run();
+          }
+        }}
+      >
+        <div ref={proseAreaRef} className="mx-auto max-w-4xl px-8 py-8">
+          <EditorContent
+            editor={editor}
+            className="prose prose-neutral dark:prose-invert max-w-none focus-within:outline-none [&_.tiptap]:min-h-[60vh] [&_.tiptap]:outline-none"
+          />
+        </div>
+      </div>
+
+      {hasContent && (
+        <button
+          type="button"
+          onMouseDown={(e) => {
+            e.preventDefault();
+          }}
+          onClick={handleAITriggerClick}
+          className="absolute z-40 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-violet-200 bg-background text-violet-600 shadow-sm transition-colors hover:bg-violet-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-provenance-500"
+          style={{
+            top: `${triggerPosition.top}px`,
+            left: `${triggerPosition.left}px`,
+          }}
+          aria-label={
+            selection?.text.trim()
+              ? "Modify selected text with AI"
+              : "AI assistant"
+          }
+          title={
+            selection?.text.trim()
+              ? "Modify selected text"
+              : "AI assistant"
+          }
+          data-testid="inline-ai-trigger"
+        >
+          <Sparkle className="h-4 w-4" />
+        </button>
+      )}
+    </main>
+  );
+
+  const editorMinSize = editorOpen ? "40%" : "36px";
+  const editorMaxSize = editorOpen ? "100%" : "36px";
+  const chatMinSize = chatOpen ? "25%" : "36px";
+  const chatMaxSize = chatOpen ? "100%" : "36px";
+
   return (
     <>
+      <div ref={groupRef} className="flex min-h-0 w-full flex-1">
       <ResizablePanelGroup
         orientation="horizontal"
         className="min-h-0 w-full flex-1 rounded-lg border"
       >
-        <ResizablePanel defaultSize={65} minSize={40}>
-          <main
-            ref={mainRef}
-            className="relative flex h-full w-full flex-col"
-            role="main"
-          >
-            <Toolbar
-              editor={editor}
-              onHistoryClick={() => setShowTimeline(true)}
-              showLens={showLens}
-              onLensToggle={handleLensToggle}
-              chatOpen={chatOpen}
-              onChatToggle={onChatToggle}
-            />
-            <div
-              ref={scrollAreaRef}
-              className="flex-1 cursor-text overflow-auto"
-              onClick={(e) => {
-                // Click anywhere in scroll area focuses the editor
-                if (e.target === scrollAreaRef.current || e.target === proseAreaRef.current) {
-                  editor?.chain().focus("end").run();
-                }
-              }}
-            >
-              <div ref={proseAreaRef} className="mx-auto max-w-4xl px-8 py-8">
-                <EditorContent
-                  editor={editor}
-                  className="prose prose-neutral dark:prose-invert max-w-none focus-within:outline-none [&_.tiptap]:min-h-[60vh] [&_.tiptap]:outline-none"
-                />
-              </div>
-            </div>
-
-            {hasContent && (
-              <button
-                type="button"
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                }}
-                onClick={handleAITriggerClick}
-                className="absolute z-40 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-violet-200 bg-background text-violet-600 shadow-sm transition-colors hover:bg-violet-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-provenance-500"
-                style={{
-                  top: `${triggerPosition.top}px`,
-                  left: `${triggerPosition.left}px`,
-                }}
-                aria-label={
-                  selection?.text.trim()
-                    ? "Modify selected text with AI"
-                    : "AI assistant"
-                }
-                title={
-                  selection?.text.trim()
-                    ? "Modify selected text"
-                    : "AI assistant"
-                }
-                data-testid="inline-ai-trigger"
-              >
-                <Sparkle className="h-4 w-4" />
-              </button>
-            )}
-          </main>
+        <ResizablePanel
+          panelRef={editorPanelRef}
+          defaultSize={editorOpen ? "65%" : "36px"}
+          minSize={editorMinSize}
+          maxSize={editorMaxSize}
+          collapsible={editorPanelCollapsible}
+          collapsedSize="36px"
+        >
+          {editorOpen ? (
+            editorContent
+          ) : (
+            <CollapseRail label="Editor" onClick={() => onEditorToggle?.()} />
+          )}
         </ResizablePanel>
 
         <ResizableHandle
-          withHandle={chatOpen !== false}
-          className={chatOpen === false ? "w-0 opacity-0" : ""}
+          withHandle
+          onCollapseToggle={!editorOpen ? undefined : onChatToggle}
+          collapseDirection="right"
+          isCollapsed={!chatOpen || !editorOpen}
+          collapseLabel="AI Chat"
         />
 
         <ResizablePanel
           panelRef={chatPanelRef}
-          defaultSize={35}
-          minSize={25}
-          collapsible
-          collapsedSize={0}
+          defaultSize={chatOpen ? "35%" : "36px"}
+          minSize={chatMinSize}
+          maxSize={chatMaxSize}
+          collapsible={chatPanelCollapsible}
+          collapsedSize="36px"
           onResize={() => updateTriggerPosition()}
         >
-          {chatOpen !== false && (
+          {chatOpen ? (
             <ChatPanel
               documentId={documentId}
               documentTitle={title}
@@ -415,9 +549,23 @@ export function Editor({
               initialThreads={initialChatThreads}
               onClose={() => onChatToggle?.()}
             />
+          ) : (
+            <CollapseRail
+              label="AI Chat"
+              shortcut="⌘L"
+              onClick={() => onChatToggle?.()}
+            />
           )}
         </ResizablePanel>
       </ResizablePanelGroup>
+      </div>
+
+      {/* Hidden mount to preserve TipTap instance when editor panel is collapsed */}
+      {!editorOpen && (
+        <div className="hidden" aria-hidden="true">
+          {editorContent}
+        </div>
+      )}
 
       {/* Modals render outside the panel group so they overlay correctly */}
       {showInlineAI && selection && editor && (
