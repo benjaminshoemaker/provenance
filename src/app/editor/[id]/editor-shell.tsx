@@ -29,6 +29,7 @@ interface EditorShellProps {
 export function EditorShell({ documentId, initialTitle, initialContent, aiProvider, aiModel, initialChatThreads = [] }: EditorShellProps) {
   const [title, setTitle] = useState(initialTitle);
   const [chatOpen, setChatOpen] = useState(true);
+  const [editorOpen, setEditorOpen] = useState(true);
   const { save, status, retry, isDirty } = useAutoSave({ documentId, title });
   const { markActive } = useSession({ documentId });
   const router = useRouter();
@@ -80,7 +81,13 @@ export function EditorShell({ documentId, initialTitle, initialContent, aiProvid
         model={aiModel ?? undefined}
         onUpdate={handleUpdate}
         chatOpen={chatOpen}
-        onChatToggle={() => setChatOpen((v) => !v)}
+        onChatToggle={() => {
+          if (!chatOpen || editorOpen) setChatOpen((v) => !v);
+        }}
+        editorOpen={editorOpen}
+        onEditorToggle={() => {
+          if (!editorOpen || chatOpen) setEditorOpen((v) => !v);
+        }}
         initialChatThreads={initialChatThreads}
       />
     </div>

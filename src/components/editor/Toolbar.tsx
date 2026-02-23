@@ -23,6 +23,7 @@ import {
   Eye,
   EyeOff,
   Sparkle,
+  PanelLeftClose,
 } from "lucide-react";
 
 interface ToolbarProps {
@@ -32,9 +33,11 @@ interface ToolbarProps {
   onLensToggle?: () => void;
   chatOpen?: boolean;
   onChatToggle?: () => void;
+  editorOpen?: boolean;
+  onEditorCollapse?: () => void;
 }
 
-export function Toolbar({ editor, onHistoryClick, showLens, onLensToggle, chatOpen, onChatToggle }: ToolbarProps) {
+export function Toolbar({ editor, onHistoryClick, showLens, onLensToggle, chatOpen, onChatToggle, editorOpen, onEditorCollapse }: ToolbarProps) {
   if (!editor) return null;
 
   const items = [
@@ -230,6 +233,21 @@ export function Toolbar({ editor, onHistoryClick, showLens, onLensToggle, chatOp
         >
           <Clock className="h-4 w-4" />
         </Button>
+
+        {/* Editor collapse button */}
+        {onEditorCollapse && (
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={onEditorCollapse}
+            title="Collapse editor"
+            aria-label="Collapse editor"
+            type="button"
+            disabled={editorOpen === true && !chatOpen}
+          >
+            <PanelLeftClose className="h-4 w-4" />
+          </Button>
+        )}
 
         {/* AI panel toggle — only shown when panel is collapsed */}
         {!chatOpen && (

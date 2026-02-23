@@ -225,6 +225,17 @@
   color: #6b7280;
 }
 
+/* Panel collapse/expand animation — only active during programmatic toggles */
+.panel-transitioning [data-panel] {
+  transition: flex-grow 200ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel-transitioning [data-panel] {
+    transition: none;
+  }
+}
+
 /* Streaming cursor (step blink, not smooth pulse) */
 .streaming-cursor {
   display: inline-block;

@@ -132,9 +132,19 @@ vi.mock("./chat/ChatPanel", () => ({
 }));
 
 vi.mock("@/components/ui/resizable", () => ({
-  ResizablePanelGroup: ({ children, ...props }: any) => <div data-testid="resizable-group" {...props}>{children}</div>,
-  ResizablePanel: ({ children, ...props }: any) => <div data-testid="resizable-panel" {...props}>{children}</div>,
-  ResizableHandle: () => <div data-testid="resizable-handle" />,
+  ResizablePanelGroup: ({ children, orientation, ...props }: any) => <div data-testid="resizable-group" {...props}>{children}</div>,
+  ResizablePanel: ({ children, panelRef, defaultSize, minSize, collapsible, collapsedSize, onResize, ...props }: any) => <div data-testid="resizable-panel" {...props}>{children}</div>,
+  ResizableHandle: ({ onCollapseToggle, collapseLabel, isCollapsed, collapseDirection, ...props }: any) => (
+    <div data-testid="resizable-handle" {...props}>
+      {onCollapseToggle && (
+        <button
+          data-testid="handle-chevron"
+          aria-label={`${isCollapsed ? "Expand" : "Collapse"} ${collapseLabel}`}
+          onClick={onCollapseToggle}
+        />
+      )}
+    </div>
+  ),
 }));
 
 vi.mock("react-resizable-panels", () => ({
@@ -331,6 +341,85 @@ describe("Editor", () => {
 
     expect(screen.getByTestId("inline-ai-toolbar")).toBeTruthy();
     expect(mockSetTextSelection).toHaveBeenCalledWith({ from: 1, to: 5 });
+  });
+
+  it("should render chat panel when chatOpen is true", () => {
+    render(
+      <Editor
+        content={{ type: "doc", content: [] }}
+        documentId="doc-1"
+        title="Test Document"
+        chatOpen={true}
+      />
+    );
+    expect(screen.getByTestId("chat-panel")).toBeTruthy();
+  });
+
+  it("should render collapse rail when chatOpen is false", () => {
+    render(
+      <Editor
+        content={{ type: "doc", content: [] }}
+        documentId="doc-1"
+        title="Test Document"
+        chatOpen={false}
+      />
+    );
+    expect(screen.queryByTestId("chat-panel")).toBeNull();
+    expect(screen.getByText(/AI Chat/)).toBeTruthy();
+  });
+
+  it("should render collapse rail when editorOpen is false", () => {
+    render(
+      <Editor
+        content={{ type: "doc", content: [] }}
+        documentId="doc-1"
+        title="Test Document"
+        editorOpen={false}
+      />
+    );
+    expect(screen.getByText("Editor")).toBeTruthy();
+  });
+
+  it("should call onEditorToggle from collapse rail when editor is collapsed", () => {
+    const onEditorToggle = vi.fn();
+    render(
+      <Editor
+        content={{ type: "doc", content: [] }}
+        documentId="doc-1"
+        title="Test Document"
+        editorOpen={false}
+        onEditorToggle={onEditorToggle}
+      />
+    );
+    fireEvent.click(screen.getByLabelText("Expand Editor panel"));
+    expect(onEditorToggle).toHaveBeenCalledTimes(1);
+  });
+
+  it("should call onChatToggle from handle chevron", () => {
+    const onChatToggle = vi.fn();
+    render(
+      <Editor
+        content={{ type: "doc", content: [] }}
+        documentId="doc-1"
+        title="Test Document"
+        chatOpen={true}
+        onChatToggle={onChatToggle}
+      />
+    );
+    fireEvent.click(screen.getByTestId("handle-chevron"));
+    expect(onChatToggle).toHaveBeenCalledTimes(1);
+  });
+
+  it("should always render handle (no hidden handle when chat closed)", () => {
+    render(
+      <Editor
+        content={{ type: "doc", content: [] }}
+        documentId="doc-1"
+        title="Test Document"
+        chatOpen={false}
+      />
+    );
+    expect(screen.getByTestId("resizable-handle")).toBeTruthy();
   });
 
 });

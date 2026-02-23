@@ -2,10 +2,16 @@
 name: phase-prep
 description: Check prerequisites before starting a phase. Use before /phase-start to verify dependencies are met and context is loaded.
 argument-hint: [phase-number]
-allowed-tools: Bash, Read, Glob, Grep, AskUserQuestion, WebFetch, WebSearch
+allowed-tools: Bash, Read, Glob, Grep, Skill, AskUserQuestion, WebFetch, WebSearch
 ---
 
 I want to execute Phase $1 from EXECUTION_PLAN.md. Before starting, read EXECUTION_PLAN.md and check:
+
+**CONTINUITY RULE:** After emitting the report you MUST evaluate the Auto-Advance
+section at the end of this file. Auto-advance is frequently dropped when phase-prep
+is invoked from a parent skill (`/fresh-start` or `/go`). Skipping it breaks the
+execution chain. The checklist below tracks this — do not mark "Done" until the
+auto-advance decision is made.
 
 ## Workflow
 
@@ -17,8 +23,8 @@ Phase Prep Progress:
 - [ ] Step 2: Verify all prerequisites pass
 - [ ] Step 3: Load phase context and task list
 - [ ] Step 4: Check for blocking dependencies
-- [ ] Step 5: Make auto-advance decision
-- [ ] Step 6: Report readiness status
+- [ ] Step 5: Emit report and log results
+- [ ] Step 6: Auto-advance decision (MUST COMPLETE — do not stop before this)
 ```
 
 ## External Tool Documentation Protocol
@@ -317,7 +323,25 @@ Example log entry:
 }
 ```
 
-## Auto-Advance (After Prep Passes)
+## Error Handling
+
+| Situation | Action |
+|-----------|--------|
+| `EXECUTION_PLAN.md` not found in working directory | STOP and tell user to `cd` into their project or feature directory containing `EXECUTION_PLAN.md` |
+| WebFetch/WebSearch fails when fetching service documentation | Retry with exponential backoff (2-3 attempts); if all retries fail, warn user and proceed with best available info |
+| Pre-Phase Setup `Verify:` command returns unexpected output | Mark item as FAIL, show the raw command output, and include it in the detailed setup instructions |
+| `.claude/verification-config.json` missing entirely | Run `/configure-verification` to auto-detect; do not block on omitted keys in an existing config |
+| Git working tree is in a conflicted or detached-HEAD state | Report the git state clearly, suggest resolution steps, and mark Git check as BLOCKED |
+
+---
+
+**STOP — READ THIS BEFORE RETURNING:** You are NOT done. You MUST complete
+Step 6 below (Auto-Advance). Do not return to a parent skill or report readiness
+without making the auto-advance decision first.
+
+---
+
+## Auto-Advance (After Prep Passes) — STEP 6: MUST COMPLETE
 
 Check if auto-advance is enabled and this prep passes all checks.
 
@@ -350,19 +374,42 @@ Auto-advance to `/phase-start $1` ONLY if ALL of these are true:
 
 ### If Auto-Advance Conditions Met
 
-1. **Show brief notification:**
+1. **Write completion marker** (so parent skills can detect success):
+   ```json
+   // Write to .claude/phase-prep-result.json
+   {
+     "phase": $1,
+     "status": "READY",
+     "auto_advanced": true,
+     "timestamp": "{ISO timestamp}"
+   }
+   ```
+
+2. **Show brief notification:**
    ```
    AUTO-ADVANCE
    ============
    All Phase $1 prerequisites verified. Proceeding to execution...
    ```
 
-2. **Execute immediately:**
+3. **Execute immediately:**
    - Track this command in auto-advance session log
    - Invoke `/phase-start $1` using the Skill tool
    - Phase-start will continue, and its checkpoint will continue the chain
 
 ### If Auto-Advance Conditions NOT Met
+
+Write completion marker (so parent skills can detect the outcome):
+```json
+// Write to .claude/phase-prep-result.json
+{
+  "phase": $1,
+  "status": "BLOCKED",
+  "auto_advanced": false,
+  "reason": "{first failing condition}",
+  "timestamp": "{ISO timestamp}"
+}
+```
 
 Stop and report why:
 
