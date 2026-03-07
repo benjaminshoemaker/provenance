@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 import { Trash2 } from "lucide-react";
 
 interface DocumentRowProps {
@@ -11,6 +12,7 @@ interface DocumentRowProps {
   preview?: string;
   aiPercentage?: number | null;
   hasBadge: boolean;
+  latestBadgeVerificationId?: string | null;
   isArchived?: boolean;
   onClick?: () => void;
   onDelete?: (id: string) => void;
@@ -47,6 +49,7 @@ export function DocumentRow({
   preview,
   aiPercentage,
   hasBadge,
+  latestBadgeVerificationId,
   isArchived,
   onClick,
   onDelete,
@@ -106,6 +109,15 @@ export function DocumentRow({
             <span className="text-xs text-muted-foreground font-mono tabular-nums">
               {wordCount.toLocaleString()} words
             </span>
+          )}
+          {latestBadgeVerificationId && (
+            <Link
+              href={`/verify/${latestBadgeVerificationId}`}
+              className="rounded px-1.5 py-0.5 text-xs font-medium text-provenance-700 hover:bg-provenance-50 hover:text-provenance-800"
+              onClick={(e) => e.stopPropagation()}
+            >
+              View badge
+            </Link>
           )}
         </div>
       </div>

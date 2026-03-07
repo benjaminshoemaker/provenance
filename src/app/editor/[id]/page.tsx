@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { documents, users, chatThreads } from "@/lib/db/schema";
+import { documents, users, chatThreads, badges } from "@/lib/db/schema";
 import { eq, and, isNull, desc } from "drizzle-orm";
 import { redirect, notFound } from "next/navigation";
 import { EditorShell } from "./editor-shell";
@@ -30,7 +30,7 @@ export default async function EditorPage({
     redirect("/dashboard");
   }
 
-  const [prefs, threads] = await Promise.all([
+  const [prefs, threads, latestBadge] = await Promise.all([
     db
       .select({ aiProvider: users.aiProvider, aiModel: users.aiModel })
       .from(users)
@@ -46,6 +46,12 @@ export default async function EditorPage({
       .from(chatThreads)
       .where(eq(chatThreads.documentId, id))
       .orderBy(desc(chatThreads.updatedAt)),
+    db
+      .select({ verificationId: badges.verificationId })
+      .from(badges)
+      .where(eq(badges.documentId, id))
+      .orderBy(desc(badges.createdAt))
+      .then((rows) => rows[0]),
   ]);
 
   return (
@@ -56,9 +62,9 @@ export default async function EditorPage({
         initialContent={document.content as Record<string, unknown>}
         aiProvider={prefs?.aiProvider ?? "anthropic"}
         aiModel={prefs?.aiModel ?? null}
+        latestBadgeVerificationId={latestBadge?.verificationId ?? null}
         initialChatThreads={threads}
       />
     </div>
   );
 }
-

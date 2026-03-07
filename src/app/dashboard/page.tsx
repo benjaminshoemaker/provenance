@@ -20,7 +20,10 @@ export default async function DashboardPage() {
     .orderBy(desc(documents.updatedAt));
 
   // Fetch badge stats (ai_percentage) per document
-  const badgeStatsMap = new Map<string, { count: number; aiPercentage: number | null }>();
+  const badgeStatsMap = new Map<
+    string,
+    { count: number; aiPercentage: number | null; latestVerificationId: string | null }
+  >();
   const docIds = userDocuments.map((d) => d.id);
   if (docIds.length > 0) {
     const badgeRows = await db
@@ -28,6 +31,7 @@ export default async function DashboardPage() {
         documentId: badges.documentId,
         count: sql<number>`count(*)::int`,
         latestStats: sql<string>`(array_agg(${badges.stats} ORDER BY ${badges.createdAt} DESC))[1]::text`,
+        latestVerificationId: sql<string>`(array_agg(${badges.verificationId} ORDER BY ${badges.createdAt} DESC))[1]::text`,
       })
       .from(badges)
       .where(
@@ -47,6 +51,7 @@ export default async function DashboardPage() {
       badgeStatsMap.set(row.documentId, {
         count: row.count,
         aiPercentage,
+        latestVerificationId: row.latestVerificationId ?? null,
       });
     }
   }
@@ -70,6 +75,7 @@ export default async function DashboardPage() {
       preview: preview.slice(0, 100),
       aiPercentage: badgeInfo?.aiPercentage ?? null,
       badgeCount: badgeInfo?.count ?? 0,
+      latestBadgeVerificationId: badgeInfo?.latestVerificationId ?? null,
     };
   });
 
@@ -79,5 +85,11 @@ export default async function DashboardPage() {
     redirect(`/editor/${doc.id}`);
   };
 
-  return <DashboardContent documents={documentData} createAction={createAction} />;
+  return (
+    <DashboardContent
+      documents={documentData}
+      referenceNowMs={Date.now()}
+      createAction={createAction}
+    />
+  );
 }

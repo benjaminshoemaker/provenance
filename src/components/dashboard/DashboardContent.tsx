@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Sidebar, type SidebarFilter } from "./Sidebar";
 import { DocumentRow } from "./DocumentRow";
@@ -19,14 +19,20 @@ interface DocumentData {
   preview?: string;
   aiPercentage?: number | null;
   badgeCount: number;
+  latestBadgeVerificationId?: string | null;
 }
 
 interface DashboardContentProps {
   documents: DocumentData[];
+  referenceNowMs: number;
   createAction: () => Promise<void>;
 }
 
-export function DashboardContent({ documents, createAction }: DashboardContentProps) {
+export function DashboardContent({
+  documents,
+  referenceNowMs,
+  createAction,
+}: DashboardContentProps) {
   const [sidebarFilter, setSidebarFilter] = useState<SidebarFilter>("all");
   const [chipFilter, setChipFilter] = useState<FilterChip>("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -38,7 +44,7 @@ export function DashboardContent({ documents, createAction }: DashboardContentPr
     router.refresh();
   }, [router]);
 
-  const sevenDaysAgo = useMemo(() => Date.now() - 7 * 24 * 60 * 60 * 1000, []);
+  const sevenDaysAgo = referenceNowMs - 7 * 24 * 60 * 60 * 1000;
 
   const filteredDocs = documents.filter((doc) => {
     // Sidebar filter
@@ -136,6 +142,7 @@ export function DashboardContent({ documents, createAction }: DashboardContentPr
                 preview={doc.preview}
                 aiPercentage={doc.aiPercentage}
                 hasBadge={doc.badgeCount > 0}
+                latestBadgeVerificationId={doc.latestBadgeVerificationId}
                 onClick={() => router.push(`/editor/${doc.id}`)}
                 onDelete={handleDelete}
               />

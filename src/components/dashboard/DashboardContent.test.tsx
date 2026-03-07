@@ -39,7 +39,11 @@ const mockDocs = [
 describe("DashboardContent", () => {
   it("should render sidebar and document list", () => {
     render(
-      <DashboardContent documents={mockDocs} createAction={vi.fn()} />
+      <DashboardContent
+        documents={mockDocs}
+        referenceNowMs={Date.now()}
+        createAction={vi.fn()}
+      />
     );
 
     expect(screen.getByText("All Documents")).toBeDefined();
@@ -49,7 +53,11 @@ describe("DashboardContent", () => {
 
   it("should filter documents by search query", () => {
     render(
-      <DashboardContent documents={mockDocs} createAction={vi.fn()} />
+      <DashboardContent
+        documents={mockDocs}
+        referenceNowMs={Date.now()}
+        createAction={vi.fn()}
+      />
     );
 
     const searchInput = screen.getByPlaceholderText("Search documents...");
@@ -61,7 +69,11 @@ describe("DashboardContent", () => {
 
   it("should filter by 'Has Badge' chip", () => {
     render(
-      <DashboardContent documents={mockDocs} createAction={vi.fn()} />
+      <DashboardContent
+        documents={mockDocs}
+        referenceNowMs={Date.now()}
+        createAction={vi.fn()}
+      />
     );
 
     fireEvent.click(screen.getByText("Has Badge"));
@@ -72,7 +84,11 @@ describe("DashboardContent", () => {
 
   it("should filter by 'Drafts' chip", () => {
     render(
-      <DashboardContent documents={mockDocs} createAction={vi.fn()} />
+      <DashboardContent
+        documents={mockDocs}
+        referenceNowMs={Date.now()}
+        createAction={vi.fn()}
+      />
     );
 
     fireEvent.click(screen.getByText("Drafts"));
@@ -83,7 +99,11 @@ describe("DashboardContent", () => {
 
   it("should render New Document button with provenance styling", () => {
     const { container } = render(
-      <DashboardContent documents={mockDocs} createAction={vi.fn()} />
+      <DashboardContent
+        documents={mockDocs}
+        referenceNowMs={Date.now()}
+        createAction={vi.fn()}
+      />
     );
 
     const newDocButton = container.querySelector(".bg-provenance-600");

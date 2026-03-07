@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
+import type { ReactNode } from "react";
 
 const mockSetTextSelection = vi.fn(() => ({ run: vi.fn() }));
 
@@ -118,7 +119,7 @@ vi.mock("@/app/actions/ai-interactions", () => ({
 }));
 
 vi.mock("next/link", () => ({
-  default: ({ children, href }: { children: React.ReactNode; href: string }) => (
+  default: ({ children, href }: { children: ReactNode; href: string }) => (
     <a href={href}>{children}</a>
   ),
 }));
@@ -132,10 +133,22 @@ vi.mock("./chat/ChatPanel", () => ({
 }));
 
 vi.mock("@/components/ui/resizable", () => ({
-  ResizablePanelGroup: ({ children, orientation, ...props }: any) => <div data-testid="resizable-group" {...props}>{children}</div>,
-  ResizablePanel: ({ children, panelRef, defaultSize, minSize, collapsible, collapsedSize, onResize, ...props }: any) => <div data-testid="resizable-panel" {...props}>{children}</div>,
-  ResizableHandle: ({ onCollapseToggle, collapseLabel, isCollapsed, collapseDirection, ...props }: any) => (
-    <div data-testid="resizable-handle" {...props}>
+  ResizablePanelGroup: ({ children }: { children: ReactNode }) => (
+    <div data-testid="resizable-group">{children}</div>
+  ),
+  ResizablePanel: ({ children }: { children: ReactNode }) => (
+    <div data-testid="resizable-panel">{children}</div>
+  ),
+  ResizableHandle: ({
+    onCollapseToggle,
+    collapseLabel,
+    isCollapsed,
+  }: {
+    onCollapseToggle?: () => void;
+    collapseLabel?: string;
+    isCollapsed?: boolean;
+  }) => (
+    <div data-testid="resizable-handle">
       {onCollapseToggle && (
         <button
           data-testid="handle-chevron"
@@ -173,7 +186,6 @@ describe("Editor", () => {
       <Editor
         content={{ type: "doc", content: [] }}
         documentId="doc-1"
-        title="Test Document"
       />
     );
 
@@ -186,7 +198,6 @@ describe("Editor", () => {
       <Editor
         content={{ type: "doc", content: [] }}
         documentId="doc-1"
-        title="Test Document"
       />
     );
 
@@ -202,7 +213,6 @@ describe("Editor", () => {
       <Editor
         content={{ type: "doc", content: [] }}
         documentId="doc-1"
-        title="Test Document"
       />
     );
 
@@ -220,7 +230,7 @@ describe("Editor", () => {
     };
 
     render(
-      <Editor content={content} documentId="doc-1" title="Test Document" />
+      <Editor content={content} documentId="doc-1" />
     );
 
     expect(useEditor).toHaveBeenCalledWith(
@@ -235,7 +245,6 @@ describe("Editor", () => {
       <Editor
         content={{ type: "doc", content: [] }}
         documentId="doc-1"
-        title="Test Document"
       />
     );
 
@@ -247,7 +256,6 @@ describe("Editor", () => {
       <Editor
         content={{ type: "doc", content: [] }}
         documentId="doc-1"
-        title="Test Document"
       />
     );
 
@@ -270,7 +278,6 @@ describe("Editor", () => {
       <Editor
         content={{ type: "doc", content: [] }}
         documentId="doc-1"
-        title="Test Document"
       />
     );
 
@@ -283,7 +290,6 @@ describe("Editor", () => {
       <Editor
         content={{ type: "doc", content: [] }}
         documentId="doc-1"
-        title="Test Document"
       />
     );
 
@@ -321,7 +327,6 @@ describe("Editor", () => {
       <Editor
         content={{ type: "doc", content: [] }}
         documentId="doc-1"
-        title="Test Document"
       />
     );
 
@@ -348,7 +353,6 @@ describe("Editor", () => {
       <Editor
         content={{ type: "doc", content: [] }}
         documentId="doc-1"
-        title="Test Document"
         chatOpen={true}
       />
     );
@@ -360,7 +364,6 @@ describe("Editor", () => {
       <Editor
         content={{ type: "doc", content: [] }}
         documentId="doc-1"
-        title="Test Document"
         chatOpen={false}
       />
     );
@@ -373,7 +376,6 @@ describe("Editor", () => {
       <Editor
         content={{ type: "doc", content: [] }}
         documentId="doc-1"
-        title="Test Document"
         editorOpen={false}
       />
     );
@@ -386,7 +388,6 @@ describe("Editor", () => {
       <Editor
         content={{ type: "doc", content: [] }}
         documentId="doc-1"
-        title="Test Document"
         editorOpen={false}
         onEditorToggle={onEditorToggle}
       />
@@ -401,7 +402,6 @@ describe("Editor", () => {
       <Editor
         content={{ type: "doc", content: [] }}
         documentId="doc-1"
-        title="Test Document"
         chatOpen={true}
         onChatToggle={onChatToggle}
       />
@@ -415,7 +415,6 @@ describe("Editor", () => {
       <Editor
         content={{ type: "doc", content: [] }}
         documentId="doc-1"
-        title="Test Document"
         chatOpen={false}
       />
     );

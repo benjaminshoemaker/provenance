@@ -12,7 +12,6 @@ interface ChatInputProps {
   isStreaming: boolean;
   disabled?: boolean;
   wordCount?: number;
-  documentTitle?: string;
   hasMessages?: boolean;
 }
 
@@ -24,7 +23,6 @@ export function ChatInput({
   isStreaming,
   disabled,
   wordCount,
-  documentTitle,
   hasMessages,
 }: ChatInputProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);

@@ -42,6 +42,20 @@ describe("DocumentRow", () => {
     expect(screen.getByText("12% AI")).toBeDefined();
   });
 
+  it("should show view badge link when latest verification id exists", () => {
+    render(
+      <DocumentRow
+        {...defaultProps}
+        latestBadgeVerificationId="badge-verify-123"
+      />
+    );
+
+    expect(screen.getByRole("link", { name: "View badge" })).toHaveAttribute(
+      "href",
+      "/verify/badge-verify-123"
+    );
+  });
+
   it("should dim archived rows with opacity-60", () => {
     const { container } = render(
       <DocumentRow {...defaultProps} isArchived={true} />

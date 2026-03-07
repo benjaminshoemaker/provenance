@@ -22,11 +22,11 @@ interface ThreadSummary {
 
 interface ChatPanelProps {
   documentId: string;
-  documentTitle?: string;
   provider: string;
   model?: string;
   getDocumentContent: () => Record<string, unknown>;
   initialThreads: ThreadSummary[];
+  onAssistantResponse?: (responseText: string) => void;
   onClose: () => void;
 }
 
@@ -52,11 +52,11 @@ function getTextFromMessage(message: UIMessage): string {
 
 export function ChatPanel({
   documentId,
-  documentTitle,
   provider,
   model,
   getDocumentContent,
   initialThreads,
+  onAssistantResponse,
   onClose,
 }: ChatPanelProps) {
   const [threads, setThreads] = useState<ThreadSummary[]>(initialThreads);
@@ -122,6 +122,10 @@ export function ChatPanel({
     experimental_throttle: 50,
     onFinish: async ({ message, messages: allMessages }) => {
       const threadId = streamThreadIdRef.current;
+      const assistantText = getTextFromMessage(message).trim();
+      if (assistantText) {
+        onAssistantResponse?.(assistantText);
+      }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const metadata = message.metadata as Record<string, any> | undefined;
@@ -189,6 +193,36 @@ export function ChatPanel({
   });
 
   const isStreaming = status === "streaming";
+
+  useEffect(() => {
+    if (initialThreads.length === 0) {
+      if (!startTimeRef.current) startTimeRef.current = Date.now();
+      return;
+    }
+
+    let cancelled = false;
+    const latestThreadId = initialThreads[0]?.id;
+    if (!latestThreadId) return;
+
+    void (async () => {
+      try {
+        const thread = await getChatThread(latestThreadId);
+        if (cancelled) return;
+        setActiveThreadId(thread.id);
+        streamThreadIdRef.current = thread.id;
+        setMessages((thread.messages ?? []) as UIMessage[]);
+        startTimeRef.current = Date.now();
+      } catch (err) {
+        if (!cancelled) {
+          console.error("[ChatPanel] Failed to restore latest thread:", err);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [initialThreads, setMessages]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -286,7 +320,6 @@ export function ChatPanel({
         onStop={stop}
         isStreaming={isStreaming}
         wordCount={wordCount}
-        documentTitle={documentTitle}
         hasMessages={messages.length > 0}
       />
     </div>

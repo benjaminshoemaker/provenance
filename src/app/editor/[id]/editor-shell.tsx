@@ -10,6 +10,41 @@ import { BackLink } from "@/components/ui/BackLink";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
+const PANEL_STATE_VERSION = 1;
+
+interface StoredPanelState {
+  version: number;
+  chatOpen: boolean;
+  editorOpen: boolean;
+}
+
+function panelStateKey(documentId: string): string {
+  return `provenance:editor:${documentId}:panels`;
+}
+
+function readPanelState(documentId: string): Pick<StoredPanelState, "chatOpen" | "editorOpen"> {
+  if (typeof window === "undefined") {
+    return { chatOpen: true, editorOpen: true };
+  }
+
+  try {
+    const raw = window.localStorage.getItem(panelStateKey(documentId));
+    if (!raw) return { chatOpen: true, editorOpen: true };
+    const parsed = JSON.parse(raw) as Partial<StoredPanelState>;
+    if (parsed.version !== PANEL_STATE_VERSION) {
+      return { chatOpen: true, editorOpen: true };
+    }
+    const chatOpen = parsed.chatOpen !== false;
+    const editorOpen = parsed.editorOpen !== false;
+    if (!chatOpen && !editorOpen) {
+      return { chatOpen: true, editorOpen: true };
+    }
+    return { chatOpen, editorOpen };
+  } catch {
+    return { chatOpen: true, editorOpen: true };
+  }
+}
+
 interface ThreadSummary {
   id: string;
   title: string;
@@ -23,13 +58,26 @@ interface EditorShellProps {
   initialContent: Record<string, unknown>;
   aiProvider: string;
   aiModel: string | null;
+  latestBadgeVerificationId?: string | null;
   initialChatThreads?: ThreadSummary[];
 }
 
-export function EditorShell({ documentId, initialTitle, initialContent, aiProvider, aiModel, initialChatThreads = [] }: EditorShellProps) {
+export function EditorShell({
+  documentId,
+  initialTitle,
+  initialContent,
+  aiProvider,
+  aiModel,
+  latestBadgeVerificationId,
+  initialChatThreads = [],
+}: EditorShellProps) {
   const [title, setTitle] = useState(initialTitle);
-  const [chatOpen, setChatOpen] = useState(true);
-  const [editorOpen, setEditorOpen] = useState(true);
+  const [chatOpen, setChatOpen] = useState(
+    () => readPanelState(documentId).chatOpen
+  );
+  const [editorOpen, setEditorOpen] = useState(
+    () => readPanelState(documentId).editorOpen
+  );
   const { save, status, retry, isDirty } = useAutoSave({ documentId, title });
   const { markActive } = useSession({ documentId });
   const router = useRouter();
@@ -56,6 +104,18 @@ export function EditorShell({ documentId, initialTitle, initialContent, aiProvid
     return () => document.removeEventListener("click", handleClick, true);
   }, [isDirty, router]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem(
+      panelStateKey(documentId),
+      JSON.stringify({
+        version: PANEL_STATE_VERSION,
+        chatOpen,
+        editorOpen,
+      } satisfies StoredPanelState)
+    );
+  }, [documentId, chatOpen, editorOpen]);
+
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <a href="#editor-content" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:rounded-md focus:bg-background focus:px-3 focus:py-2 focus:text-sm focus:shadow-md">
@@ -71,6 +131,13 @@ export function EditorShell({ documentId, initialTitle, initialContent, aiProvid
           placeholder="Untitled"
         />
         <SaveIndicator status={status} onRetry={retry} />
+        {latestBadgeVerificationId && (
+          <Button variant="outline" size="sm" asChild>
+            <Link href={`/verify/${latestBadgeVerificationId}`}>
+              View Badge
+            </Link>
+          </Button>
+        )}
         <Button variant="outline" size="sm" asChild>
           <Link href={`/editor/${documentId}/preview`}>
             Generate Badge
@@ -80,7 +147,6 @@ export function EditorShell({ documentId, initialTitle, initialContent, aiProvid
       <Editor
         content={initialContent}
         documentId={documentId}
-        title={title}
         provider={aiProvider}
         model={aiModel ?? undefined}
         onUpdate={handleUpdate}

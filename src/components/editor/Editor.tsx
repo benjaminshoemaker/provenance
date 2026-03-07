@@ -37,7 +37,6 @@ interface ThreadSummary {
 interface EditorProps {
   content: Record<string, unknown>;
   documentId: string;
-  title: string;
   provider?: string;
   model?: string;
   chatOpen?: boolean;
@@ -60,12 +59,39 @@ interface TriggerPosition {
   right: number;
 }
 
-type PendingPanelAction = "collapse" | "expand" | null;
+function hasDocumentText(content: unknown): boolean {
+  if (!content || typeof content !== "object") return false;
+  const stack: unknown[] = [content];
+
+  while (stack.length > 0) {
+    const node = stack.pop();
+    if (!node || typeof node !== "object") continue;
+    const record = node as { text?: unknown; content?: unknown[] };
+
+    if (typeof record.text === "string" && record.text.trim().length > 0) {
+      return true;
+    }
+
+    if (Array.isArray(record.content)) {
+      stack.push(...record.content);
+    }
+  }
+
+  return false;
+}
+
+function timelineStateKey(documentId: string): string {
+  return `provenance:editor:${documentId}:timeline-open`;
+}
+
+function readTimelineOpenState(documentId: string): boolean {
+  if (typeof window === "undefined") return false;
+  return window.localStorage.getItem(timelineStateKey(documentId)) === "1";
+}
 
 export function Editor({
   content,
   documentId,
-  title,
   onUpdate,
   provider = "anthropic",
   model,
@@ -77,9 +103,11 @@ export function Editor({
 }: EditorProps) {
   const [selection, setSelection] = useState<TextSelection | null>(null);
   const [showInlineAI, setShowInlineAI] = useState(false);
-  const [showTimeline, setShowTimeline] = useState(false);
+  const [showTimeline, setShowTimeline] = useState(
+    () => readTimelineOpenState(documentId)
+  );
   const [showLens, setShowLens] = useState(false);
-  const [hasContent, setHasContent] = useState(false);
+  const [hasContent, setHasContent] = useState(() => hasDocumentText(content));
   const [triggerPosition, setTriggerPosition] = useState<TriggerPosition>({
     top: 96,
     left: 0,
@@ -94,10 +122,6 @@ export function Editor({
   const editorPanelRef = useRef<PanelImperativeHandle>(null);
   const groupRef = useRef<HTMLDivElement>(null);
   const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
-  const [editorPanelCollapsible, setEditorPanelCollapsible] = useState(!editorOpen);
-  const [chatPanelCollapsible, setChatPanelCollapsible] = useState(!chatOpen);
-  const [editorPanelAction, setEditorPanelAction] = useState<PendingPanelAction>(null);
-  const [chatPanelAction, setChatPanelAction] = useState<PendingPanelAction>(null);
 
   const getDocumentContent = useCallback(() => contentRef.current, []);
   const handleLensToggle = useCallback(() => setShowLens((v) => !v), []);
@@ -130,8 +154,9 @@ export function Editor({
   }, [clearPanelTransition]);
 
   const handleExternalPaste = useCallback(
-    (pastedContent: string, characterCount: number) => {
+    (pastedContent: string, characterCount: number, sourceId: string) => {
       logPasteEvent({
+        sourceId,
         documentId,
         content: pastedContent,
         sourceType: "external",
@@ -216,22 +241,18 @@ export function Editor({
     [editor]
   );
 
-  // Initialize hasContent from editor on mount
-  useEffect(() => {
-    if (!editor) return;
-    setHasContent(editor.state.doc.textContent.length > 0);
-  }, [editor]);
-
   useEffect(() => {
     if (!editor) return;
     const handleSelectionUpdate = () => {
       const { from, to } = editor.state.selection;
+      setHasContent(editor.state.doc.textContent.length > 0);
       updateTriggerPosition(to);
       if (from !== to) {
         const text = editor.state.doc.textBetween(from, to);
         setSelection({ text, from, to });
       } else {
         setSelection(null);
+        setShowInlineAI(false);
       }
     };
 
@@ -286,12 +307,6 @@ export function Editor({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  useEffect(() => {
-    if (!selection) {
-      setShowInlineAI(false);
-    }
-  }, [selection]);
-
   // Sync persistent selection highlight decoration with InlineAI visibility
   useEffect(() => {
     if (!editor?.view || !editor.state?.tr) return;
@@ -335,56 +350,22 @@ export function Editor({
   // Sync chatOpen prop with imperative panel handle
   useEffect(() => {
     startPanelTransition();
-    setChatPanelCollapsible(true);
-    setChatPanelAction(chatOpen ? "expand" : "collapse");
+    if (chatOpen) {
+      chatPanelRef.current?.expand();
+      return;
+    }
+    chatPanelRef.current?.collapse();
   }, [chatOpen, startPanelTransition]);
 
   // Sync editorOpen prop with imperative panel handle
   useEffect(() => {
     startPanelTransition();
-    setEditorPanelCollapsible(true);
-    setEditorPanelAction(editorOpen ? "expand" : "collapse");
+    if (editorOpen) {
+      editorPanelRef.current?.expand();
+      return;
+    }
+    editorPanelRef.current?.collapse();
   }, [editorOpen, startPanelTransition]);
-
-  // Execute chat panel action only after collapsible prop has been committed.
-  useEffect(() => {
-    if (!chatPanelAction) return;
-    const panel = chatPanelRef.current;
-    if (!panel) return;
-
-    if (chatPanelAction === "collapse") {
-      panel.collapse();
-      setChatPanelAction(null);
-      return;
-    }
-
-    panel.expand();
-    const timer = setTimeout(() => {
-      setChatPanelCollapsible(false);
-      setChatPanelAction(null);
-    }, 240);
-    return () => clearTimeout(timer);
-  }, [chatPanelAction]);
-
-  // Execute editor panel action only after collapsible prop has been committed.
-  useEffect(() => {
-    if (!editorPanelAction) return;
-    const panel = editorPanelRef.current;
-    if (!panel) return;
-
-    if (editorPanelAction === "collapse") {
-      panel.collapse();
-      setEditorPanelAction(null);
-      return;
-    }
-
-    panel.expand();
-    const timer = setTimeout(() => {
-      setEditorPanelCollapsible(false);
-      setEditorPanelAction(null);
-    }, 240);
-    return () => clearTimeout(timer);
-  }, [editorPanelAction]);
 
   // Focus after expand
   useEffect(() => {
@@ -409,6 +390,14 @@ export function Editor({
     }
   }, [editorOpen, editor]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem(
+      timelineStateKey(documentId),
+      showTimeline ? "1" : "0"
+    );
+  }, [documentId, showTimeline]);
+
   // ⌘L keyboard shortcut to toggle AI chat panel
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -421,14 +410,21 @@ export function Editor({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onChatToggle]);
 
-  const handleAIResponse = useCallback(
+  const handleRecentAIResponse = useCallback(
     (responseText: string) => {
       if (!editor) return;
       if (!responseText.trim()) return;
       editor.commands.addRecentAIResponse?.(responseText);
+    },
+    [editor]
+  );
+
+  const handleAIResponse = useCallback(
+    (responseText: string) => {
+      handleRecentAIResponse(responseText);
       void createAIRevision();
     },
-    [editor, createAIRevision]
+    [handleRecentAIResponse, createAIRevision]
   );
 
   // Editor content JSX — shared between expanded panel and hidden mount
@@ -533,7 +529,7 @@ export function Editor({
           defaultSize={editorOpen ? "65%" : "36px"}
           minSize={editorMinSize}
           maxSize={editorMaxSize}
-          collapsible={editorPanelCollapsible}
+          collapsible
           collapsedSize="36px"
         >
           {editorOpen ? (
@@ -556,18 +552,18 @@ export function Editor({
           defaultSize={chatOpen ? "35%" : "36px"}
           minSize={chatMinSize}
           maxSize={chatMaxSize}
-          collapsible={chatPanelCollapsible}
+          collapsible
           collapsedSize="36px"
           onResize={() => updateTriggerPosition()}
         >
           {chatOpen ? (
             <ChatPanel
               documentId={documentId}
-              documentTitle={title}
               provider={provider}
               model={model}
               getDocumentContent={getDocumentContent}
               initialThreads={initialChatThreads}
+              onAssistantResponse={handleRecentAIResponse}
               onClose={() => onChatToggle?.()}
             />
           ) : (
