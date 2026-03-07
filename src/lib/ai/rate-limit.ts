@@ -9,18 +9,26 @@ export async function checkRateLimit(
 ): Promise<{ allowed: boolean }> {
   const windowStart = new Date(Date.now() - WINDOW_MS);
 
-  // Atomic: insert the request log row AND count the window in a single statement
+  // Atomic: count first, then insert only if under the limit.
   const result = await db.execute(sql`
-    WITH inserted AS (
+    WITH recent AS (
+      SELECT count(*)::int AS count
+      FROM ai_request_log
+      WHERE user_id = ${userId}
+        AND created_at >= ${windowStart}
+    ),
+    inserted AS (
       INSERT INTO ai_request_log (id, user_id, created_at)
       VALUES (gen_random_uuid(), ${userId}, now())
+      FROM recent
+      WHERE recent.count < ${RATE_LIMIT}
+      RETURNING 1
     )
-    SELECT count(*)::int AS count
-    FROM ai_request_log
-    WHERE user_id = ${userId}
-      AND created_at >= ${windowStart}
+    SELECT
+      (SELECT count FROM recent) AS count,
+      EXISTS(SELECT 1 FROM inserted) AS inserted
   `);
 
-  const count = (result.rows[0] as { count: number })?.count ?? 0;
-  return { allowed: count < RATE_LIMIT };
+  const row = (result.rows[0] as { inserted?: boolean }) ?? {};
+  return { allowed: row.inserted === true };
 }

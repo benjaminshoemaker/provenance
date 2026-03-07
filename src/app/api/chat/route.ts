@@ -1,14 +1,17 @@
 import { streamText, smoothStream, convertToModelMessages } from "ai";
 import { auth } from "@/auth";
-import { getModel, isValidModel } from "@/lib/ai/providers";
+import { getModel } from "@/lib/ai/providers";
 import { getSystemPrompt } from "@/lib/ai/system-prompts";
 import { checkRateLimit } from "@/lib/ai/rate-limit";
+import { resolveProviderModel } from "@/lib/ai/resolve-provider-model";
 import { chatRequestSchema } from "@/lib/ai/schemas";
+import { readJsonBody, ReadJsonBodyError } from "@/lib/api/read-json-body";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
 export const maxDuration = 60;
+const MAX_CHAT_BODY_BYTES = 400_000;
 
 export async function POST(req: Request) {
   const session = await auth();
@@ -16,7 +19,15 @@ export async function POST(req: Request) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const body = await req.json();
+  let body: unknown;
+  try {
+    body = await readJsonBody(req, MAX_CHAT_BODY_BYTES);
+  } catch (error) {
+    if (error instanceof ReadJsonBodyError) {
+      return Response.json({ error: error.message }, { status: error.status });
+    }
+    throw error;
+  }
 
   const parsed = chatRequestSchema.safeParse(body);
   if (!parsed.success) {
@@ -27,25 +38,32 @@ export async function POST(req: Request) {
   }
 
   const { messages, documentContext } = parsed.data;
-  let provider = parsed.data.provider;
-  let model = parsed.data.model;
+  const needsUserPrefs = !parsed.data.provider || !parsed.data.model;
+  let userRow:
+    | { aiProvider: string | null; aiModel: string | null }
+    | undefined;
 
-  // Read user's aiProvider preference as fallback
-  if (!provider) {
-    const [userRow] = await db
+  if (needsUserPrefs) {
+    [userRow] = await db
       .select({ aiProvider: users.aiProvider, aiModel: users.aiModel })
       .from(users)
       .where(eq(users.id, session.user.id));
-    provider = (userRow?.aiProvider as "anthropic" | "openai") || "anthropic";
-    if (!model) model = userRow?.aiModel || undefined;
   }
 
-  if (model && !isValidModel(provider, model)) {
+  const providerModel = resolveProviderModel({
+    requestedProvider: parsed.data.provider,
+    requestedModel: parsed.data.model,
+    storedProvider: userRow?.aiProvider,
+    storedModel: userRow?.aiModel,
+  });
+
+  if (providerModel.invalidRequestedModel) {
     return Response.json(
       { error: "Invalid model for provider" },
       { status: 400 }
     );
   }
+  const { provider, model } = providerModel;
 
   const { allowed } = await checkRateLimit(session.user.id);
   if (!allowed) {
@@ -66,15 +84,19 @@ export async function POST(req: Request) {
     const result = streamText({
       model: aiModel,
       system,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      messages: await convertToModelMessages(messages as any),
+      messages: await convertToModelMessages(
+        messages as Parameters<typeof convertToModelMessages>[0]
+      ),
       experimental_transform: smoothStream({ chunking: "word" }),
     });
 
     return result.toUIMessageStreamResponse({
       sendReasoning: false,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      messageMetadata: ({ part }: any) => {
+      messageMetadata: ({
+        part,
+      }: {
+        part: { type: string; finishReason?: string; usage?: { totalTokens?: number } };
+      }) => {
         if (part.type === "finish") {
           return {
             provider,
