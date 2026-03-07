@@ -77,6 +77,38 @@ describe("logPasteEvent", () => {
     );
   });
 
+  it("should persist sourceId as paste id when provided", async () => {
+    const sourceId = "24e980f1-c555-4fc0-ac8f-6fc0c8f533f0";
+
+    await logPasteEvent({
+      sourceId,
+      documentId: "doc-1",
+      content: "pasted text",
+      sourceType: "external",
+      characterCount: 11,
+    });
+
+    expect(mocks.mockValues).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: sourceId,
+      })
+    );
+  });
+
+  it("should reject invalid sourceId values", async () => {
+    await expect(
+      logPasteEvent({
+        sourceId: "not-a-uuid",
+        documentId: "doc-1",
+        content: "pasted text",
+        sourceType: "external",
+        characterCount: 11,
+      })
+    ).rejects.toThrow("Invalid sourceId");
+
+    expect(mocks.mockInsert).not.toHaveBeenCalled();
+  });
+
   it("should require a valid sessionId when provided", async () => {
     mocks.mockWhere.mockResolvedValue([]);
 

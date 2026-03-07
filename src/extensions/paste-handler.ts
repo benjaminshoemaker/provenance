@@ -1,11 +1,14 @@
 import { Extension } from "@tiptap/core";
 import { Plugin, PluginKey } from "@tiptap/pm/state";
 import { DOMParser as ProseMirrorDOMParser } from "@tiptap/pm/model";
-import { nanoid } from "nanoid";
 
 export interface PasteHandlerOptions {
   documentId: string;
-  onExternalPaste?: (content: string, characterCount: number) => void;
+  onExternalPaste?: (
+    content: string,
+    characterCount: number,
+    sourceId: string
+  ) => void;
   recentAIResponses?: string[];
   maxRecentAIResponses?: number;
 }
@@ -17,6 +20,19 @@ export function classifyPaste(
   return recentAIResponses.some((r) => r === clipboardText)
     ? "ai_internal"
     : "external";
+}
+
+function createSourceId(): string {
+  if (globalThis.crypto?.randomUUID) {
+    return globalThis.crypto.randomUUID();
+  }
+
+  // RFC4122-ish fallback for older runtimes.
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (char) => {
+    const rand = Math.floor(Math.random() * 16);
+    const value = char === "x" ? rand : (rand & 0x3) | 0x8;
+    return value.toString(16);
+  });
 }
 
 declare module "@tiptap/core" {
@@ -95,9 +111,10 @@ export const PasteHandler = Extension.create<PasteHandlerOptions>({
       new Plugin({
         key: new PluginKey("pasteHandler"),
         props: {
-          handlePaste(view, event) {
+          handlePaste(view, event, slice) {
             const clipboardText =
-              event.clipboardData?.getData("text/plain");
+              event.clipboardData?.getData("text/plain") ??
+              slice.content.textBetween(0, slice.content.size, "\n\n");
             if (!clipboardText) return false;
 
             const { schema } = view.state;
@@ -111,7 +128,7 @@ export const PasteHandler = Extension.create<PasteHandlerOptions>({
 
             const originType =
               classification === "ai_internal" ? "ai" : "external_paste";
-            const sourceId = nanoid();
+            const sourceId = createSourceId();
             const originMark = originMarkType.create({
               type: originType,
               sourceId,
@@ -123,18 +140,18 @@ export const PasteHandler = Extension.create<PasteHandlerOptions>({
             // Try to parse HTML to preserve formatting (headings, bold, etc.)
             const clipboardHtml =
               event.clipboardData?.getData("text/html");
-            let slice;
+            let parsedSlice = slice;
             if (clipboardHtml) {
               const wrapper = document.createElement("div");
               wrapper.innerHTML = clipboardHtml;
-              slice = ProseMirrorDOMParser.fromSchema(schema).parseSlice(
+              parsedSlice = ProseMirrorDOMParser.fromSchema(schema).parseSlice(
                 wrapper
               );
             }
 
-            if (slice && slice.content.childCount > 0) {
+            if (parsedSlice && parsedSlice.content.childCount > 0) {
               // Insert the parsed rich content, then apply origin mark to the range
-              const tr = view.state.tr.replaceRange(from, to, slice);
+              const tr = view.state.tr.replaceRange(from, to, parsedSlice);
               const insertEnd = tr.mapping.map(to);
               tr.addMark(from, insertEnd, originMark);
               view.dispatch(tr);
@@ -146,7 +163,7 @@ export const PasteHandler = Extension.create<PasteHandlerOptions>({
             }
 
             if (classification !== "ai_internal") {
-              onExternalPaste?.(clipboardText, clipboardText.length);
+              onExternalPaste?.(clipboardText, clipboardText.length, sourceId);
             }
 
             return true;

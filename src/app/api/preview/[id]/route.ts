@@ -55,6 +55,7 @@ export async function GET(
       title: document.title,
       content: plainText,
       interactions: interactions.map((i) => ({
+        sourceId: i.id,
         mode: i.mode,
         prompt: i.prompt,
         response: i.response,
@@ -62,6 +63,7 @@ export async function GET(
         createdAt: i.createdAt,
       })),
       pasteEvents: pastes.map((p) => ({
+        sourceId: p.id,
         sourceType: p.sourceType,
         characterCount: p.characterCount,
         createdAt: p.createdAt,

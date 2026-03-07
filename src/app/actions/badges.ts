@@ -92,6 +92,7 @@ export async function generateBadge(documentId: string) {
   // Freeze the audit trail
   const auditTrail = {
     ai_interactions: interactions.map((i) => ({
+      sourceId: i.id,
       mode: i.mode,
       prompt: i.prompt,
       selectedText: i.selectedText,
@@ -102,6 +103,7 @@ export async function generateBadge(documentId: string) {
       createdAt: i.createdAt,
     })),
     paste_events: pastes.map((p) => ({
+      sourceId: p.id,
       sourceType: p.sourceType,
       characterCount: p.characterCount,
       createdAt: p.createdAt,

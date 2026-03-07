@@ -126,6 +126,44 @@ describe("logAIInteraction", () => {
     expect(result).toHaveProperty("id", "ai-1");
   });
 
+  it("should persist sourceId as interaction id when provided", async () => {
+    const sourceId = "8ed7bd6e-4b6b-43ef-bd8f-279891763f8a";
+
+    await logAIInteraction({
+      sourceId,
+      documentId: "doc-1",
+      mode: "inline",
+      prompt: "Improve this",
+      response: "Here is improved text",
+      action: "accepted",
+      provider: "anthropic",
+      model: "claude-sonnet-4-5-20250929",
+    });
+
+    expect(mocks.mockValues).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: sourceId,
+      })
+    );
+  });
+
+  it("should reject invalid sourceId values", async () => {
+    await expect(
+      logAIInteraction({
+        sourceId: "not-a-uuid",
+        documentId: "doc-1",
+        mode: "inline",
+        prompt: "Improve this",
+        response: "Here is improved text",
+        action: "accepted",
+        provider: "anthropic",
+        model: "claude-sonnet-4-5-20250929",
+      })
+    ).rejects.toThrow("Invalid sourceId");
+
+    expect(mocks.mockInsert).not.toHaveBeenCalled();
+  });
+
   it("should require valid sessionId when provided", async () => {
     mocks.mockWhere.mockResolvedValue([]);
 

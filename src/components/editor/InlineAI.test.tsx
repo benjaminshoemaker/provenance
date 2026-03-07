@@ -28,10 +28,6 @@ vi.mock("@/app/actions/ai-interactions", () => ({
   logAIInteraction: mocks.mockLogAIInteraction,
 }));
 
-vi.mock("nanoid", () => ({
-  nanoid: vi.fn(() => "mock-nanoid-123"),
-}));
-
 import { InlineAI } from "./InlineAI";
 
 function createMockEditor() {
@@ -247,27 +243,32 @@ Second rewrite option.`;
     expect(editor._chainObj.insertContentAt).toHaveBeenCalledWith(
       { from: 10, to: 23 },
       [
-        {
+        expect.objectContaining({
           type: "text",
           text: "improved AI text",
           marks: [
-            {
+            expect.objectContaining({
               type: "origin",
-              attrs: {
+              attrs: expect.objectContaining({
                 type: "ai",
-                sourceId: "mock-nanoid-123",
+                sourceId: expect.stringMatching(
+                  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+                ),
                 originalLength: 16,
                 originalText: "improved AI text",
-              },
-            },
+              }),
+            }),
           ],
-        },
+        }),
       ]
     );
     expect(mocks.mockLogAIInteraction).toHaveBeenCalledWith(
       expect.objectContaining({
         action: "accepted",
         response: "improved AI text",
+        sourceId: expect.stringMatching(
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+        ),
       })
     );
   });

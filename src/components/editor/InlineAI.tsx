@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { useCompletion } from "@ai-sdk/react";
 import type { Editor } from "@tiptap/react";
-import { nanoid } from "nanoid";
 import { logAIInteraction } from "@/app/actions/ai-interactions";
 import { Sparkles, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -67,6 +66,18 @@ function changeRatio(original: string, suggestion: string): number {
 }
 
 const DIFF_THRESHOLD = 0.25;
+
+function createSourceId(): string {
+  if (globalThis.crypto?.randomUUID) {
+    return globalThis.crypto.randomUUID();
+  }
+
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (char) => {
+    const rand = Math.floor(Math.random() * 16);
+    const value = char === "x" ? rand : (rand & 0x3) | 0x8;
+    return value.toString(16);
+  });
+}
 
 function cleanSuggestionText(text: string): string {
   return text
@@ -134,7 +145,6 @@ export function InlineAI({
   const [lastPrompt, setLastPrompt] = useState("");
   const [activeAction, setActiveAction] = useState("");
   const [selectedChoiceId, setSelectedChoiceId] = useState("original");
-  const [choices, setChoices] = useState<Choice[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const { completion, complete, isLoading, setCompletion, stop } =
@@ -152,12 +162,11 @@ export function InlineAI({
       },
     });
 
-  // Build choices when completion arrives
-  useEffect(() => {
-    if (!completion) return;
+  const choices = useMemo<Choice[]>(() => {
+    if (!completion) return [];
     const [suggestionOne, suggestionTwo] = parseSuggestions(completion);
 
-    setChoices([
+    return [
       {
         id: "original",
         label: "YOUR ORIGINAL",
@@ -178,7 +187,7 @@ export function InlineAI({
         text: suggestionTwo,
         isOriginal: false,
       },
-    ]);
+    ];
   }, [completion, selectedText]);
 
   const handleSubmit = useCallback(
@@ -235,7 +244,21 @@ SUGGESTION 2:
     }
 
     // Accepted AI suggestion
-    const sourceId = nanoid();
+    const sourceId = createSourceId();
+
+    await logAIInteraction({
+      sourceId,
+      documentId,
+      mode: "inline",
+      prompt: lastPrompt,
+      selectedText,
+      response: selected.text,
+      action: "accepted",
+      provider,
+      model: model ?? "",
+      charactersInserted: selected.text.length,
+    });
+
     editor
       .chain()
       .focus()
@@ -257,18 +280,6 @@ SUGGESTION 2:
         },
       ])
       .run();
-
-    await logAIInteraction({
-      documentId,
-      mode: "inline",
-      prompt: lastPrompt,
-      selectedText,
-      response: selected.text,
-      action: "accepted",
-      provider,
-      model: model ?? "",
-      charactersInserted: selected.text.length,
-    });
 
     onAIResponse?.(selected.text);
     setCompletion("");

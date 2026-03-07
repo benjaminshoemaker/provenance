@@ -5,7 +5,11 @@ import { aiInteractions, writingSessions } from "@/lib/db/schema";
 import { requireDocumentOwner } from "@/lib/auth/authorize";
 import { and, eq } from "drizzle-orm";
 
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 interface LogAIInteractionData {
+  sourceId?: string;
   documentId: string;
   sessionId?: string;
   mode: string;
@@ -20,6 +24,10 @@ interface LogAIInteractionData {
 }
 
 export async function logAIInteraction(data: LogAIInteractionData) {
+  if (data.sourceId && !UUID_RE.test(data.sourceId)) {
+    throw new Error("Invalid sourceId");
+  }
+
   const { user } = await requireDocumentOwner(data.documentId);
 
   if (data.sessionId) {
@@ -42,6 +50,7 @@ export async function logAIInteraction(data: LogAIInteractionData) {
   const [interaction] = await db
     .insert(aiInteractions)
     .values({
+      ...(data.sourceId ? { id: data.sourceId } : {}),
       documentId: data.documentId,
       sessionId: data.sessionId,
       mode: data.mode,

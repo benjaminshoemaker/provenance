@@ -5,7 +5,11 @@ import { pasteEvents, writingSessions } from "@/lib/db/schema";
 import { requireDocumentOwner } from "@/lib/auth/authorize";
 import { and, eq } from "drizzle-orm";
 
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 interface LogPasteEventData {
+  sourceId?: string;
   documentId: string;
   sessionId?: string;
   content: string;
@@ -14,6 +18,10 @@ interface LogPasteEventData {
 }
 
 export async function logPasteEvent(data: LogPasteEventData) {
+  if (data.sourceId && !UUID_RE.test(data.sourceId)) {
+    throw new Error("Invalid sourceId");
+  }
+
   const { user } = await requireDocumentOwner(data.documentId);
 
   if (data.sessionId) {
@@ -36,6 +44,7 @@ export async function logPasteEvent(data: LogPasteEventData) {
   const [event] = await db
     .insert(pasteEvents)
     .values({
+      ...(data.sourceId ? { id: data.sourceId } : {}),
       documentId: data.documentId,
       sessionId: data.sessionId,
       content: data.content,
