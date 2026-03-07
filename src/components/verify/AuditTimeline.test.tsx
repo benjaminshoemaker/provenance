@@ -66,7 +66,7 @@ describe("AuditTimeline", () => {
   });
 
   it("should filter events when filter chip is clicked", () => {
-    const { container } = render(<AuditTimeline {...defaultProps} />);
+    render(<AuditTimeline {...defaultProps} />);
 
     // Click AI filter within filter chips area
     const filterChips = screen.getByTestId("filter-chips");

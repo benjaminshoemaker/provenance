@@ -26,6 +26,20 @@ export function ScopeStatement() {
           is frozen at the time of badge generation and cannot be modified.
         </div>
       </details>
+
+      <details className="rounded-lg border border-border">
+        <summary className="cursor-pointer px-4 py-3 text-sm font-semibold">
+          What is public vs private
+        </summary>
+        <div className="border-t px-4 py-3 text-sm text-muted-foreground">
+          Public verification pages show the frozen document snapshot, AI
+          interaction logs used for provenance, paste/session metadata, and
+          computed statistics. Private account data, OAuth credentials,
+          provider secrets, and unpublished drafts are never exposed on the
+          public badge page. Document owners control when a badge is published
+          and can take badges down.
+        </div>
+      </details>
     </div>
   );
 }

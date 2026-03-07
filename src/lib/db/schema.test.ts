@@ -132,22 +132,24 @@ describe("Domain tables", () => {
 describe("Type inference", () => {
   it("should export select and insert types for all domain tables", () => {
     // These are compile-time checks — if types don't exist, TS will fail
-    const _user: User = {} as User;
-    const _newUser: NewUser = {} as NewUser;
-    const _document: Document = {} as Document;
-    const _newDocument: NewDocument = {} as NewDocument;
-    const _revision: Revision = {} as Revision;
-    const _newRevision: NewRevision = {} as NewRevision;
-    const _aiInteraction: AiInteraction = {} as AiInteraction;
-    const _newAiInteraction: NewAiInteraction = {} as NewAiInteraction;
-    const _pasteEvent: PasteEvent = {} as PasteEvent;
-    const _newPasteEvent: NewPasteEvent = {} as NewPasteEvent;
-    const _writingSession: WritingSession = {} as WritingSession;
-    const _newWritingSession: NewWritingSession = {} as NewWritingSession;
-    const _badge: Badge = {} as Badge;
-    const _newBadge: NewBadge = {} as NewBadge;
+    const typeChecks = {
+      user: {} as User,
+      newUser: {} as NewUser,
+      document: {} as Document,
+      newDocument: {} as NewDocument,
+      revision: {} as Revision,
+      newRevision: {} as NewRevision,
+      aiInteraction: {} as AiInteraction,
+      newAiInteraction: {} as NewAiInteraction,
+      pasteEvent: {} as PasteEvent,
+      newPasteEvent: {} as NewPasteEvent,
+      writingSession: {} as WritingSession,
+      newWritingSession: {} as NewWritingSession,
+      badge: {} as Badge,
+      newBadge: {} as NewBadge,
+    };
 
-    expect(true).toBe(true);
+    expect(Object.keys(typeChecks)).toHaveLength(14);
   });
 
   it("should have text type for user.id (cuid2, not uuid)", () => {

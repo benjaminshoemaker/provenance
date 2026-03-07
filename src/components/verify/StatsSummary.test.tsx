@@ -25,7 +25,7 @@ describe("StatsSummary", () => {
   });
 
   it("should render three-way stacked bar", () => {
-    const { container } = render(<StatsSummary stats={defaultStats} />);
+    render(<StatsSummary stats={defaultStats} />);
 
     const bar = screen.getByTestId("stacked-bar");
     expect(bar).toBeTruthy();

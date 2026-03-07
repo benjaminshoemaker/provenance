@@ -1,10 +1,15 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
+import type { HTMLAttributes, ReactNode } from "react";
 import { ResizableHandle } from "./resizable";
 
 // Mock react-resizable-panels Separator to render a simple div
 vi.mock("react-resizable-panels", () => ({
-  Separator: ({ children, className, ...props }: any) => (
+  Separator: ({
+    children,
+    className,
+    ...props
+  }: HTMLAttributes<HTMLDivElement> & { children?: ReactNode }) => (
     <div data-testid="separator" className={className} {...props}>
       {children}
     </div>

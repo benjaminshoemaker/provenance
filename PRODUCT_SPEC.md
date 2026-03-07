@@ -259,6 +259,22 @@ Provenance is a **transparency layer, not a gatekeeper**.
 - **REQ-044:** Only the document author can edit or delete their documents.
 - **REQ-045:** Granular permissions on verification pages (e.g., hiding certain interactions) are explicitly out of scope for MVP.
 
+### Public Data Boundary (MVP)
+
+- Public on verification pages:
+  - Frozen document text at badge-generation time
+  - AI interaction records included in the audit trail (prompt, response, action, timestamp)
+  - Paste/session/revision metadata included in the audit trail
+  - Summary provenance metrics (AI%, interaction counts, session counts, active time)
+- Private (never rendered on public verification pages):
+  - OAuth credentials and provider tokens
+  - API keys and infrastructure secrets
+  - Account-internal metadata not required for provenance verification
+  - Non-badged drafts and their audit trails
+- Operational policy:
+  - Badge generation is an explicit publish action for provenance data (REQ-049 warning/confirmation)
+  - Emergency takedown (REQ-050) removes public visibility while preserving internal records for compliance
+
 ---
 
 ## What Is NOT in MVP

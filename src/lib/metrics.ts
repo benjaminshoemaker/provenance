@@ -23,9 +23,7 @@ interface AiInteractionLike {
 
 /** Count characters as Unicode code points, not UTF-16 code units. */
 function countChars(text: string): number {
-  let count = 0;
-  for (const _ of text) count++;
-  return count;
+  return Array.from(text).length;
 }
 
 function walkTextNodes(

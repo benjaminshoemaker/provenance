@@ -36,15 +36,14 @@ interface TimelineData {
 
 export function TimelineModal({ documentId, isOpen, onClose }: TimelineModalProps) {
   const [data, setData] = useState<TimelineData | null>(null);
-  const [loading, setLoading] = useState(isOpen);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!isOpen) {
-      setLoading(false);
-      return;
-    }
+    if (!isOpen) return;
     let cancelled = false;
-    setLoading(true);
+    queueMicrotask(() => {
+      if (!cancelled) setLoading(true);
+    });
     fetch(`/api/documents/${documentId}/timeline`)
       .then((res) => (res.ok ? res.json() : null))
       .then((d) => { if (!cancelled) setData(d); })

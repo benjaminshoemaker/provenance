@@ -26,13 +26,13 @@ describe("middleware", () => {
 
   it("should redirect unauthenticated requests to /login for /dashboard routes", async () => {
     // Test the middleware config matcher
-    const { config } = await import("./middleware");
+    const { config } = await import("./proxy");
     expect(config.matcher).toContain("/dashboard/:path*");
     expect(config.matcher).toContain("/editor/:path*");
   });
 
   it("should protect both /dashboard and /editor/* routes", async () => {
-    const { config } = await import("./middleware");
+    const { config } = await import("./proxy");
     const matchers = config.matcher;
 
     expect(matchers).toEqual(
@@ -42,7 +42,7 @@ describe("middleware", () => {
 
   it("should export middleware that uses auth.config pattern", async () => {
     // Verify the middleware module can be imported and has the expected structure
-    const middlewareModule = await import("./middleware");
+    const middlewareModule = await import("./proxy");
 
     // The module should export a config with matchers
     expect(middlewareModule.config).toBeDefined();

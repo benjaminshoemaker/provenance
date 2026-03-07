@@ -228,7 +228,6 @@ function DaySection({
                     <EventRow
                       key={key}
                       event={event}
-                      eventKey={key}
                       isExpanded={expandedKeys.has(key)}
                       onToggle={() => onToggleExpand(key)}
                     />
@@ -245,12 +244,10 @@ function DaySection({
 
 function EventRow({
   event,
-  eventKey,
   isExpanded,
   onToggle,
 }: {
   event: TimelineEvent;
-  eventKey: string;
   isExpanded: boolean;
   onToggle: () => void;
 }) {
