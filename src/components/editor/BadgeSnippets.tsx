@@ -39,6 +39,7 @@ export function BadgeSnippets({
             variant="ghost"
             size="sm"
             onClick={() => copyToClipboard(badgeHtml, "html")}
+            data-testid="copy-html-snippet"
           >
             {copied === "html" ? "Copied!" : "Copy"}
           </Button>
@@ -55,6 +56,7 @@ export function BadgeSnippets({
             variant="ghost"
             size="sm"
             onClick={() => copyToClipboard(badgeMarkdown, "markdown")}
+            data-testid="copy-markdown-snippet"
           >
             {copied === "markdown" ? "Copied!" : "Copy"}
           </Button>

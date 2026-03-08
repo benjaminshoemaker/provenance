@@ -4,7 +4,20 @@
     "lint": "npm run lint",
     "build": "npm run build"
   },
+  "devServer": {
+    "command": "npm run dev:e2e",
+    "url": "http://localhost:3000",
+    "startupSeconds": 5
+  },
+  "auth": {
+    "strategy": "storage-state",
+    "loginRoute": "/login/e2e",
+    "storageState": ".claude/verification/auth-state-author-a.json"
+  },
   "browser": {
-    "tool": "auto"
+    "tool": "auto",
+    "headless": true,
+    "timeout": 30000,
+    "navigationTimeout": 60000
   }
 }

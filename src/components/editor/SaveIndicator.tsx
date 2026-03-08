@@ -21,7 +21,7 @@ export function SaveIndicator({ status, onRetry }: SaveIndicatorProps) {
   };
 
   return (
-    <span className={`text-sm ${colors[status]}`}>
+    <span className={`text-sm ${colors[status]}`} data-testid="save-indicator">
       {labels[status]}
       {status === "error" && onRetry && (
         <button

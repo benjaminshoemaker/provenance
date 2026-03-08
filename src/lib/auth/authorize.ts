@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { documents } from "@/lib/db/schema";
+import { documents, users } from "@/lib/db/schema";
 import { eq, and, isNull } from "drizzle-orm";
 
 export async function requireAuth() {
@@ -10,7 +10,77 @@ export async function requireAuth() {
     throw new Error("Unauthorized");
   }
 
-  return { ...session.user, id: session.user.id };
+  const [existingUser] = await db
+    .select({
+      id: users.id,
+      email: users.email,
+      name: users.name,
+      image: users.image,
+    })
+    .from(users)
+    .where(eq(users.id, session.user.id));
+
+  if (existingUser) {
+    return {
+      ...session.user,
+      id: existingUser.id,
+      email: existingUser.email ?? session.user.email ?? null,
+      name: existingUser.name ?? session.user.name ?? null,
+      image: existingUser.image ?? session.user.image ?? null,
+    };
+  }
+
+  if (!session.user.email) {
+    throw new Error("Unauthorized");
+  }
+
+  const [existingUserByEmail] = await db
+    .select({
+      id: users.id,
+      email: users.email,
+      name: users.name,
+      image: users.image,
+    })
+    .from(users)
+    .where(eq(users.email, session.user.email));
+
+  if (existingUserByEmail) {
+    return {
+      ...session.user,
+      id: existingUserByEmail.id,
+      email: existingUserByEmail.email ?? session.user.email,
+      name: existingUserByEmail.name ?? session.user.name ?? null,
+      image: existingUserByEmail.image ?? session.user.image ?? null,
+    };
+  }
+
+  const [createdUser] = await db
+    .insert(users)
+    .values({
+      id: session.user.id,
+      email: session.user.email,
+      name: session.user.name,
+      image: session.user.image,
+      emailVerified: new Date(),
+    })
+    .returning({
+      id: users.id,
+      email: users.email,
+      name: users.name,
+      image: users.image,
+    });
+
+  if (!createdUser) {
+    throw new Error("Unauthorized");
+  }
+
+  return {
+    ...session.user,
+    id: createdUser.id,
+    email: createdUser.email ?? session.user.email,
+    name: createdUser.name ?? session.user.name ?? null,
+    image: createdUser.image ?? session.user.image ?? null,
+  };
 }
 
 export async function requireDocumentOwner(documentId: string) {

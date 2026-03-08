@@ -81,8 +81,7 @@ export default async function DashboardPage() {
 
   const createAction = async () => {
     "use server";
-    const doc = await createDocument();
-    redirect(`/editor/${doc.id}`);
+    return createDocument();
   };
 
   return (

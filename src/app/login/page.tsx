@@ -19,7 +19,12 @@ export default function LoginPage() {
               await signIn("google", { redirectTo: "/dashboard" });
             }}
           >
-            <Button type="submit" variant="outline" className="w-full">
+            <Button
+              type="submit"
+              variant="outline"
+              className="w-full"
+              data-testid="login-google"
+            >
               Continue with Google
             </Button>
           </form>
@@ -29,7 +34,12 @@ export default function LoginPage() {
               await signIn("github", { redirectTo: "/dashboard" });
             }}
           >
-            <Button type="submit" variant="outline" className="w-full">
+            <Button
+              type="submit"
+              variant="outline"
+              className="w-full"
+              data-testid="login-github"
+            >
               Continue with GitHub
             </Button>
           </form>

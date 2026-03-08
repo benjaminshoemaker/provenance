@@ -206,18 +206,25 @@ function PreviewContent({ params }: PreviewPageProps) {
       </div>
 
       {badgeResult ? (
-        <section className="rounded-lg border border-green-500 bg-green-50 p-4 dark:bg-green-950">
+        <section
+          className="rounded-lg border border-green-500 bg-green-50 p-4 dark:bg-green-950"
+          data-testid="badge-result"
+        >
           <h2 className="mb-3 text-lg font-semibold text-green-800 dark:text-green-200">
             Badge Generated!
           </h2>
           <p className="mb-3 text-sm text-green-700 dark:text-green-300">
             Verification URL:{" "}
-            <a href={`/verify/${badgeResult.verificationId}`} className="underline">
+            <a
+              href={`/verify/${badgeResult.verificationId}`}
+              className="underline"
+              data-testid="verification-url"
+            >
               /verify/{badgeResult.verificationId}
             </a>
           </p>
           <div className="space-y-3">
-            <div>
+            <div data-testid="badge-html-snippet">
               <label className="mb-1 block text-xs font-medium text-green-800 dark:text-green-200">
                 HTML Embed
               </label>
@@ -225,7 +232,7 @@ function PreviewContent({ params }: PreviewPageProps) {
                 {badgeResult.badgeHtml}
               </pre>
             </div>
-            <div>
+            <div data-testid="badge-markdown-snippet">
               <label className="mb-1 block text-xs font-medium text-green-800 dark:text-green-200">
                 Markdown Embed
               </label>
@@ -242,6 +249,7 @@ function PreviewContent({ params }: PreviewPageProps) {
             size="lg"
             onClick={handleConfirm}
             disabled={generating}
+            data-testid="confirm-generate-badge"
           >
             {generating ? "Generating..." : "Confirm & Generate Badge"}
           </Button>

@@ -435,6 +435,7 @@ export function Editor({
       tabIndex={-1}
       className="relative flex h-full w-full flex-col outline-none"
       role="main"
+      data-testid="editor-main"
     >
       <Toolbar
         editor={editor}
@@ -461,6 +462,7 @@ export function Editor({
         <div ref={proseAreaRef} className="mx-auto max-w-4xl px-8 py-8">
           <EditorContent
             editor={editor}
+            data-testid="editor-surface"
             className="prose prose-neutral dark:prose-invert max-w-none focus-within:outline-none [&_.tiptap]:min-h-[60vh] [&_.tiptap]:outline-none"
           />
         </div>

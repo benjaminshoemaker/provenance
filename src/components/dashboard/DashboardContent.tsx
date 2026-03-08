@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Sidebar, type SidebarFilter } from "./Sidebar";
 import { DocumentRow } from "./DocumentRow";
@@ -25,7 +25,7 @@ interface DocumentData {
 interface DashboardContentProps {
   documents: DocumentData[];
   referenceNowMs: number;
-  createAction: () => Promise<void>;
+  createAction: () => Promise<{ id: string }>;
 }
 
 export function DashboardContent({
@@ -33,16 +33,32 @@ export function DashboardContent({
   referenceNowMs,
   createAction,
 }: DashboardContentProps) {
+  const [isClientReady, setIsClientReady] = useState(false);
   const [sidebarFilter, setSidebarFilter] = useState<SidebarFilter>("all");
   const [chipFilter, setChipFilter] = useState<FilterChip>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    setIsClientReady(true);
+  }, []);
 
   const handleDelete = useCallback(async (id: string) => {
     if (!window.confirm("Are you sure you want to delete this document?")) return;
     await deleteDocument(id);
     router.refresh();
   }, [router]);
+
+  const handleCreate = useCallback(async () => {
+    try {
+      setIsCreating(true);
+      const document = await createAction();
+      router.push(`/editor/${document.id}`);
+    } finally {
+      setIsCreating(false);
+    }
+  }, [createAction, router]);
 
   const sevenDaysAgo = referenceNowMs - 7 * 24 * 60 * 60 * 1000;
 
@@ -85,14 +101,22 @@ export function DashboardContent({
         onSettingsClick={() => router.push("/settings")}
       />
 
-      <main className="flex-1 overflow-auto p-6">
+      <main
+        className="flex-1 overflow-auto p-6"
+        data-testid="dashboard-content"
+        data-ready={isClientReady ? "true" : "false"}
+      >
         <div className="mb-6 flex items-center justify-between">
           <h1 className="text-2xl font-bold tracking-tight">Documents</h1>
-          <form action={createAction}>
-            <Button variant="provenance" type="submit">
-              New Document
-            </Button>
-          </form>
+          <Button
+            variant="provenance"
+            type="button"
+            onClick={handleCreate}
+            disabled={!isClientReady || isCreating}
+            data-testid="new-document"
+          >
+            {isCreating ? "Creating..." : "New Document"}
+          </Button>
         </div>
 
         {/* Search bar */}

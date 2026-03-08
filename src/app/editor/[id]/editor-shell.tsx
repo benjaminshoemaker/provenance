@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { Editor } from "@/components/editor/Editor";
 import { useAutoSave } from "@/hooks/useAutoSave";
 import { useSession } from "@/hooks/useSession";
@@ -80,7 +79,9 @@ export function EditorShell({
   );
   const { save, status, retry, isDirty } = useAutoSave({ documentId, title });
   const { markActive } = useSession({ documentId });
-  const router = useRouter();
+  const isDirtyRef = useRef(isDirty);
+
+  isDirtyRef.current = isDirty;
 
   const handleUpdate = useCallback(
     (json: Record<string, unknown>) => {
@@ -91,18 +92,28 @@ export function EditorShell({
   );
 
   useEffect(() => {
-    if (!isDirty) return;
     const handleClick = (e: MouseEvent) => {
+      if (!isDirtyRef.current) return;
+
       const anchor = (e.target as HTMLElement).closest("a");
       if (!anchor) return;
+
       const href = anchor.getAttribute("href");
       if (!href || href.startsWith("http") || href.startsWith("#")) return;
-      const confirmed = window.confirm("You have unsaved changes. Are you sure you want to leave?");
-      if (!confirmed) { e.preventDefault(); e.stopPropagation(); }
+
+      const confirmed = window.confirm(
+        "You have unsaved changes. Are you sure you want to leave?"
+      );
+
+      if (!confirmed) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
     };
+
     document.addEventListener("click", handleClick, true);
     return () => document.removeEventListener("click", handleClick, true);
-  }, [isDirty, router]);
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -127,6 +138,7 @@ export function EditorShell({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           aria-label="Document title"
+          data-testid="document-title"
           className="flex-1 rounded-md bg-transparent px-1 text-lg font-semibold outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring/50"
           placeholder="Untitled"
         />
@@ -139,7 +151,7 @@ export function EditorShell({
           </Button>
         )}
         <Button variant="outline" size="sm" asChild>
-          <Link href={`/editor/${documentId}/preview`}>
+          <Link href={`/editor/${documentId}/preview`} data-testid="generate-badge">
             Generate Badge
           </Link>
         </Button>
