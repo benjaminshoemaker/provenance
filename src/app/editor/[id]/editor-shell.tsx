@@ -7,6 +7,8 @@ import { useSession } from "@/hooks/useSession";
 import { SaveIndicator } from "@/components/editor/SaveIndicator";
 import { BackLink } from "@/components/ui/BackLink";
 import { Button } from "@/components/ui/button";
+import { BadgeHistoryModal } from "@/components/editor/BadgeHistoryModal";
+import { Clock } from "lucide-react";
 import Link from "next/link";
 
 const PANEL_STATE_VERSION = 1;
@@ -58,6 +60,7 @@ interface EditorShellProps {
   aiProvider: string;
   aiModel: string | null;
   latestBadgeVerificationId?: string | null;
+  badgeCount?: number;
   initialChatThreads?: ThreadSummary[];
 }
 
@@ -68,9 +71,11 @@ export function EditorShell({
   aiProvider,
   aiModel,
   latestBadgeVerificationId,
+  badgeCount = 0,
   initialChatThreads = [],
 }: EditorShellProps) {
   const [title, setTitle] = useState(initialTitle);
+  const [showBadgeHistory, setShowBadgeHistory] = useState(false);
   const [chatOpen, setChatOpen] = useState(
     () => readPanelState(documentId).chatOpen
   );
@@ -150,6 +155,17 @@ export function EditorShell({
             </Link>
           </Button>
         )}
+        {latestBadgeVerificationId && badgeCount > 1 && (
+          <Button
+            variant="outline"
+            size="icon-sm"
+            onClick={() => setShowBadgeHistory(true)}
+            aria-label="Badge history"
+            title="Badge history"
+          >
+            <Clock className="h-4 w-4" />
+          </Button>
+        )}
         <Button variant="outline" size="sm" asChild>
           <Link href={`/editor/${documentId}/preview`} data-testid="generate-badge">
             Generate Badge
@@ -171,6 +187,11 @@ export function EditorShell({
           if (!editorOpen || chatOpen) setEditorOpen((v) => !v);
         }}
         initialChatThreads={initialChatThreads}
+      />
+      <BadgeHistoryModal
+        documentId={documentId}
+        isOpen={showBadgeHistory}
+        onClose={() => setShowBadgeHistory(false)}
       />
     </div>
   );
