@@ -5,18 +5,12 @@ const mocks = vi.hoisted(() => {
   const mockSelectWhere = vi.fn();
   const mockSelectFrom = vi.fn(() => ({ where: mockSelectWhere }));
   const mockSelect = vi.fn(() => ({ from: mockSelectFrom }));
-  const mockInsertReturning = vi.fn();
-  const mockInsertValues = vi.fn(() => ({ returning: mockInsertReturning }));
-  const mockInsert = vi.fn(() => ({ values: mockInsertValues }));
 
   return {
     mockAuth,
     mockSelect,
     mockSelectFrom,
     mockSelectWhere,
-    mockInsert,
-    mockInsertValues,
-    mockInsertReturning,
   };
 });
 
@@ -27,7 +21,6 @@ vi.mock("@/auth", () => ({
 vi.mock("@/lib/db", () => ({
   db: {
     select: mocks.mockSelect,
-    insert: mocks.mockInsert,
   },
 }));
 
@@ -37,7 +30,6 @@ vi.mock("@/lib/db/schema", () => ({
     email: "email",
     name: "name",
     image: "image",
-    emailVerified: "emailVerified",
   },
   documents: {
     id: "id",
@@ -82,7 +74,6 @@ describe("requireAuth", () => {
 
     expect(user.id).toBe("user-1");
     expect(user.email).toBe("writer@example.com");
-    expect(mocks.mockInsert).not.toHaveBeenCalled();
   });
 
   it("should fall back to the canonical user when the session id is stale but the email exists", async () => {
@@ -101,34 +92,14 @@ describe("requireAuth", () => {
 
     expect(user.id).toBe("user-2");
     expect(user.name).toBe("Canonical Writer");
-    expect(mocks.mockInsert).not.toHaveBeenCalled();
   });
 
-  it("should create the user when the session is valid but the database has no matching record", async () => {
+  it("should throw when the session is valid but the database has no matching record", async () => {
     mocks.mockSelectWhere
       .mockResolvedValueOnce([])
       .mockResolvedValueOnce([]);
-    mocks.mockInsertReturning.mockResolvedValueOnce([
-      {
-        id: "user-1",
-        email: "writer@example.com",
-        name: "Writer",
-        image: "https://example.com/avatar.png",
-      },
-    ]);
 
-    const user = await requireAuth();
-
-    expect(mocks.mockInsertValues).toHaveBeenCalledWith(
-      expect.objectContaining({
-        id: "user-1",
-        email: "writer@example.com",
-        name: "Writer",
-        image: "https://example.com/avatar.png",
-        emailVerified: expect.any(Date),
-      })
-    );
-    expect(user.id).toBe("user-1");
+    await expect(requireAuth()).rejects.toThrow("Unauthorized");
   });
 
   it("should throw when there is no authenticated session id", async () => {

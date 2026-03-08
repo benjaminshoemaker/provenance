@@ -54,33 +54,7 @@ export async function requireAuth() {
     };
   }
 
-  const [createdUser] = await db
-    .insert(users)
-    .values({
-      id: session.user.id,
-      email: session.user.email,
-      name: session.user.name,
-      image: session.user.image,
-      emailVerified: new Date(),
-    })
-    .returning({
-      id: users.id,
-      email: users.email,
-      name: users.name,
-      image: users.image,
-    });
-
-  if (!createdUser) {
-    throw new Error("Unauthorized");
-  }
-
-  return {
-    ...session.user,
-    id: createdUser.id,
-    email: createdUser.email ?? session.user.email,
-    name: createdUser.name ?? session.user.name ?? null,
-    image: createdUser.image ?? session.user.image ?? null,
-  };
+  throw new Error("Unauthorized");
 }
 
 export async function requireDocumentOwner(documentId: string) {
