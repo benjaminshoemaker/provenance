@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach } from "vitest";
 import { Editor } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
-import { OriginMark } from "./origin-mark";
+import { OriginMark, originTypingPolicyPluginKey } from "./origin-mark";
 
 function createEditor(content?: Record<string, unknown> | string) {
   return new Editor({
@@ -9,6 +9,27 @@ function createEditor(content?: Record<string, unknown> | string) {
     extensions: [StarterKit, OriginMark],
     content: content ?? { type: "doc", content: [{ type: "paragraph" }] },
   });
+}
+
+function typeTextViaInputPolicy(editor: Editor, text: string) {
+  const typingPolicyPlugin = editor.state.plugins.find(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (plugin: any) =>
+      typeof plugin.props.handleTextInput === "function" &&
+      plugin.key?.startsWith(originTypingPolicyPluginKey.key)
+  );
+
+  expect(typingPolicyPlugin).toBeTruthy();
+
+  const { from, to } = editor.state.selection;
+  const handled = typingPolicyPlugin?.props.handleTextInput?.call(
+    typingPolicyPlugin,
+    editor.view,
+    from,
+    to,
+    text
+  );
+  expect(handled).toBe(true);
 }
 
 describe("OriginMark", () => {
@@ -209,6 +230,153 @@ describe("OriginMark", () => {
     const textNode = json.content?.[0]?.content?.[0] as any;
     expect(textNode?.text).toBe("Human typed text");
     expect(textNode?.marks).toBeUndefined();
+  });
+
+  it("should insert unmarked text when typing inside AI-origin text", () => {
+    editor = createEditor({
+      type: "doc",
+      content: [
+        {
+          type: "paragraph",
+          content: [
+            {
+              type: "text",
+              text: "alpha",
+              marks: [
+                {
+                  type: "origin",
+                  attrs: {
+                    type: "ai",
+                    sourceId: "ai-1",
+                    originalLength: 5,
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    editor.commands.setTextSelection(4);
+    typeTextViaInputPolicy(editor, "X");
+
+    const paragraphContent = editor.getJSON().content?.[0]?.content;
+    expect(paragraphContent?.[1]?.text).toBe("X");
+    expect(paragraphContent?.[1]?.marks).toBeUndefined();
+  });
+
+  it("should insert unmarked text when typing inside external_paste-origin text", () => {
+    editor = createEditor({
+      type: "doc",
+      content: [
+        {
+          type: "paragraph",
+          content: [
+            {
+              type: "text",
+              text: "paste",
+              marks: [
+                {
+                  type: "origin",
+                  attrs: {
+                    type: "external_paste",
+                    sourceId: "paste-1",
+                    originalLength: 5,
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    editor.commands.setTextSelection(3);
+    typeTextViaInputPolicy(editor, "Y");
+
+    const paragraphContent = editor.getJSON().content?.[0]?.content;
+    expect(paragraphContent?.[1]?.text).toBe("Y");
+    expect(paragraphContent?.[1]?.marks).toBeUndefined();
+  });
+
+  it("should keep surrounding origin marks unchanged when typing inside marked text", () => {
+    editor = createEditor({
+      type: "doc",
+      content: [
+        {
+          type: "paragraph",
+          content: [
+            {
+              type: "text",
+              text: "model",
+              marks: [
+                {
+                  type: "origin",
+                  attrs: {
+                    type: "ai",
+                    sourceId: "ai-2",
+                    originalLength: 5,
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    editor.commands.setTextSelection(4);
+    typeTextViaInputPolicy(editor, "Z");
+
+    const paragraphContent = editor.getJSON().content?.[0]?.content;
+    expect(paragraphContent).toHaveLength(3);
+    expect(paragraphContent?.[0]?.marks?.[0]?.attrs?.type).toBe("ai");
+    expect(paragraphContent?.[2]?.marks?.[0]?.attrs?.type).toBe("ai");
+  });
+
+  it("should preserve non-origin marks and clear origin from stored marks after typing", () => {
+    editor = createEditor({
+      type: "doc",
+      content: [
+        {
+          type: "paragraph",
+          content: [
+            {
+              type: "text",
+              text: "bolded",
+              marks: [
+                {
+                  type: "origin",
+                  attrs: {
+                    type: "ai",
+                    sourceId: "ai-3",
+                    originalLength: 6,
+                  },
+                },
+                {
+                  type: "bold",
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    editor.commands.setTextSelection(4);
+    typeTextViaInputPolicy(editor, "Q");
+
+    const paragraphContent = editor.getJSON().content?.[0]?.content;
+    const insertedMarks = paragraphContent?.[1]?.marks?.map((mark) => mark.type) ?? [];
+    expect(insertedMarks).toContain("bold");
+    expect(insertedMarks).not.toContain("origin");
+
+    const storedMarkNames = (editor.state.storedMarks ?? []).map(
+      (mark) => mark.type.name
+    );
+    expect(storedMarkNames).toContain("bold");
+    expect(storedMarkNames).not.toContain("origin");
   });
 
   it("should render AI text with origin-ai CSS class", () => {
