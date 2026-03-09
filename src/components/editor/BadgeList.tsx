@@ -11,7 +11,8 @@ interface Badge {
   id: string;
   verificationId: string;
   stats: {
-    ai_percentage: number;
+    typed_percentage?: number;
+    human_typed_percentage?: number;
   };
   createdAt: string | Date | null;
 }
@@ -43,11 +44,15 @@ export function BadgeList({ documentId }: BadgeListProps) {
     fetchBadges();
   }, [fetchBadges]);
 
-  const copySnippet = async (verificationId: string, aiPercentage: number, type: "html" | "md") => {
+  const copySnippet = async (
+    verificationId: string,
+    typedPercentage: number,
+    type: "html" | "md"
+  ) => {
     const snippet =
       type === "html"
-        ? generateBadgeHtml(verificationId, aiPercentage)
-        : generateBadgeMarkdown(verificationId, aiPercentage);
+        ? generateBadgeHtml(verificationId, typedPercentage)
+        : generateBadgeMarkdown(verificationId, typedPercentage);
 
     await navigator.clipboard.writeText(snippet);
     setCopiedId(`${verificationId}-${type}`);
@@ -78,14 +83,25 @@ export function BadgeList({ documentId }: BadgeListProps) {
               {badge.verificationId.slice(0, 8)}...
             </a>
             <span className="ml-2 text-xs text-muted-foreground">
-              {badge.stats?.ai_percentage ?? 0}% AI
+              {(badge.stats?.typed_percentage ??
+                badge.stats?.human_typed_percentage ??
+                0)}
+              % typed
             </span>
           </div>
           <div className="flex gap-1">
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => copySnippet(badge.verificationId, badge.stats?.ai_percentage ?? 0, "html")}
+              onClick={() =>
+                copySnippet(
+                  badge.verificationId,
+                  badge.stats?.typed_percentage ??
+                    badge.stats?.human_typed_percentage ??
+                    0,
+                  "html"
+                )
+              }
             >
               {copiedId === `${badge.verificationId}-html`
                 ? "Copied!"
@@ -94,7 +110,15 @@ export function BadgeList({ documentId }: BadgeListProps) {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => copySnippet(badge.verificationId, badge.stats?.ai_percentage ?? 0, "md")}
+              onClick={() =>
+                copySnippet(
+                  badge.verificationId,
+                  badge.stats?.typed_percentage ??
+                    badge.stats?.human_typed_percentage ??
+                    0,
+                  "md"
+                )
+              }
             >
               {copiedId === `${badge.verificationId}-md`
                 ? "Copied!"

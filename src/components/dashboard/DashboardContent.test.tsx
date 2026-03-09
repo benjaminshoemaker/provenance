@@ -21,7 +21,7 @@ const mockDocs = [
     wordCount: 500,
     deletedAt: null,
     preview: "Preview of first doc",
-    aiPercentage: 15,
+    typedPercentage: 85,
     badgeCount: 1,
   },
   {
@@ -31,7 +31,7 @@ const mockDocs = [
     wordCount: 200,
     deletedAt: null,
     preview: "Preview of second doc",
-    aiPercentage: null,
+    typedPercentage: null,
     badgeCount: 0,
   },
 ];

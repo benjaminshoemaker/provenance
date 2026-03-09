@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { generateBadge } from "./badges";
 
-// Mock dependencies
 vi.mock("@/auth", () => ({
   auth: vi.fn(() =>
     Promise.resolve({ user: { id: "user-1", email: "test@test.com" } })
@@ -22,9 +21,6 @@ vi.mock("@/lib/db", () => {
 });
 
 vi.mock("@/lib/auth/authorize", () => ({
-  requireAuth: vi.fn(() =>
-    Promise.resolve({ id: "user-1", email: "test@test.com" })
-  ),
   requireDocumentOwner: vi.fn(() =>
     Promise.resolve({
       user: { id: "user-1" },
@@ -52,11 +48,17 @@ vi.mock("nanoid", () => ({
 
 vi.mock("@/lib/metrics", () => ({
   calculateMetrics: vi.fn(() => ({
-    ai_percentage: 12,
-    external_paste_percentage: 5,
-    total_characters: 100,
+    humanTyped: 72,
+    aiGenerated: 8,
+    aiTweaked: 12,
+    pastedExternal: 8,
+    totalWords: 100,
+    humanTypedPercentage: 72,
+    aiGeneratedPercentage: 8,
+    aiTweakedPercentage: 12,
+    pastedExternalPercentage: 8,
+    typedPercentage: 72,
   })),
-  estimateRetainedAiCharactersFromAcceptedResponses: vi.fn(() => 0),
 }));
 
 vi.mock("@/lib/tiptap-utils", () => ({
@@ -65,30 +67,23 @@ vi.mock("@/lib/tiptap-utils", () => ({
 
 import { db } from "@/lib/db";
 import { requireDocumentOwner } from "@/lib/auth/authorize";
-import {
-  calculateMetrics,
-  estimateRetainedAiCharactersFromAcceptedResponses,
-} from "@/lib/metrics";
+import { calculateMetrics } from "@/lib/metrics";
 
 describe("generateBadge", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // Setup default db mock returns
     const mockDb = db as unknown as Record<string, ReturnType<typeof vi.fn>>;
 
-    // select().from().where() returns audit trail data
     let selectCallCount = 0;
     mockDb.where.mockImplementation(() => {
       selectCallCount++;
-      // First 4 calls are for fetching audit trail data
-      if (selectCallCount <= 4) {
+      if (selectCallCount <= 5) {
         return Promise.resolve([]);
       }
       return Promise.resolve([]);
     });
 
-    // insert().values().returning() returns the created badge
     mockDb.returning.mockImplementation(() =>
       Promise.resolve([
         {
@@ -96,8 +91,16 @@ describe("generateBadge", () => {
           verificationId: "abc123def456ghi789012",
           documentTitle: "Test Document",
           stats: {
-            ai_percentage: 12,
-            external_paste_percentage: 5,
+            typed_percentage: 72,
+            human_typed_percentage: 72,
+            ai_generated_percentage: 8,
+            ai_tweaked_percentage: 12,
+            pasted_external_percentage: 8,
+            human_typed_words: 72,
+            ai_generated_words: 8,
+            ai_tweaked_words: 12,
+            pasted_external_words: 8,
+            total_words: 100,
             interaction_count: 0,
             session_count: 0,
             total_active_seconds: 0,
@@ -116,101 +119,62 @@ describe("generateBadge", () => {
     expect(result.verificationId).toBeDefined();
   });
 
-  it("should use nanoid(21) for verification_id — 21 characters, unguessable", async () => {
+  it("should use nanoid(21) for verification id", async () => {
     const { nanoid } = await import("nanoid");
     await generateBadge("doc-1");
 
     expect(nanoid).toHaveBeenCalledWith(21);
   });
 
-  it("should include stats with ai_percentage, external_paste_percentage, interaction_count, session_count, total_active_seconds", async () => {
-    const mockDb = db as unknown as Record<string, ReturnType<typeof vi.fn>>;
-    mockDb.returning.mockImplementation(() =>
-      Promise.resolve([
-        {
-          id: "badge-1",
-          verificationId: "abc123def456ghi789012",
-          stats: {
-            ai_percentage: 12,
-            external_paste_percentage: 5,
-            interaction_count: 0,
-            session_count: 0,
-            total_active_seconds: 0,
-          },
-        },
-      ])
-    );
-
+  it("should include new 4-category stats fields", async () => {
     const result = await generateBadge("doc-1");
     expect(result.stats).toBeDefined();
-    expect(result.stats).toHaveProperty("ai_percentage");
-    expect(result.stats).toHaveProperty("external_paste_percentage");
-    expect(result.stats).toHaveProperty("interaction_count");
-    expect(result.stats).toHaveProperty("session_count");
-    expect(result.stats).toHaveProperty("total_active_seconds");
+    expect(result.stats).toHaveProperty("typed_percentage");
+    expect(result.stats).toHaveProperty("human_typed_percentage");
+    expect(result.stats).toHaveProperty("ai_generated_percentage");
+    expect(result.stats).toHaveProperty("ai_tweaked_percentage");
+    expect(result.stats).toHaveProperty("pasted_external_percentage");
+    expect(result.stats).toHaveProperty("total_words");
   });
 
-  it("should be insert-only — no update or delete permitted", async () => {
+  it("should be insert-only", async () => {
     const mockDb = db as unknown as Record<string, ReturnType<typeof vi.fn>>;
 
     await generateBadge("doc-1");
 
-    // Verify only insert was called, not update or delete
     expect(mockDb.insert).toHaveBeenCalled();
-    // The function should not expose update or delete operations
   });
 
   it("should reject non-owners with authorization error", async () => {
-    vi.mocked(requireDocumentOwner).mockRejectedValueOnce(
-      new Error("Forbidden")
-    );
+    vi.mocked(requireDocumentOwner).mockRejectedValueOnce(new Error("Forbidden"));
 
     await expect(generateBadge("doc-1")).rejects.toThrow("Forbidden");
   });
 
-  it("should return verificationId, badgeHtml, and badgeMarkdown snippets", async () => {
+  it("should return badge HTML and markdown snippets", async () => {
     const result = await generateBadge("doc-1");
 
     expect(result.verificationId).toBe("abc123def456ghi789012");
-    expect(result.badgeHtml).toBeDefined();
     expect(result.badgeHtml).toContain("abc123def456ghi789012");
-    expect(result.badgeMarkdown).toBeDefined();
     expect(result.badgeMarkdown).toContain("abc123def456ghi789012");
+    expect(result.badgeHtml).toContain("72% typed");
+    expect(result.badgeMarkdown).toContain("72% typed");
   });
 
-  it("should use fallback AI estimation when mark-based AI percentage is zero", async () => {
+  it("should persist metrics from calculateMetrics into stats payload", async () => {
     const mockDb = db as unknown as Record<string, ReturnType<typeof vi.fn>>;
-    mockDb.where
-      .mockResolvedValueOnce([
-        {
-          mode: "inline",
-          action: "accepted",
-          response: "Hello world",
-          charactersInserted: 11,
-          provider: "anthropic",
-          model: "claude",
-          prompt: "rewrite",
-          selectedText: "hi",
-          createdAt: new Date(),
-        },
-      ])
-      .mockResolvedValueOnce([])
-      .mockResolvedValueOnce([])
-      .mockResolvedValueOnce([]);
-
-    vi.mocked(calculateMetrics).mockReturnValueOnce({
-      ai_percentage: 0,
-      external_paste_percentage: 0,
-      total_characters: 100,
-    });
-    vi.mocked(estimateRetainedAiCharactersFromAcceptedResponses).mockReturnValueOnce(40);
-
     await generateBadge("doc-1");
 
+    expect(calculateMetrics).toHaveBeenCalled();
     expect(mockDb.values).toHaveBeenCalledWith(
       expect.objectContaining({
         stats: expect.objectContaining({
-          ai_percentage: 40,
+          typed_percentage: 72,
+          human_typed_words: 72,
+          ai_generated_words: 8,
+          ai_tweaked_words: 12,
+          pasted_external_words: 8,
+          total_words: 100,
         }),
       })
     );

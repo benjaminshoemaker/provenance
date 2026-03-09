@@ -1,71 +1,64 @@
 import { streamText, smoothStream, convertToModelMessages } from "ai";
-import { auth } from "@/auth";
 import { getModel } from "@/lib/ai/providers";
 import { getSystemPrompt } from "@/lib/ai/system-prompts";
 import { checkRateLimit } from "@/lib/ai/rate-limit";
-import { resolveProviderModel } from "@/lib/ai/resolve-provider-model";
 import { chatRequestSchema } from "@/lib/ai/schemas";
-import { readJsonBody, ReadJsonBodyError } from "@/lib/api/read-json-body";
-import { db } from "@/lib/db";
-import { users } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import {
+  parseAiRequestBody,
+  requireSessionUserId,
+  resolveProviderModelForUser,
+} from "@/lib/ai/route-utils";
 
 export const maxDuration = 60;
 const MAX_CHAT_BODY_BYTES = 400_000;
 
+function buildChatSystemPrompt(documentContext?: string) {
+  const systemPrompt = getSystemPrompt("chat");
+  if (!documentContext) {
+    return systemPrompt;
+  }
+  return `${systemPrompt}\n\n---\nWriter's document:\n${documentContext}\n---`;
+}
+
+function buildChatMetadata(
+  part: { type: string; finishReason?: string; usage?: { totalTokens?: number } },
+  provider: string,
+  model?: string
+) {
+  if (part.type !== "finish") {
+    return undefined;
+  }
+
+  return {
+    provider,
+    model: model ?? "",
+    blocked: part.finishReason === "content-filter",
+    ...(part.usage ? { tokenCount: part.usage.totalTokens } : {}),
+  };
+}
+
 export async function POST(req: Request) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  const userId = await requireSessionUserId();
+  if (userId instanceof Response) {
+    return userId;
   }
 
-  let body: unknown;
-  try {
-    body = await readJsonBody(req, MAX_CHAT_BODY_BYTES);
-  } catch (error) {
-    if (error instanceof ReadJsonBodyError) {
-      return Response.json({ error: error.message }, { status: error.status });
-    }
-    throw error;
-  }
-
-  const parsed = chatRequestSchema.safeParse(body);
-  if (!parsed.success) {
-    return Response.json(
-      { error: "Invalid request", issues: parsed.error.issues },
-      { status: 400 }
-    );
+  const parsed = await parseAiRequestBody(req, MAX_CHAT_BODY_BYTES, chatRequestSchema);
+  if ("response" in parsed) {
+    return parsed.response;
   }
 
   const { messages, documentContext } = parsed.data;
-  const needsUserPrefs = !parsed.data.provider || !parsed.data.model;
-  let userRow:
-    | { aiProvider: string | null; aiModel: string | null }
-    | undefined;
-
-  if (needsUserPrefs) {
-    [userRow] = await db
-      .select({ aiProvider: users.aiProvider, aiModel: users.aiModel })
-      .from(users)
-      .where(eq(users.id, session.user.id));
-  }
-
-  const providerModel = resolveProviderModel({
-    requestedProvider: parsed.data.provider,
-    requestedModel: parsed.data.model,
-    storedProvider: userRow?.aiProvider,
-    storedModel: userRow?.aiModel,
+  const providerModel = await resolveProviderModelForUser(userId, {
+    provider: parsed.data.provider,
+    model: parsed.data.model,
   });
-
-  if (providerModel.invalidRequestedModel) {
-    return Response.json(
-      { error: "Invalid model for provider" },
-      { status: 400 }
-    );
+  if ("response" in providerModel) {
+    return providerModel.response;
   }
   const { provider, model } = providerModel;
 
-  const { allowed } = await checkRateLimit(session.user.id);
+  const { allowed } = await checkRateLimit(userId);
   if (!allowed) {
     return Response.json(
       { error: "Rate limit exceeded. Max 20 requests per minute." },
@@ -73,11 +66,7 @@ export async function POST(req: Request) {
     );
   }
 
-  let system = getSystemPrompt("chat");
-  if (documentContext) {
-    system += "\n\n---\nWriter's document:\n" + documentContext + "\n---";
-  }
-
+  const system = buildChatSystemPrompt(documentContext);
   const aiModel = getModel(provider, model);
 
   try {
@@ -96,16 +85,7 @@ export async function POST(req: Request) {
         part,
       }: {
         part: { type: string; finishReason?: string; usage?: { totalTokens?: number } };
-      }) => {
-        if (part.type === "finish") {
-          return {
-            provider,
-            model,
-            blocked: part.finishReason === "content-filter",
-            ...(part.usage ? { tokenCount: part.usage.totalTokens } : {}),
-          };
-        }
-      },
+      }) => buildChatMetadata(part, provider, model),
     });
   } catch (error) {
     console.error("[Chat] Error:", error);

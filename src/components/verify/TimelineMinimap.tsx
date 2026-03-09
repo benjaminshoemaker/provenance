@@ -20,8 +20,11 @@ const COLORS = {
   paste: "bg-orange-500",
 };
 
-export function TimelineMinimap({ interactions, pasteEvents, sessions }: TimelineMinimapProps) {
-  // Build events with timestamps
+function buildTimelineEvents({
+  interactions,
+  pasteEvents,
+  sessions,
+}: TimelineMinimapProps): MinimapEvent[] {
   const events: MinimapEvent[] = [];
 
   for (const session of sessions) {
@@ -29,47 +32,66 @@ export function TimelineMinimap({ interactions, pasteEvents, sessions }: Timelin
       events.push({ type: "writing", timestamp: session.startedAt });
     }
   }
+
   for (const interaction of interactions) {
     if (interaction.createdAt) {
       events.push({ type: "ai", timestamp: interaction.createdAt });
     }
   }
+
   for (const paste of pasteEvents) {
     if (paste.createdAt) {
       events.push({ type: "paste", timestamp: paste.createdAt });
     }
   }
 
-  if (events.length === 0) return null;
+  return events;
+}
 
-  events.sort((a, b) => {
+function sortEventsByTimestamp(events: MinimapEvent[]) {
+  return [...events].sort((a, b) => {
     const ta = a.timestamp ? new Date(a.timestamp).getTime() : 0;
     const tb = b.timestamp ? new Date(b.timestamp).getTime() : 0;
     return ta - tb;
   });
+}
 
+function buildBars(events: MinimapEvent[]) {
   const minTime = new Date(events[0].timestamp!).getTime();
   const maxTime = new Date(events[events.length - 1].timestamp!).getTime();
   const range = maxTime - minTime || 1;
 
-  // Build segments: each event gets a proportional segment
-  const segments = events.map((e) => {
-    const time = new Date(e.timestamp!).getTime();
-    const position = ((time - minTime) / range) * 100;
-    return { type: e.type, position };
+  return events.map((event, index) => {
+    const start = ((new Date(event.timestamp!).getTime() - minTime) / range) * 100;
+    const end =
+      index < events.length - 1
+        ? ((new Date(events[index + 1].timestamp!).getTime() - minTime) / range) *
+          100
+        : 100;
+
+    return {
+      type: event.type,
+      width: Math.max(end - start, 1),
+    };
   });
+}
 
-  // Convert to percentage-width segments
-  const bars: { type: MinimapEvent["type"]; width: number }[] = [];
-  for (let i = 0; i < segments.length; i++) {
-    const start = segments[i].position;
-    const end = i < segments.length - 1 ? segments[i + 1].position : 100;
-    bars.push({ type: segments[i].type, width: Math.max(end - start, 1) });
-  }
+function formatDateLabel(timestamp: string | Date | null) {
+  return new Date(timestamp!).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+}
 
-  // Date labels
-  const startDate = new Date(events[0].timestamp!).toLocaleDateString("en-US", { month: "short", day: "numeric" });
-  const endDate = new Date(events[events.length - 1].timestamp!).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+export function TimelineMinimap({ interactions, pasteEvents, sessions }: TimelineMinimapProps) {
+  const events = buildTimelineEvents({ interactions, pasteEvents, sessions });
+
+  if (events.length === 0) return null;
+
+  const sortedEvents = sortEventsByTimestamp(events);
+  const bars = buildBars(sortedEvents);
+  const startDate = formatDateLabel(sortedEvents[0].timestamp);
+  const endDate = formatDateLabel(sortedEvents[sortedEvents.length - 1].timestamp);
 
   return (
     <div data-testid="timeline-minimap">

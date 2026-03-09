@@ -17,7 +17,7 @@ interface DocumentData {
   wordCount: number | null;
   deletedAt: string | Date | null;
   preview?: string;
-  aiPercentage?: number | null;
+  typedPercentage?: number | null;
   badgeCount: number;
   latestBadgeVerificationId?: string | null;
 }
@@ -164,7 +164,7 @@ export function DashboardContent({
                 updatedAt={doc.updatedAt}
                 wordCount={doc.wordCount}
                 preview={doc.preview}
-                aiPercentage={doc.aiPercentage}
+                typedPercentage={doc.typedPercentage}
                 hasBadge={doc.badgeCount > 0}
                 latestBadgeVerificationId={doc.latestBadgeVerificationId}
                 onClick={() => router.push(`/editor/${doc.id}`)}

@@ -1,6 +1,13 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect, useMemo } from "react";
+import {
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+  useMemo,
+  type ClipboardEvent as ReactClipboardEvent,
+} from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import type { UIMessage } from "ai";
@@ -12,6 +19,10 @@ import {
   getChatThread,
   saveChatThread,
 } from "@/app/actions/chat-threads";
+import {
+  PROVENANCE_AI_SIDEBAR_CLIPBOARD_MIME,
+  createProvenanceClipboardPayload,
+} from "@/lib/provenance-clipboard";
 
 interface ThreadSummary {
   id: string;
@@ -22,6 +33,7 @@ interface ThreadSummary {
 
 interface ChatPanelProps {
   documentId: string;
+  clipboardSessionToken?: string;
   provider: string;
   model?: string;
   getDocumentContent: () => Record<string, unknown>;
@@ -50,8 +62,35 @@ function getTextFromMessage(message: UIMessage): string {
     .join("");
 }
 
+function getNodeElement(node: Node | null): Element | null {
+  if (node instanceof Element) return node;
+  if (node instanceof Node) return node.parentElement;
+  return null;
+}
+
+function isSelectionInsideSingleAssistantMessage(selection: Selection): boolean {
+  if (selection.isCollapsed || selection.rangeCount === 0) return false;
+
+  const anchorElement = getNodeElement(selection.anchorNode);
+  const focusElement = getNodeElement(selection.focusNode);
+  if (!anchorElement || !focusElement) return false;
+
+  const anchorAssistantMessage = anchorElement.closest(
+    "[data-chat-role='assistant']"
+  );
+  const focusAssistantMessage = focusElement.closest(
+    "[data-chat-role='assistant']"
+  );
+
+  return (
+    anchorAssistantMessage !== null &&
+    anchorAssistantMessage === focusAssistantMessage
+  );
+}
+
 export function ChatPanel({
   documentId,
+  clipboardSessionToken,
   provider,
   model,
   getDocumentContent,
@@ -281,6 +320,30 @@ export function ChatPanel({
     [sendMessage, activeThreadId]
   );
 
+  const handleCopy = useCallback(
+    (event: ReactClipboardEvent<HTMLDivElement>) => {
+      if (!clipboardSessionToken) return;
+      const selection = window.getSelection();
+      if (!selection) return;
+      if (!isSelectionInsideSingleAssistantMessage(selection)) return;
+
+      try {
+        event.clipboardData.setData(
+          PROVENANCE_AI_SIDEBAR_CLIPBOARD_MIME,
+          JSON.stringify(
+            createProvenanceClipboardPayload({
+              documentId,
+              sessionToken: clipboardSessionToken,
+            })
+          )
+        );
+      } catch {
+        // Ignore browsers that block custom clipboard mime writes.
+      }
+    },
+    [clipboardSessionToken, documentId]
+  );
+
   return (
     <div className="flex h-full flex-col bg-muted">
       <ChatHeader
@@ -294,7 +357,7 @@ export function ChatPanel({
         onModelChange={handleModelChange}
       />
 
-      <div className="flex-1 overflow-y-auto px-4 py-5">
+      <div className="flex-1 overflow-y-auto px-4 py-5" onCopy={handleCopy}>
         {messages.length === 0 ? (
           <ChatEmptyState onSuggestionClick={handleSuggestionClick} />
         ) : (

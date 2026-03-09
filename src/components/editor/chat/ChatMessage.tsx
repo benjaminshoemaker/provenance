@@ -29,6 +29,7 @@ export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
 
       {/* Message card */}
       <div
+        data-chat-role={isUser ? "user" : "assistant"}
         className={`rounded-lg px-3 py-2.5 text-sm leading-relaxed ${
           isUser
             ? "bg-secondary text-secondary-foreground"

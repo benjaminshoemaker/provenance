@@ -30,7 +30,7 @@ vi.mock("@/app/actions/ai-interactions", () => ({
 
 import { InlineAI } from "./InlineAI";
 
-function createMockEditor() {
+function createMockEditor(selectedText = "original text") {
   const chainObj: Record<string, ReturnType<typeof vi.fn>> = {};
   chainObj.focus = vi.fn(() => chainObj);
   chainObj.insertContentAt = vi.fn(() => chainObj);
@@ -39,6 +39,26 @@ function createMockEditor() {
   return {
     chain: vi.fn(() => chainObj),
     _chainObj: chainObj,
+    state: {
+      doc: {
+        nodesBetween: vi.fn(
+          (
+            from: number,
+            _to: number,
+            callback: (node: { isText: boolean; text: string; marks: never[] }, pos: number) => void
+          ) => {
+            callback(
+              {
+                isText: true,
+                text: selectedText,
+                marks: [],
+              },
+              from
+            );
+          }
+        ),
+      },
+    },
   };
 }
 
@@ -50,7 +70,7 @@ describe("InlineAI", () => {
   });
 
   it("should render toolbar with presets initially", () => {
-    const editor = createMockEditor();
+    const editor = createMockEditor("original text");
     render(
       <InlineAI
         editor={editor as never}
@@ -238,29 +258,40 @@ Second rewrite option.`;
       fireEvent.click(screen.getByText("Confirm Selection"));
     });
 
-    // Should insert into editor
+    // Should insert into editor with mixed attribution marks
     expect(editor.chain).toHaveBeenCalled();
     expect(editor._chainObj.insertContentAt).toHaveBeenCalledWith(
       { from: 10, to: 23 },
-      [
+      expect.arrayContaining([
         expect.objectContaining({
           type: "text",
-          text: "improved AI text",
           marks: [
             expect.objectContaining({
               type: "origin",
               attrs: expect.objectContaining({
                 type: "ai",
+                touchedByAI: true,
                 sourceId: expect.stringMatching(
                   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
                 ),
-                originalLength: 16,
-                originalText: "improved AI text",
               }),
             }),
           ],
         }),
-      ]
+        expect.objectContaining({
+          type: "text",
+          text: "text",
+          marks: [
+            expect.objectContaining({
+              type: "origin",
+              attrs: expect.objectContaining({
+                type: "human",
+                touchedByAI: true,
+              }),
+            }),
+          ],
+        }),
+      ])
     );
     expect(mocks.mockLogAIInteraction).toHaveBeenCalledWith(
       expect.objectContaining({

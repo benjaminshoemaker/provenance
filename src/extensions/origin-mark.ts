@@ -27,6 +27,7 @@ export const OriginMark = Mark.create({
   addAttributes() {
     return {
       type: { default: "human" },
+      touchedByAI: { default: false },
       sourceId: { default: null },
       originalLength: { default: null },
       originalText: { default: null },

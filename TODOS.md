@@ -14,6 +14,8 @@
 
 - [ ] **[P1 / Medium]** Clarify audit trail privacy model — Define what audit trail data is shared with users vs. kept internal, what is visible to document owners vs. collaborators, and document the privacy boundaries explicitly in the product spec.
 
+- [ ] **[P2 / Medium]** Resolve baseline lint/typecheck debt blocking clean static checks — `npm run lint` currently fails on React purity/ref rules in dashboard/editor-shell/resizable and a `prefer-const` issue; `npx tsc --noEmit` also reports test typing errors in origin/paste handler tests.
+
 ## Future Concepts
 
 (Ideas to explore later)

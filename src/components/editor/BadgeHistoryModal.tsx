@@ -14,10 +14,11 @@ interface BadgeHistoryItem {
   id: string;
   verificationId: string;
   stats?: {
-    ai_percentage?: number;
-    aiPercentage?: number;
-    external_paste_percentage?: number;
-    externalPastePercentage?: number;
+    typed_percentage?: number;
+    human_typed_percentage?: number;
+    ai_generated_percentage?: number;
+    ai_tweaked_percentage?: number;
+    pasted_external_percentage?: number;
   };
   createdAt: string | Date | null;
 }
@@ -34,38 +35,54 @@ function clampPercentage(value: number) {
 }
 
 function getBreakdown(stats?: BadgeHistoryItem["stats"]) {
-  const ai = clampPercentage(
-    stats?.ai_percentage ?? stats?.aiPercentage ?? 0
+  const typed = clampPercentage(
+    stats?.typed_percentage ?? stats?.human_typed_percentage ?? 0
   );
-  const pasted = clampPercentage(
-    stats?.external_paste_percentage ?? stats?.externalPastePercentage ?? 0
-  );
-  const human = clampPercentage(100 - ai - pasted);
-  return { ai, pasted, human };
+  const aiGenerated = clampPercentage(stats?.ai_generated_percentage ?? 0);
+  const aiTweaked = clampPercentage(stats?.ai_tweaked_percentage ?? 0);
+  const pasted = clampPercentage(stats?.pasted_external_percentage ?? 0);
+  const sum = typed + aiGenerated + aiTweaked + pasted;
+  if (sum <= 100) {
+    return { typed, aiGenerated, aiTweaked, pasted };
+  }
+  const normalized = Math.max(sum, 1);
+  return {
+    typed: clampPercentage((typed / normalized) * 100),
+    aiGenerated: clampPercentage((aiGenerated / normalized) * 100),
+    aiTweaked: clampPercentage((aiTweaked / normalized) * 100),
+    pasted: clampPercentage((pasted / normalized) * 100),
+  };
 }
 
 function BadgeSparklinePreview({ stats }: { stats?: BadgeHistoryItem["stats"] }) {
-  const { ai, pasted, human } = getBreakdown(stats);
+  const { typed, aiGenerated, aiTweaked, pasted } = getBreakdown(stats);
 
   return (
     <div className="mt-2 w-full max-w-[360px] rounded-md bg-muted/40 p-2">
       <div className="mb-1 text-[11px]">
-        <span className="font-semibold tabular-nums text-foreground">{ai}%</span>
-        <span className="ml-1 text-muted-foreground">AI-assisted</span>
+        <span className="font-semibold tabular-nums text-foreground">{typed}%</span>
+        <span className="ml-1 text-muted-foreground">typed</span>
       </div>
       <div className="flex h-2 overflow-hidden rounded-full bg-secondary">
-        {human > 0 && (
+        {typed > 0 && (
           <div
             className="bg-gray-700"
-            style={{ width: `${human}%` }}
-            aria-label={`${human}% human`}
+            style={{ width: `${typed}%` }}
+            aria-label={`${typed}% typed`}
           />
         )}
-        {ai > 0 && (
+        {aiGenerated > 0 && (
           <div
-            className="bg-violet-500"
-            style={{ width: `${ai}%` }}
-            aria-label={`${ai}% ai`}
+            className="bg-sky-500"
+            style={{ width: `${aiGenerated}%` }}
+            aria-label={`${aiGenerated}% ai-generated`}
+          />
+        )}
+        {aiTweaked > 0 && (
+          <div
+            className="bg-teal-500"
+            style={{ width: `${aiTweaked}%` }}
+            aria-label={`${aiTweaked}% ai-tweaked`}
           />
         )}
         {pasted > 0 && (
@@ -79,11 +96,15 @@ function BadgeSparklinePreview({ stats }: { stats?: BadgeHistoryItem["stats"] })
       <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-[10px] text-muted-foreground">
         <span className="inline-flex items-center gap-1">
           <span className="inline-block h-2 w-2 rounded-full bg-gray-700" />
-          Human {human}%
+          Typed {typed}%
         </span>
         <span className="inline-flex items-center gap-1">
-          <span className="inline-block h-2 w-2 rounded-full bg-violet-500" />
-          AI {ai}%
+          <span className="inline-block h-2 w-2 rounded-full bg-sky-500" />
+          AI gen {aiGenerated}%
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <span className="inline-block h-2 w-2 rounded-full bg-teal-500" />
+          AI tweaked {aiTweaked}%
         </span>
         <span className="inline-flex items-center gap-1">
           <span className="inline-block h-2 w-2 rounded-full bg-orange-500" />
@@ -192,7 +213,9 @@ export function BadgeHistoryModal({
                   </Link>
                   <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
                     <span>{formatBadgeDate(badge.createdAt)}</span>
-                    <span>· {badge.stats?.ai_percentage ?? 0}% AI</span>
+                    <span>
+                      · {badge.stats?.typed_percentage ?? badge.stats?.human_typed_percentage ?? 0}% typed
+                    </span>
                     {index === 0 && (
                       <span className="rounded bg-provenance-50 px-1.5 py-0.5 text-provenance-700">
                         Latest

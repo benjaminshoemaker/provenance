@@ -105,7 +105,7 @@
 |---|------|-----------------|
 | 8.1 | Copy text from external source (browser, notes) | — |
 | 8.2 | Paste into editor | Text appears; paste event logged (visible in preview later) |
-| 8.3 | Copy text within the editor and paste | Internal paste; should NOT be logged as external |
+| 8.3 | Copy text within the same editor tab/session and paste into the same document | Internal paste; should NOT be logged as external |
 
 ### 9. Editor — Session Tracking
 

@@ -3,55 +3,71 @@ import { db } from "@/lib/db";
 import { documents, users } from "@/lib/db/schema";
 import { eq, and, isNull } from "drizzle-orm";
 
+const USER_IDENTITY_SELECT = {
+  id: users.id,
+  email: users.email,
+  name: users.name,
+  image: users.image,
+};
+
+type SessionUser = {
+  id?: string | null;
+  email?: string | null;
+  name?: string | null;
+  image?: string | null;
+};
+
+async function findUserById(userId: string) {
+  const [user] = await db
+    .select(USER_IDENTITY_SELECT)
+    .from(users)
+    .where(eq(users.id, userId));
+
+  return user;
+}
+
+async function findUserByEmail(email: string) {
+  const [user] = await db
+    .select(USER_IDENTITY_SELECT)
+    .from(users)
+    .where(eq(users.email, email));
+
+  return user;
+}
+
+function mergeSessionUser(
+  sessionUser: SessionUser,
+  existingUser: Awaited<ReturnType<typeof findUserById>>
+) {
+  return {
+    ...sessionUser,
+    id: existingUser.id,
+    email: existingUser.email ?? sessionUser.email ?? null,
+    name: existingUser.name ?? sessionUser.name ?? null,
+    image: existingUser.image ?? sessionUser.image ?? null,
+  };
+}
+
 export async function requireAuth() {
   const session = await auth();
+  const sessionUser = session?.user;
 
-  if (!session?.user?.id) {
+  if (!sessionUser?.id) {
     throw new Error("Unauthorized");
   }
 
-  const [existingUser] = await db
-    .select({
-      id: users.id,
-      email: users.email,
-      name: users.name,
-      image: users.image,
-    })
-    .from(users)
-    .where(eq(users.id, session.user.id));
-
-  if (existingUser) {
-    return {
-      ...session.user,
-      id: existingUser.id,
-      email: existingUser.email ?? session.user.email ?? null,
-      name: existingUser.name ?? session.user.name ?? null,
-      image: existingUser.image ?? session.user.image ?? null,
-    };
+  const existingById = await findUserById(sessionUser.id);
+  if (existingById) {
+    return mergeSessionUser(sessionUser, existingById);
   }
 
-  if (!session.user.email) {
+  if (!sessionUser.email) {
     throw new Error("Unauthorized");
   }
 
-  const [existingUserByEmail] = await db
-    .select({
-      id: users.id,
-      email: users.email,
-      name: users.name,
-      image: users.image,
-    })
-    .from(users)
-    .where(eq(users.email, session.user.email));
-
-  if (existingUserByEmail) {
-    return {
-      ...session.user,
-      id: existingUserByEmail.id,
-      email: existingUserByEmail.email ?? session.user.email,
-      name: existingUserByEmail.name ?? session.user.name ?? null,
-      image: existingUserByEmail.image ?? session.user.image ?? null,
-    };
+  const existingByEmail = await findUserByEmail(sessionUser.email);
+  if (existingByEmail) {
+    return mergeSessionUser(sessionUser, existingByEmail);
   }
 
   throw new Error("Unauthorized");

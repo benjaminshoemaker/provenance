@@ -19,7 +19,7 @@ describe("BadgeList", () => {
           {
             id: "badge-1",
             verificationId: "abc123def456ghi789012",
-            stats: { ai_percentage: 12 },
+            stats: { typed_percentage: 88 },
             createdAt: "2026-02-21T00:00:00.000Z",
           },
         ]),
@@ -64,7 +64,7 @@ describe("BadgeList", () => {
           {
             id: "badge-1",
             verificationId: "abc123def456ghi789012",
-            stats: { ai_percentage: 15 },
+            stats: { typed_percentage: 85 },
             createdAt: "2026-02-21T00:00:00.000Z",
           },
         ]),

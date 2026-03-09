@@ -6,78 +6,115 @@ import { redirect } from "next/navigation";
 import { createDocument } from "@/app/actions/documents";
 import { DashboardContent } from "@/components/dashboard/DashboardContent";
 
+interface BadgeSummary {
+  count: number;
+  typedPercentage: number | null;
+  latestVerificationId: string | null;
+}
+
+type DocumentRow = typeof documents.$inferSelect;
+
+function parseTypedPercentage(statsText: string): number | null {
+  try {
+    const stats = JSON.parse(statsText) as {
+      typed_percentage?: number;
+      human_typed_percentage?: number;
+    };
+    return stats.typed_percentage ?? stats.human_typed_percentage ?? null;
+  } catch {
+    return null;
+  }
+}
+
+async function fetchBadgeStatsMap(
+  documentIds: string[]
+): Promise<Map<string, BadgeSummary>> {
+  const statsMap = new Map<string, BadgeSummary>();
+  if (documentIds.length === 0) {
+    return statsMap;
+  }
+
+  const badgeRows = await db
+    .select({
+      documentId: badges.documentId,
+      count: sql<number>`count(*)::int`,
+      latestStats: sql<string>`(array_agg(${badges.stats} ORDER BY ${badges.createdAt} DESC))[1]::text`,
+      latestVerificationId: sql<string>`(array_agg(${badges.verificationId} ORDER BY ${badges.createdAt} DESC))[1]::text`,
+    })
+    .from(badges)
+    .where(
+      sql`${badges.documentId} IN (${sql.join(
+        documentIds.map((id) => sql`${id}`),
+        sql`, `
+      )})`
+    )
+    .groupBy(badges.documentId);
+
+  for (const row of badgeRows) {
+    statsMap.set(row.documentId, {
+      count: row.count,
+      typedPercentage: parseTypedPercentage(row.latestStats),
+      latestVerificationId: row.latestVerificationId ?? null,
+    });
+  }
+
+  return statsMap;
+}
+
+function extractPreview(content: unknown): string {
+  try {
+    const doc = content as {
+      content?: Array<{
+        content?: Array<{ text?: string }>;
+      }>;
+    };
+    const firstParagraph = doc?.content?.find((node) =>
+      node.content?.some((child) => child.text)
+    );
+    return firstParagraph?.content?.map((child) => child.text ?? "").join("") ?? "";
+  } catch {
+    return "";
+  }
+}
+
+function toDashboardDocument(
+  document: DocumentRow,
+  badgeStatsMap: Map<string, BadgeSummary>
+) {
+  const badgeInfo = badgeStatsMap.get(document.id);
+  const preview = extractPreview(document.content);
+
+  return {
+    id: document.id,
+    title: document.title,
+    updatedAt: document.updatedAt,
+    wordCount: document.wordCount,
+    deletedAt: document.deletedAt,
+    preview: preview.slice(0, 100),
+    typedPercentage: badgeInfo?.typedPercentage ?? null,
+    badgeCount: badgeInfo?.count ?? 0,
+    latestBadgeVerificationId: badgeInfo?.latestVerificationId ?? null,
+  };
+}
+
 export default async function DashboardPage() {
   const session = await auth();
+  const userId = session?.user?.id;
 
-  if (!session?.user?.id) {
+  if (!userId) {
     redirect("/login");
   }
 
   const userDocuments = await db
     .select()
     .from(documents)
-    .where(eq(documents.userId, session.user.id))
+    .where(eq(documents.userId, userId))
     .orderBy(desc(documents.updatedAt));
 
-  // Fetch badge stats (ai_percentage) per document
-  const badgeStatsMap = new Map<
-    string,
-    { count: number; aiPercentage: number | null; latestVerificationId: string | null }
-  >();
-  const docIds = userDocuments.map((d) => d.id);
-  if (docIds.length > 0) {
-    const badgeRows = await db
-      .select({
-        documentId: badges.documentId,
-        count: sql<number>`count(*)::int`,
-        latestStats: sql<string>`(array_agg(${badges.stats} ORDER BY ${badges.createdAt} DESC))[1]::text`,
-        latestVerificationId: sql<string>`(array_agg(${badges.verificationId} ORDER BY ${badges.createdAt} DESC))[1]::text`,
-      })
-      .from(badges)
-      .where(
-        sql`${badges.documentId} IN (${sql.join(
-          docIds.map((id) => sql`${id}`),
-          sql`, `
-        )})`
-      )
-      .groupBy(badges.documentId);
-
-    for (const row of badgeRows) {
-      let aiPercentage: number | null = null;
-      try {
-        const stats = JSON.parse(row.latestStats);
-        aiPercentage = stats?.ai_percentage ?? stats?.aiPercentage ?? null;
-      } catch { /* ignore parse errors */ }
-      badgeStatsMap.set(row.documentId, {
-        count: row.count,
-        aiPercentage,
-        latestVerificationId: row.latestVerificationId ?? null,
-      });
-    }
-  }
-
-  const documentData = userDocuments.map((doc) => {
-    const badgeInfo = badgeStatsMap.get(doc.id);
-    // Extract preview from content JSON
-    let preview = "";
-    try {
-      const content = doc.content as { content?: Array<{ content?: Array<{ text?: string }> }> };
-      const firstParagraph = content?.content?.find((n) => n.content?.some((c) => c.text));
-      preview = firstParagraph?.content?.map((c) => c.text ?? "").join("") ?? "";
-    } catch { /* ignore */ }
-
-    return {
-      id: doc.id,
-      title: doc.title,
-      updatedAt: doc.updatedAt,
-      wordCount: doc.wordCount,
-      deletedAt: doc.deletedAt,
-      preview: preview.slice(0, 100),
-      aiPercentage: badgeInfo?.aiPercentage ?? null,
-      badgeCount: badgeInfo?.count ?? 0,
-      latestBadgeVerificationId: badgeInfo?.latestVerificationId ?? null,
-    };
-  });
+  const badgeStatsMap = await fetchBadgeStatsMap(userDocuments.map((doc) => doc.id));
+  const documentData = userDocuments.map((doc) =>
+    toDashboardDocument(doc, badgeStatsMap)
+  );
 
   const createAction = async () => {
     "use server";

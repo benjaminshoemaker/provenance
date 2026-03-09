@@ -9,7 +9,7 @@ describe("DocumentRow", () => {
     updatedAt: new Date().toISOString(),
     wordCount: 500,
     preview: "This is a preview of the document content...",
-    aiPercentage: 12,
+    typedPercentage: 88,
     hasBadge: true,
     onClick: vi.fn(),
   };
@@ -36,10 +36,10 @@ describe("DocumentRow", () => {
     expect(dot).toBeTruthy();
   });
 
-  it("should show AI percentage badge", () => {
-    render(<DocumentRow {...defaultProps} aiPercentage={12} />);
+  it("should show typed percentage badge", () => {
+    render(<DocumentRow {...defaultProps} typedPercentage={88} />);
 
-    expect(screen.getByText("12% AI")).toBeDefined();
+    expect(screen.getByText("88% typed")).toBeDefined();
   });
 
   it("should show view badge link when latest verification id exists", () => {

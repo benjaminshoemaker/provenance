@@ -1,12 +1,12 @@
 import { ImageResponse } from "@vercel/og";
 
-// Brand colors — neutral regardless of AI percentage ("court reporter, not judge")
+// Brand colors — neutral regardless of typed percentage ("court reporter, not judge")
 const BRAND_LABEL_BG = "#1e2a4a"; // dark indigo
 const BRAND_LABEL_TEXT = "#bac8ff"; // light indigo
 const BRAND_VALUE_BG = "#3b5bdb"; // provenance-600
 const BRAND_VALUE_TEXT = "#ffffff";
 
-export function generateBadgeImage(aiPercentage: number): ImageResponse {
+export function generateBadgeImage(typedPercentage: number): ImageResponse {
   return new ImageResponse(
     (
       <div
@@ -35,7 +35,7 @@ export function generateBadgeImage(aiPercentage: number): ImageResponse {
         >
           Provenance ✓
         </div>
-        {/* Right section: AI% */}
+        {/* Right section: typed% */}
         <div
           style={{
             display: "flex",
@@ -46,7 +46,7 @@ export function generateBadgeImage(aiPercentage: number): ImageResponse {
             color: BRAND_VALUE_TEXT,
           }}
         >
-          {aiPercentage}% AI
+          {typedPercentage}% typed
         </div>
       </div>
     ),

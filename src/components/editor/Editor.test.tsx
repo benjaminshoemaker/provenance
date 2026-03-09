@@ -272,6 +272,22 @@ describe("Editor", () => {
     expect(screen.getByTestId("inline-ai-trigger")).toBeTruthy();
   });
 
+  it("should subscribe selection syncing to selectionUpdate only", () => {
+    render(
+      <Editor
+        content={{ type: "doc", content: [] }}
+        documentId="doc-1"
+      />
+    );
+
+    const subscribedEvents = (mockEditor.on as ReturnType<typeof vi.fn>).mock.calls.map(
+      (call) => call[0]
+    );
+
+    expect(subscribedEvents).toContain("selectionUpdate");
+    expect(subscribedEvents).not.toContain("transaction");
+  });
+
   it("should hide AI trigger when document is empty", () => {
     mockEditor.state.doc.textContent = "";
     render(

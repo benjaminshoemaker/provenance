@@ -74,6 +74,7 @@ describe("OriginMark", () => {
         type: "origin",
         attrs: {
           type: "ai",
+          touchedByAI: false,
           sourceId: "interaction-123",
           originalLength: 17,
           originalText: null,
@@ -127,6 +128,7 @@ describe("OriginMark", () => {
         type: "origin",
         attrs: {
           type: "external_paste",
+          touchedByAI: false,
           sourceId: "paste-123",
           originalLength: 11,
           originalText: "pasted text",
@@ -175,6 +177,7 @@ describe("OriginMark", () => {
         type: "origin",
         attrs: {
           type: "ai",
+          touchedByAI: false,
           sourceId: "interaction-123",
           originalLength: 17,
           originalText: "AI generated text",

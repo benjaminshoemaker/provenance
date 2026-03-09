@@ -1,31 +1,41 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useEditor, EditorContent } from "@tiptap/react";
+import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
 import { OriginMark } from "@/extensions/origin-mark";
 import { PasteHandler } from "@/extensions/paste-handler";
+import { EditorInteractionPolicy } from "@/extensions/interaction-policy";
 import {
   SelectionHighlight,
   selectionHighlightKey,
 } from "@/extensions/selection-highlight";
 import { logPasteEvent } from "@/app/actions/paste-events";
 import { useRevisions } from "@/hooks/useRevisions";
-import { Toolbar } from "./Toolbar";
-import { InlineAI } from "./InlineAI";
 import { TimelineModal } from "./TimelineModal";
 import { ChatPanel } from "./chat/ChatPanel";
 import { CollapseRail } from "./CollapseRail";
+import { EditorLayout } from "./EditorLayout";
+import {
+  areSelectionsEqual,
+  hasDocumentText,
+  readTimelineOpenState,
+  type TextSelection,
+  writeTimelineOpenState,
+} from "./editor-utils";
+import {
+  resolveTriggerPosition,
+  type TriggerPosition,
+} from "./trigger-position";
 import {
   ResizablePanelGroup,
   ResizablePanel,
   ResizableHandle,
 } from "@/components/ui/resizable";
 import type { PanelImperativeHandle } from "react-resizable-panels";
-import { Sparkle } from "lucide-react";
 
 interface ThreadSummary {
   id: string;
@@ -45,48 +55,6 @@ interface EditorProps {
   onEditorToggle?: () => void;
   initialChatThreads?: ThreadSummary[];
   onUpdate?: (json: Record<string, unknown>) => void;
-}
-
-interface TextSelection {
-  text: string;
-  from: number;
-  to: number;
-}
-
-interface TriggerPosition {
-  top: number;
-  left: number;
-  right: number;
-}
-
-function hasDocumentText(content: unknown): boolean {
-  if (!content || typeof content !== "object") return false;
-  const stack: unknown[] = [content];
-
-  while (stack.length > 0) {
-    const node = stack.pop();
-    if (!node || typeof node !== "object") continue;
-    const record = node as { text?: unknown; content?: unknown[] };
-
-    if (typeof record.text === "string" && record.text.trim().length > 0) {
-      return true;
-    }
-
-    if (Array.isArray(record.content)) {
-      stack.push(...record.content);
-    }
-  }
-
-  return false;
-}
-
-function timelineStateKey(documentId: string): string {
-  return `provenance:editor:${documentId}:timeline-open`;
-}
-
-function readTimelineOpenState(documentId: string): boolean {
-  if (typeof window === "undefined") return false;
-  return window.localStorage.getItem(timelineStateKey(documentId)) === "1";
 }
 
 export function Editor({
@@ -182,6 +150,7 @@ export function Editor({
       }),
       OriginMark,
       SelectionHighlight,
+      EditorInteractionPolicy,
       PasteHandler.configure({
         documentId,
         onExternalPaste: handleExternalPaste,
@@ -192,7 +161,8 @@ export function Editor({
     onUpdate: ({ editor }) => {
       const json = editor.getJSON();
       contentRef.current = json;
-      setHasContent(editor.state.doc.textContent.length > 0);
+      const nextHasContent = editor.state.doc.textContent.length > 0;
+      setHasContent((prev) => (prev === nextHasContent ? prev : nextHasContent));
       onUpdate?.(json);
       updateContent(json);
     },
@@ -202,37 +172,23 @@ export function Editor({
     (position?: number) => {
       if (!editor || !mainRef.current) return;
 
-      const main = mainRef.current;
-      const proseArea = proseAreaRef.current;
-      const mainRect = main.getBoundingClientRect();
-      const proseRect = proseArea?.getBoundingClientRect();
-
-      const iconSize = 32;
-      const fallbackWidth = main.clientWidth || 1200;
-      const fallbackHeight = main.clientHeight || 800;
-      const targetPos = Math.max(1, position ?? editor.state.selection.from);
-
       try {
-        const cursorCoords = editor.view.coordsAtPos(targetPos);
-        const minTop = 56;
-        const maxTop = Math.max(minTop, fallbackHeight - iconSize - 8);
-        const nextTop = Math.min(
-          maxTop,
-          Math.max(minTop, cursorCoords.top - mainRect.top - 4)
-        );
+        const nextPosition = resolveTriggerPosition({
+          editor,
+          main: mainRef.current,
+          proseArea: proseAreaRef.current,
+          position,
+        });
 
-        const rightMarginAnchor = proseRect?.right
-          ? proseRect.right - mainRect.left + 8
-          : fallbackWidth - iconSize - 12;
-        const nextLeft = Math.min(
-          fallbackWidth - iconSize - 8,
-          Math.max(8, rightMarginAnchor)
-        );
-
-        setTriggerPosition({
-          top: nextTop,
-          left: nextLeft,
-          right: Math.max(8, fallbackWidth - nextLeft - iconSize),
+        setTriggerPosition((prev) => {
+          if (
+            prev.top === nextPosition.top &&
+            prev.left === nextPosition.left &&
+            prev.right === nextPosition.right
+          ) {
+            return prev;
+          }
+          return nextPosition;
         });
       } catch {
         // Ignore transient invalid positions from TipTap while selection is updating.
@@ -243,25 +199,37 @@ export function Editor({
 
   useEffect(() => {
     if (!editor) return;
+    const syncHasContent = () => {
+      const nextHasContent = editor.state.doc.textContent.length > 0;
+      setHasContent((prev) =>
+        prev === nextHasContent ? prev : nextHasContent
+      );
+    };
+
     const handleSelectionUpdate = () => {
       const { from, to } = editor.state.selection;
-      setHasContent(editor.state.doc.textContent.length > 0);
+      syncHasContent();
       updateTriggerPosition(to);
-      if (from !== to) {
-        const text = editor.state.doc.textBetween(from, to);
-        setSelection({ text, from, to });
-      } else {
-        setSelection(null);
-        setShowInlineAI(false);
+      const nextSelection =
+        from !== to
+          ? {
+              text: editor.state.doc.textBetween(from, to),
+              from,
+              to,
+            }
+          : null;
+      setSelection((prev) =>
+        areSelectionsEqual(prev, nextSelection) ? prev : nextSelection
+      );
+      if (nextSelection === null) {
+        setShowInlineAI((prev) => (prev ? false : prev));
       }
     };
 
     handleSelectionUpdate();
     editor.on("selectionUpdate", handleSelectionUpdate);
-    editor.on("transaction", handleSelectionUpdate);
     return () => {
       editor.off("selectionUpdate", handleSelectionUpdate);
-      editor.off("transaction", handleSelectionUpdate);
     };
   }, [editor, updateTriggerPosition]);
 
@@ -391,11 +359,7 @@ export function Editor({
   }, [editorOpen, editor]);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    window.localStorage.setItem(
-      timelineStateKey(documentId),
-      showTimeline ? "1" : "0"
-    );
+    writeTimelineOpenState(documentId, showTimeline);
   }, [documentId, showTimeline]);
 
   // ⌘L keyboard shortcut to toggle AI chat panel
@@ -427,91 +391,30 @@ export function Editor({
     [handleRecentAIResponse, createAIRevision]
   );
 
-  // Editor content JSX — shared between expanded panel and hidden mount
   const editorContent = (
-    <main
-      ref={mainRef}
-      id="editor-content"
-      tabIndex={-1}
-      className="relative flex h-full w-full flex-col outline-none"
-      role="main"
-      data-testid="editor-main"
-    >
-      <Toolbar
-        editor={editor}
-        onHistoryClick={() => setShowTimeline(true)}
-        showLens={showLens}
-        onLensToggle={handleLensToggle}
-        chatOpen={chatOpen}
-        onChatToggle={onChatToggle}
-        editorOpen={editorOpen}
-        onEditorCollapse={onEditorToggle}
-      />
-      <div
-        ref={scrollAreaRef}
-        className="flex-1 cursor-text overflow-auto"
-        onClick={(e) => {
-          if (
-            (e.target === scrollAreaRef.current || e.target === proseAreaRef.current) &&
-            !editor?.state.selection.content().size
-          ) {
-            editor?.chain().focus("end").run();
-          }
-        }}
-      >
-        <div ref={proseAreaRef} className="mx-auto max-w-4xl px-8 py-8">
-          <EditorContent
-            editor={editor}
-            data-testid="editor-surface"
-            className="prose prose-neutral dark:prose-invert max-w-none focus-within:outline-none [&_.tiptap]:min-h-[60vh] [&_.tiptap]:outline-none"
-          />
-        </div>
-      </div>
-
-      {hasContent && (
-        <button
-          type="button"
-          onMouseDown={(e) => {
-            e.preventDefault();
-          }}
-          onClick={handleAITriggerClick}
-          className="absolute z-40 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-violet-200 bg-background text-violet-600 shadow-sm transition-colors hover:bg-violet-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-provenance-500"
-          style={{
-            top: `${triggerPosition.top}px`,
-            left: `${triggerPosition.left}px`,
-          }}
-          aria-label={
-            selection?.text.trim()
-              ? "Modify selected text with AI"
-              : "AI assistant"
-          }
-          title={
-            selection?.text.trim()
-              ? "Modify selected text"
-              : "AI assistant"
-          }
-          data-testid="inline-ai-trigger"
-        >
-          <Sparkle className="h-4 w-4" />
-        </button>
-      )}
-
-      {showInlineAI && selection && editor && (
-        <InlineAI
-          editor={editor}
-          documentId={documentId}
-          provider={provider}
-          model={model}
-          selectedText={selection.text}
-          selectionFrom={selection.from}
-          selectionTo={selection.to}
-          anchorTop={triggerPosition.top}
-          anchorRight={triggerPosition.right}
-          onDismiss={handleDismissInlineAI}
-          onAIResponse={handleAIResponse}
-        />
-      )}
-    </main>
+    <EditorLayout
+      editor={editor}
+      documentId={documentId}
+      provider={provider}
+      model={model}
+      mainRef={mainRef}
+      scrollAreaRef={scrollAreaRef}
+      proseAreaRef={proseAreaRef}
+      hasContent={hasContent}
+      showLens={showLens}
+      chatOpen={chatOpen}
+      editorOpen={editorOpen}
+      showInlineAI={showInlineAI}
+      selection={selection}
+      triggerPosition={triggerPosition}
+      onHistoryClick={() => setShowTimeline(true)}
+      onLensToggle={handleLensToggle}
+      onChatToggle={onChatToggle}
+      onEditorToggle={onEditorToggle}
+      onAITriggerClick={handleAITriggerClick}
+      onDismissInlineAI={handleDismissInlineAI}
+      onAIResponse={handleAIResponse}
+    />
   );
 
   const editorMinSize = editorOpen ? "40%" : "36px";
@@ -561,6 +464,9 @@ export function Editor({
           {chatOpen ? (
             <ChatPanel
               documentId={documentId}
+              clipboardSessionToken={
+                editor?.storage?.pasteHandler?.clipboardSessionToken
+              }
               provider={provider}
               model={model}
               getDocumentContent={getDocumentContent}

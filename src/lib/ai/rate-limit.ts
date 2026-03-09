@@ -19,7 +19,7 @@ export async function checkRateLimit(
     ),
     inserted AS (
       INSERT INTO ai_request_log (id, user_id, created_at)
-      VALUES (gen_random_uuid(), ${userId}, now())
+      SELECT gen_random_uuid(), ${userId}, now()
       FROM recent
       WHERE recent.count < ${RATE_LIMIT}
       RETURNING 1

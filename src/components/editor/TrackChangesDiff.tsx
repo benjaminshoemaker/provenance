@@ -15,6 +15,67 @@ function tokenize(text: string): string[] {
   return text.match(/\S+|\s+/g) || [];
 }
 
+function buildLcsTable(origTokens: string[], suggTokens: string[]) {
+  const m = origTokens.length;
+  const n = suggTokens.length;
+  const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      dp[i][j] =
+        origTokens[i - 1] === suggTokens[j - 1]
+          ? dp[i - 1][j - 1] + 1
+          : Math.max(dp[i - 1][j], dp[i][j - 1]);
+    }
+  }
+
+  return dp;
+}
+
+function backtrackDiff(
+  origTokens: string[],
+  suggTokens: string[],
+  dp: number[][]
+): DiffSegment[] {
+  const raw: DiffSegment[] = [];
+  let i = origTokens.length;
+  let j = suggTokens.length;
+
+  while (i > 0 || j > 0) {
+    if (i > 0 && j > 0 && origTokens[i - 1] === suggTokens[j - 1]) {
+      raw.push({ type: "equal", text: origTokens[i - 1] });
+      i -= 1;
+      j -= 1;
+      continue;
+    }
+
+    const shouldAdd = j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j]);
+    if (shouldAdd) {
+      raw.push({ type: "add", text: suggTokens[j - 1] });
+      j -= 1;
+      continue;
+    }
+
+    raw.push({ type: "remove", text: origTokens[i - 1] });
+    i -= 1;
+  }
+
+  return raw.reverse();
+}
+
+function mergeAdjacentSegments(segments: DiffSegment[]) {
+  const merged: DiffSegment[] = [];
+  for (const segment of segments) {
+    const previous = merged[merged.length - 1];
+    if (previous && previous.type === segment.type) {
+      previous.text += segment.text;
+      continue;
+    }
+    merged.push({ ...segment });
+  }
+  return merged;
+}
+
 /**
  * Simple word-level diff using longest common subsequence.
  * Compares tokens (words + whitespace) between original and suggestion.
@@ -22,55 +83,8 @@ function tokenize(text: string): string[] {
 function computeWordDiff(original: string, suggestion: string): DiffSegment[] {
   const origTokens = tokenize(original);
   const suggTokens = tokenize(suggestion);
-
-  // Build LCS table
-  const m = origTokens.length;
-  const n = suggTokens.length;
-  const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (origTokens[i - 1] === suggTokens[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-      } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-      }
-    }
-  }
-
-  // Backtrack to find diff
-  const segments: DiffSegment[] = [];
-  let i = m;
-  let j = n;
-
-  const raw: DiffSegment[] = [];
-  while (i > 0 || j > 0) {
-    if (i > 0 && j > 0 && origTokens[i - 1] === suggTokens[j - 1]) {
-      raw.push({ type: "equal", text: origTokens[i - 1] });
-      i--;
-      j--;
-    } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
-      raw.push({ type: "add", text: suggTokens[j - 1] });
-      j--;
-    } else {
-      raw.push({ type: "remove", text: origTokens[i - 1] });
-      i--;
-    }
-  }
-
-  raw.reverse();
-
-  // Merge adjacent segments of the same type
-  for (const seg of raw) {
-    const last = segments[segments.length - 1];
-    if (last && last.type === seg.type) {
-      last.text += seg.text;
-    } else {
-      segments.push({ ...seg });
-    }
-  }
-
-  return segments;
+  const dp = buildLcsTable(origTokens, suggTokens);
+  return mergeAdjacentSegments(backtrackDiff(origTokens, suggTokens, dp));
 }
 
 export function TrackChangesDiff({ original, suggestion }: TrackChangesDiffProps) {

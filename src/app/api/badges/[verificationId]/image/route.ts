@@ -26,8 +26,13 @@ export async function GET(
     });
   }
 
-  const stats = badge.stats as { ai_percentage: number };
-  const imageResponse = generateBadgeImage(stats.ai_percentage);
+  const stats = badge.stats as {
+    typed_percentage?: number;
+    human_typed_percentage?: number;
+  };
+  const typedPercentage =
+    stats.typed_percentage ?? stats.human_typed_percentage ?? 0;
+  const imageResponse = generateBadgeImage(typedPercentage);
 
   // Clone the response to add cache headers
   const response = new NextResponse(imageResponse.body, {

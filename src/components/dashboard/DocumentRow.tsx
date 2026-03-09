@@ -10,7 +10,7 @@ interface DocumentRowProps {
   updatedAt: string | Date | null;
   wordCount: number | null;
   preview?: string;
-  aiPercentage?: number | null;
+  typedPercentage?: number | null;
   hasBadge: boolean;
   latestBadgeVerificationId?: string | null;
   isArchived?: boolean;
@@ -18,10 +18,16 @@ interface DocumentRowProps {
   onDelete?: (id: string) => void;
 }
 
-function getAIBadgeColor(percentage: number): string {
-  if (percentage <= 25) return "bg-emerald-50 text-emerald-700";
-  if (percentage <= 50) return "bg-amber-50 text-amber-700";
-  if (percentage <= 75) return "bg-orange-50 text-orange-700";
+interface MetaBadgesProps {
+  wordCount: number | null;
+  typedPercentage: number | null | undefined;
+  latestBadgeVerificationId?: string | null;
+}
+
+function getTypedBadgeColor(percentage: number): string {
+  if (percentage >= 75) return "bg-emerald-50 text-emerald-700";
+  if (percentage >= 50) return "bg-amber-50 text-amber-700";
+  if (percentage >= 25) return "bg-orange-50 text-orange-700";
   return "bg-red-50 text-red-700";
 }
 
@@ -41,13 +47,55 @@ function relativeDate(date: string | Date | null): string {
   return d.toLocaleDateString();
 }
 
+function statusDotClass(hasBadge: boolean, isArchived?: boolean) {
+  if (hasBadge) return "bg-emerald-500";
+  if (isArchived) return "bg-muted-foreground/30";
+  return "bg-muted-foreground/50";
+}
+
+function shouldTriggerRowClick(key: string) {
+  return key === "Enter" || key === " ";
+}
+
+function MetaBadges({
+  wordCount,
+  typedPercentage,
+  latestBadgeVerificationId,
+}: MetaBadgesProps) {
+  return (
+    <div className="mt-1 flex items-center gap-2">
+      {typedPercentage != null && (
+        <span
+          className={`rounded px-1.5 py-0.5 text-xs font-medium font-mono tabular-nums ${getTypedBadgeColor(typedPercentage)}`}
+        >
+          {typedPercentage}% typed
+        </span>
+      )}
+      {wordCount != null && (
+        <span className="text-xs text-muted-foreground font-mono tabular-nums">
+          {wordCount.toLocaleString()} words
+        </span>
+      )}
+      {latestBadgeVerificationId && (
+        <Link
+          href={`/verify/${latestBadgeVerificationId}`}
+          className="rounded px-1.5 py-0.5 text-xs font-medium text-provenance-700 hover:bg-provenance-50 hover:text-provenance-800"
+          onClick={(e) => e.stopPropagation()}
+        >
+          View badge
+        </Link>
+      )}
+    </div>
+  );
+}
+
 export function DocumentRow({
   id,
   title,
   updatedAt,
   wordCount,
   preview,
-  aiPercentage,
+  typedPercentage,
   hasBadge,
   latestBadgeVerificationId,
   isArchived,
@@ -59,7 +107,9 @@ export function DocumentRow({
       onClick={onClick}
       role="button"
       tabIndex={0}
-      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onClick?.(); }}
+      onKeyDown={(e) => {
+        if (shouldTriggerRowClick(e.key)) onClick?.();
+      }}
       className={cn(
         "flex w-full items-start gap-3 border-b border-border px-4 py-3 text-left hover:bg-muted cursor-pointer transition-colors duration-150",
         isArchived && "opacity-60"
@@ -69,7 +119,7 @@ export function DocumentRow({
       <span
         className={cn(
           "mt-1.5 inline-block h-2.5 w-2.5 shrink-0 rounded-full",
-          hasBadge ? "bg-emerald-500" : isArchived ? "bg-muted-foreground/30" : "bg-muted-foreground/50"
+          statusDotClass(hasBadge, isArchived)
         )}
       />
 
@@ -99,27 +149,11 @@ export function DocumentRow({
           <p className="mt-0.5 truncate text-xs text-muted-foreground">{preview}</p>
         )}
 
-        <div className="mt-1 flex items-center gap-2">
-          {aiPercentage != null && (
-            <span className={`rounded px-1.5 py-0.5 text-xs font-medium font-mono tabular-nums ${getAIBadgeColor(aiPercentage)}`}>
-              {aiPercentage}% AI
-            </span>
-          )}
-          {wordCount != null && (
-            <span className="text-xs text-muted-foreground font-mono tabular-nums">
-              {wordCount.toLocaleString()} words
-            </span>
-          )}
-          {latestBadgeVerificationId && (
-            <Link
-              href={`/verify/${latestBadgeVerificationId}`}
-              className="rounded px-1.5 py-0.5 text-xs font-medium text-provenance-700 hover:bg-provenance-50 hover:text-provenance-800"
-              onClick={(e) => e.stopPropagation()}
-            >
-              View badge
-            </Link>
-          )}
-        </div>
+        <MetaBadges
+          typedPercentage={typedPercentage}
+          wordCount={wordCount}
+          latestBadgeVerificationId={latestBadgeVerificationId}
+        />
       </div>
     </div>
   );

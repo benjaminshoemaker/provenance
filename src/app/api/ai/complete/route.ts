@@ -1,70 +1,106 @@
 import { streamText, convertToModelMessages } from "ai";
-import { auth } from "@/auth";
 import { getModel } from "@/lib/ai/providers";
 import { getSystemPrompt } from "@/lib/ai/system-prompts";
 import { checkRateLimit } from "@/lib/ai/rate-limit";
-import { resolveProviderModel } from "@/lib/ai/resolve-provider-model";
 import { aiCompletionSchema } from "@/lib/ai/schemas";
-import { readJsonBody, ReadJsonBodyError } from "@/lib/api/read-json-body";
-import { db } from "@/lib/db";
-import { users } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import {
+  contentFilterMetadata,
+  parseAiRequestBody,
+  requireSessionUserId,
+  resolveProviderModelForUser,
+} from "@/lib/ai/route-utils";
 
 export const maxDuration = 30;
 const MAX_COMPLETE_BODY_BYTES = 300_000;
 
-export async function POST(req: Request) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
-  }
+function buildMessageSystemPrompt(basePrompt: string, context?: string) {
+  return context ? `${basePrompt}\n\nDocument context:\n${context}` : basePrompt;
+}
 
-  let body: unknown;
-  try {
-    body = await readJsonBody(req, MAX_COMPLETE_BODY_BYTES);
-  } catch (error) {
-    if (error instanceof ReadJsonBodyError) {
-      return Response.json({ error: error.message }, { status: error.status });
-    }
-    throw error;
-  }
+function buildSinglePrompt(
+  prompt: string,
+  selectedText?: string,
+  context?: string
+) {
+  const selectedInstruction = selectedText
+    ? `Selected text: "${selectedText}"\n\nInstruction: ${prompt}`
+    : prompt;
+  return context
+    ? `Document context:\n${context}\n\n${selectedInstruction}`
+    : selectedInstruction;
+}
 
-  // Validate request body with Zod
-  const parsed = aiCompletionSchema.safeParse(body);
-  if (!parsed.success) {
-    return Response.json(
-      { error: "Invalid request", issues: parsed.error.issues },
-      { status: 400 }
-    );
-  }
+function toUiStreamResponse(result: Awaited<ReturnType<typeof streamText>>) {
+  return result.toUIMessageStreamResponse({
+    messageMetadata: ({
+      part,
+    }: {
+      part: { type: string; finishReason?: string };
+    }) => contentFilterMetadata(part),
+  });
+}
 
-  const { messages, prompt, context, selectedText, mode } = parsed.data;
-  const needsUserPrefs = !parsed.data.provider || !parsed.data.model;
-  let userRow:
-    | { aiProvider: string | null; aiModel: string | null }
-    | undefined;
-
-  if (needsUserPrefs) {
-    [userRow] = await db
-      .select({ aiProvider: users.aiProvider, aiModel: users.aiModel })
-      .from(users)
-      .where(eq(users.id, session.user.id));
-  }
-
-  const providerModel = resolveProviderModel({
-    requestedProvider: parsed.data.provider,
-    requestedModel: parsed.data.model,
-    storedProvider: userRow?.aiProvider,
-    storedModel: userRow?.aiModel,
+async function streamConversationCompletion(params: {
+  aiModel: ReturnType<typeof getModel>;
+  systemPrompt: string;
+  context?: string;
+  messages: Parameters<typeof convertToModelMessages>[0];
+}) {
+  const result = streamText({
+    model: params.aiModel,
+    system: buildMessageSystemPrompt(params.systemPrompt, params.context),
+    messages: await convertToModelMessages(params.messages),
   });
 
-  if (providerModel.invalidRequestedModel) {
-    return Response.json({ error: "Invalid model for provider" }, { status: 400 });
+  return toUiStreamResponse(result);
+}
+
+async function streamSinglePromptCompletion(params: {
+  aiModel: ReturnType<typeof getModel>;
+  systemPrompt: string;
+  prompt: string;
+  selectedText?: string;
+  context?: string;
+}) {
+  const result = streamText({
+    model: params.aiModel,
+    system: params.systemPrompt,
+    prompt: buildSinglePrompt(params.prompt, params.selectedText, params.context),
+  });
+
+  return toUiStreamResponse(result);
+}
+
+export async function POST(req: Request) {
+  const userId = await requireSessionUserId();
+  if (userId instanceof Response) {
+    return userId;
   }
-  const { provider, model } = providerModel;
+
+  const parsed = await parseAiRequestBody(
+    req,
+    MAX_COMPLETE_BODY_BYTES,
+    aiCompletionSchema
+  );
+  if ("response" in parsed) {
+    return parsed.response;
+  }
+
+  const { messages, prompt, context, selectedText, mode, provider, model } =
+    parsed.data;
+
+  const providerModel = await resolveProviderModelForUser(userId, {
+    provider,
+    model,
+  });
+  if ("response" in providerModel) {
+    return providerModel.response;
+  }
+  const resolvedProvider = providerModel.provider;
+  const resolvedModel = providerModel.model;
 
   // Rate limit check (database-backed, serverless-safe)
-  const { allowed } = await checkRateLimit(session.user.id);
+  const { allowed } = await checkRateLimit(userId);
   if (!allowed) {
     return Response.json(
       { error: "Rate limit exceeded. Max 20 requests per minute." },
@@ -73,75 +109,28 @@ export async function POST(req: Request) {
   }
 
   const systemPrompt = getSystemPrompt(mode);
-  const aiModel = getModel(provider, model);
+  const aiModel = getModel(resolvedProvider, resolvedModel);
 
   try {
-    // Build streamText options based on input type
     if (messages) {
-      // Inject document context into system prompt for Side Panel mode
-      let system = systemPrompt;
-      if (context) {
-        system = `${systemPrompt}\n\nDocument context:\n${context}`;
-      }
-
-      const result = streamText({
-        model: aiModel,
-        system,
-        messages: await convertToModelMessages(
-          messages as Parameters<typeof convertToModelMessages>[0]
-        ),
-      });
-
-      return result.toUIMessageStreamResponse({
-        messageMetadata: ({
-          part,
-        }: {
-          part: { type: string; finishReason?: string };
-        }) => {
-          if (
-            part.type === "finish" &&
-            part.finishReason === "content-filter"
-          ) {
-            return {
-              blocked: true,
-              reason: "Content filtered by AI provider",
-            };
-          }
-        },
+      return streamConversationCompletion({
+        aiModel,
+        systemPrompt,
+        context,
+        messages: messages as Parameters<typeof convertToModelMessages>[0],
       });
     }
 
-    // Single prompt mode (inline/freeform)
-    let fullPrompt = prompt!;
-    if (selectedText) {
-      fullPrompt = `Selected text: "${selectedText}"\n\nInstruction: ${prompt}`;
-    }
-    if (context) {
-      fullPrompt = `Document context:\n${context}\n\n${fullPrompt}`;
+    if (!prompt) {
+      return Response.json({ error: "Prompt is required" }, { status: 400 });
     }
 
-    const result = streamText({
-      model: aiModel,
-      system: systemPrompt,
-      prompt: fullPrompt,
-    });
-
-    return result.toUIMessageStreamResponse({
-      messageMetadata: ({
-        part,
-      }: {
-        part: { type: string; finishReason?: string };
-      }) => {
-        if (
-          part.type === "finish" &&
-          part.finishReason === "content-filter"
-        ) {
-          return {
-            blocked: true,
-            reason: "Content filtered by AI provider",
-          };
-        }
-      },
+    return streamSinglePromptCompletion({
+      aiModel,
+      systemPrompt,
+      prompt,
+      selectedText,
+      context,
     });
   } catch (error) {
     console.error("[AI Complete] Error:", error);

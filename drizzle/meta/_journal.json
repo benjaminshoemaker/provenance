@@ -8,6 +8,13 @@
       "when": 1771752371899,
       "tag": "0000_ambitious_ego",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1773000000000,
+      "tag": "0001_authorship_badge_cutover",
+      "breakpoints": true
     }
   ]
 }

@@ -41,6 +41,73 @@ function formatDateLabel(dateKey: string): string {
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
+function sortByTimestamp(events: RawEvent[]): RawEvent[] {
+  return [...events].sort((a, b) => {
+    const ta = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+    const tb = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+    return ta - tb;
+  });
+}
+
+function toTimelineEvent(event: RawEvent): TimelineEvent {
+  return {
+    type: event.type as TimelineEvent["type"],
+    timestamp: event.timestamp,
+    data: event.data,
+  };
+}
+
+function createSession(timestamp: string | Date | null): SessionGroup {
+  return {
+    startTime: timestamp?.toString() ?? null,
+    endTime: null,
+    events: [],
+  };
+}
+
+function singleSessionWithoutBoundaries(events: RawEvent[]): SessionGroup[] {
+  const nonSessionEvents = events.filter(
+    (event) => event.type !== "session_start" && event.type !== "session_end"
+  );
+
+  return [
+    {
+      startTime: nonSessionEvents[0]?.timestamp?.toString() ?? null,
+      endTime:
+        nonSessionEvents[nonSessionEvents.length - 1]?.timestamp?.toString() ??
+        null,
+      events: nonSessionEvents.map(toTimelineEvent),
+    },
+  ];
+}
+
+function isSessionMarker(event: RawEvent) {
+  return event.type === "session_start" || event.type === "session_end";
+}
+
+function handleSessionMarker(params: {
+  event: RawEvent;
+  currentSession: SessionGroup | null;
+  sessions: SessionGroup[];
+}) {
+  const { event, sessions } = params;
+  let { currentSession } = params;
+
+  if (event.type === "session_start") {
+    if (currentSession) {
+      sessions.push(currentSession);
+    }
+    return createSession(event.timestamp);
+  }
+
+  if (currentSession) {
+    currentSession.endTime = event.timestamp?.toString() ?? null;
+    sessions.push(currentSession);
+  }
+
+  return null;
+}
+
 export function groupEventsByDay(events: RawEvent[]): DayGroup[] {
   const dayMap = new Map<string, RawEvent[]>();
 
@@ -66,63 +133,29 @@ export function groupEventsByDay(events: RawEvent[]): DayGroup[] {
 }
 
 function groupIntoSessions(events: RawEvent[]): SessionGroup[] {
-  // Find session boundaries
-  const sessionStarts = events.filter((e) => e.type === "session_start");
-  const nonSessionEvents = events.filter(
-    (e) => e.type !== "session_start" && e.type !== "session_end"
-  );
-
-  if (sessionStarts.length === 0) {
-    // No sessions, put all events in a single group
-    return [{
-      startTime: nonSessionEvents[0]?.timestamp?.toString() ?? null,
-      endTime: nonSessionEvents[nonSessionEvents.length - 1]?.timestamp?.toString() ?? null,
-      events: nonSessionEvents.map((e) => ({
-        type: e.type as TimelineEvent["type"],
-        timestamp: e.timestamp,
-        data: e.data,
-      })),
-    }];
+  const hasSessionMarkers = events.some((event) => event.type === "session_start");
+  if (!hasSessionMarkers) {
+    return singleSessionWithoutBoundaries(events);
   }
 
-  // Group events by session
   const sessions: SessionGroup[] = [];
-  const sorted = [...events].sort((a, b) => {
-    const ta = a.timestamp ? new Date(a.timestamp).getTime() : 0;
-    const tb = b.timestamp ? new Date(b.timestamp).getTime() : 0;
-    return ta - tb;
-  });
-
+  const sorted = sortByTimestamp(events);
   let currentSession: SessionGroup | null = null;
 
   for (const event of sorted) {
-    if (event.type === "session_start") {
-      if (currentSession) sessions.push(currentSession);
-      currentSession = {
-        startTime: event.timestamp?.toString() ?? null,
-        endTime: null,
-        events: [],
-      };
-    } else if (event.type === "session_end") {
-      if (currentSession) {
-        currentSession.endTime = event.timestamp?.toString() ?? null;
-        sessions.push(currentSession);
-        currentSession = null;
-      }
-    } else {
-      if (!currentSession) {
-        currentSession = {
-          startTime: event.timestamp?.toString() ?? null,
-          endTime: null,
-          events: [],
-        };
-      }
-      currentSession.events.push({
-        type: event.type as TimelineEvent["type"],
-        timestamp: event.timestamp,
-        data: event.data,
+    if (isSessionMarker(event)) {
+      currentSession = handleSessionMarker({
+        event,
+        currentSession,
+        sessions,
       });
+      continue;
     }
+
+    if (!currentSession) {
+      currentSession = createSession(event.timestamp);
+    }
+    currentSession.events.push(toTimelineEvent(event));
   }
 
   if (currentSession) sessions.push(currentSession);

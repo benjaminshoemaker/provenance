@@ -187,6 +187,17 @@
   height: 0;
 }
 
+/* Editor interaction affordance: visible links, explicit activation in edit mode */
+.tiptap a {
+  color: var(--provenance-600);
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+
+.tiptap a:hover {
+  color: var(--provenance-700);
+}
+
 /* Chat message prose — compact markdown rendering */
 .chat-prose p { margin: 0 0 0.5em; }
 .chat-prose p:last-child { margin: 0; }

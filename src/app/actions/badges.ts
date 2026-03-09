@@ -10,10 +10,7 @@ import {
   chatThreads,
 } from "@/lib/db/schema";
 import { requireDocumentOwner } from "@/lib/auth/authorize";
-import {
-  calculateMetrics,
-  estimateRetainedAiCharactersFromAcceptedResponses,
-} from "@/lib/metrics";
+import { calculateMetrics } from "@/lib/metrics";
 import { extractPlainText } from "@/lib/tiptap-utils";
 import { generateBadgeHtml, generateBadgeMarkdown } from "@/lib/badge-snippets";
 import { nanoid } from "nanoid";
@@ -56,19 +53,6 @@ export async function generateBadge(documentId: string) {
   const content = document.content as Parameters<typeof extractPlainText>[0];
   const documentText = extractPlainText(content);
   const metrics = calculateMetrics(content);
-  const fallbackAiChars = estimateRetainedAiCharactersFromAcceptedResponses(
-    documentText,
-    interactions
-  );
-  const fallbackAiPct =
-    metrics.total_characters > 0
-      ? Math.floor(
-          (Math.min(fallbackAiChars, metrics.total_characters) /
-            metrics.total_characters) *
-            100
-        )
-      : 0;
-  const resolvedAiPercentage = Math.max(metrics.ai_percentage, fallbackAiPct);
 
   // Calculate stats
   const totalActiveSeconds = sessions.reduce(
@@ -77,12 +61,19 @@ export async function generateBadge(documentId: string) {
   );
 
   const stats = {
-    ai_percentage: resolvedAiPercentage,
-    external_paste_percentage: metrics.external_paste_percentage,
+    typed_percentage: metrics.typedPercentage,
+    human_typed_percentage: metrics.humanTypedPercentage,
+    ai_generated_percentage: metrics.aiGeneratedPercentage,
+    ai_tweaked_percentage: metrics.aiTweakedPercentage,
+    pasted_external_percentage: metrics.pastedExternalPercentage,
+    human_typed_words: metrics.humanTyped,
+    ai_generated_words: metrics.aiGenerated,
+    ai_tweaked_words: metrics.aiTweaked,
+    pasted_external_words: metrics.pastedExternal,
+    total_words: metrics.totalWords,
     interaction_count: interactions.length,
     session_count: sessions.length,
     total_active_seconds: totalActiveSeconds,
-    total_characters: metrics.total_characters,
     chat_thread_count: threads.length,
   };
 
@@ -140,10 +131,10 @@ export async function generateBadge(documentId: string) {
     .returning();
 
   // Generate embed snippets
-  const badgeHtml = generateBadgeHtml(verificationId, resolvedAiPercentage);
+  const badgeHtml = generateBadgeHtml(verificationId, metrics.typedPercentage);
   const badgeMarkdown = generateBadgeMarkdown(
     verificationId,
-    resolvedAiPercentage
+    metrics.typedPercentage
   );
 
   return {

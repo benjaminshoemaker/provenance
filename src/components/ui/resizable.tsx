@@ -32,6 +32,35 @@ interface ExtendedHandleProps {
   collapseLabel?: string
 }
 
+function getChevronIcon(params: {
+  collapseDirection?: "left" | "right"
+  isCollapsed?: boolean
+}) {
+  const { collapseDirection, isCollapsed } = params
+  if (collapseDirection === "right") {
+    return isCollapsed ? ChevronLeft : ChevronRight
+  }
+  return isCollapsed ? ChevronRight : ChevronLeft
+}
+
+function getCollapseButtonClassName(params: {
+  withHandle?: boolean
+  isCollapsed?: boolean
+}) {
+  const base =
+    "absolute z-20 flex h-6 w-6 items-center justify-center rounded-sm border bg-background shadow-xs opacity-0 transition-opacity duration-150 group-hover/handle:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+
+  if (params.withHandle && !params.isCollapsed) {
+    return `${base} -translate-y-6`
+  }
+
+  return base
+}
+
+function shouldRenderHandleGrip(withHandle?: boolean, isCollapsed?: boolean) {
+  return Boolean(withHandle && !isCollapsed)
+}
+
 function ResizableHandle({
   withHandle,
   className,
@@ -43,21 +72,13 @@ function ResizableHandle({
 }: ResizablePrimitive.SeparatorProps & {
   withHandle?: boolean
 } & ExtendedHandleProps) {
-  // Determine which chevron to show:
-  // - collapseDirection="right" + not collapsed → ChevronRight (collapse right panel)
-  // - collapseDirection="right" + collapsed → ChevronLeft (expand right panel)
-  // - collapseDirection="left" + not collapsed → ChevronLeft (collapse left panel)
-  // - collapseDirection="left" + collapsed → ChevronRight (expand left panel)
-  const ChevronIcon =
-    collapseDirection === "right"
-      ? isCollapsed
-        ? ChevronLeft
-        : ChevronRight
-      : isCollapsed
-        ? ChevronRight
-        : ChevronLeft
-
+  const ChevronIcon = getChevronIcon({ collapseDirection, isCollapsed })
   const actionLabel = isCollapsed ? "Expand" : "Collapse"
+  const renderHandleGrip = shouldRenderHandleGrip(withHandle, isCollapsed)
+  const collapseButtonClassName = getCollapseButtonClassName({
+    withHandle,
+    isCollapsed,
+  })
 
   return (
     <ResizablePrimitive.Separator
@@ -71,7 +92,7 @@ function ResizableHandle({
       )}
       {...props}
     >
-      {withHandle && !isCollapsed && (
+      {renderHandleGrip && (
         <div className="bg-border z-10 flex h-4 w-3 items-center justify-center rounded-xs border">
           <GripVerticalIcon className="size-2.5" />
         </div>
@@ -79,10 +100,7 @@ function ResizableHandle({
       {onCollapseToggle && (
         <button
           type="button"
-          className={cn(
-            "absolute z-20 flex h-6 w-6 items-center justify-center rounded-sm border bg-background shadow-xs opacity-0 transition-opacity duration-150 group-hover/handle:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            withHandle && !isCollapsed && "-translate-y-6"
-          )}
+          className={collapseButtonClassName}
           aria-label={`${actionLabel} ${collapseLabel || "panel"}`}
           aria-expanded={!isCollapsed}
           onPointerDown={(e) => {
