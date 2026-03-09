@@ -1,0 +1,4225 @@
+{
+  "statistics": {
+    "detectionDate": "2026-03-08T08:49:28.318Z",
+    "formats": {
+      "typescript": {
+        "sources": {
+          "src/app/api/documents/[id]/timeline/route.ts": {
+            "lines": 49,
+            "tokens": 477,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 27,
+            "duplicatedTokens": 225,
+            "percentage": 55.1,
+            "percentageTokens": 47.17,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/api/documents/[id]/timeline/route.test.ts": {
+            "lines": 109,
+            "tokens": 1285,
+            "sources": 1,
+            "clones": 4,
+            "duplicatedLines": 24,
+            "duplicatedTokens": 324,
+            "percentage": 22.02,
+            "percentageTokens": 25.21,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/api/badges/[verificationId]/image/route.ts": {
+            "lines": 41,
+            "tokens": 358,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/api/preview/[id]/route.ts": {
+            "lines": 46,
+            "tokens": 410,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 27,
+            "duplicatedTokens": 225,
+            "percentage": 58.7,
+            "percentageTokens": 54.88,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/api/ai/complete/route.ts": {
+            "lines": 141,
+            "tokens": 1114,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/api/ai/complete/route.test.ts": {
+            "lines": 327,
+            "tokens": 2860,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/api/chat/route.ts": {
+            "lines": 99,
+            "tokens": 879,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/api/badges/route.ts": {
+            "lines": 48,
+            "tokens": 468,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/db/schema.ts": {
+            "lines": 337,
+            "tokens": 3534,
+            "sources": 1,
+            "clones": 4,
+            "duplicatedLines": 32,
+            "duplicatedTokens": 320,
+            "percentage": 9.5,
+            "percentageTokens": 9.05,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/db/schema.test.ts": {
+            "lines": 159,
+            "tokens": 1478,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/db/index.ts": {
+            "lines": 6,
+            "tokens": 80,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/auth/e2e.ts": {
+            "lines": 152,
+            "tokens": 1418,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/auth/e2e.test.ts": {
+            "lines": 81,
+            "tokens": 552,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/auth/authorize.ts": {
+            "lines": 94,
+            "tokens": 774,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/auth/authorize.test.ts": {
+            "lines": 123,
+            "tokens": 990,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/api/read-json-body.ts": {
+            "lines": 36,
+            "tokens": 316,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/api/read-json-body.test.ts": {
+            "lines": 45,
+            "tokens": 425,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/api/private-document.ts": {
+            "lines": 75,
+            "tokens": 665,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/ai/types.ts": {
+            "lines": 21,
+            "tokens": 171,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/ai/system-prompts.ts": {
+            "lines": 13,
+            "tokens": 92,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/ai/schemas.ts": {
+            "lines": 79,
+            "tokens": 899,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 32,
+            "duplicatedTokens": 330,
+            "percentage": 40.51,
+            "percentageTokens": 36.71,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/ai/route-utils.ts": {
+            "lines": 110,
+            "tokens": 935,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/ai/resolve-provider-model.ts": {
+            "lines": 60,
+            "tokens": 482,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/ai/resolve-provider-model.test.ts": {
+            "lines": 65,
+            "tokens": 486,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/ai/rate-limit.ts": {
+            "lines": 33,
+            "tokens": 195,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/ai/rate-limit.test.ts": {
+            "lines": 52,
+            "tokens": 627,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/ai/providers.ts": {
+            "lines": 46,
+            "tokens": 539,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/actions/validate-session-ownership.ts": {
+            "lines": 45,
+            "tokens": 324,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/trigger-position.ts": {
+            "lines": 41,
+            "tokens": 447,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/inline-ai-utils.ts": {
+            "lines": 109,
+            "tokens": 1235,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 7,
+            "duplicatedTokens": 93,
+            "percentage": 6.42,
+            "percentageTokens": 7.53,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/editor-utils.ts": {
+            "lines": 52,
+            "tokens": 524,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/actions/user.ts": {
+            "lines": 48,
+            "tokens": 429,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/actions/user.test.ts": {
+            "lines": 107,
+            "tokens": 978,
+            "sources": 1,
+            "clones": 5,
+            "duplicatedLines": 66,
+            "duplicatedTokens": 637,
+            "percentage": 61.68,
+            "percentageTokens": 65.13,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/actions/sessions.ts": {
+            "lines": 70,
+            "tokens": 532,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/actions/sessions.test.ts": {
+            "lines": 203,
+            "tokens": 1929,
+            "sources": 1,
+            "clones": 13,
+            "duplicatedLines": 152,
+            "duplicatedTokens": 1699,
+            "percentage": 74.88,
+            "percentageTokens": 88.08,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/actions/revisions.ts": {
+            "lines": 31,
+            "tokens": 228,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/actions/revisions.test.ts": {
+            "lines": 109,
+            "tokens": 852,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 20,
+            "duplicatedTokens": 188,
+            "percentage": 18.35,
+            "percentageTokens": 22.07,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/actions/paste-events.ts": {
+            "lines": 35,
+            "tokens": 269,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/actions/paste-events.test.ts": {
+            "lines": 139,
+            "tokens": 1192,
+            "sources": 1,
+            "clones": 4,
+            "duplicatedLines": 33,
+            "duplicatedTokens": 360,
+            "percentage": 23.74,
+            "percentageTokens": 30.2,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/actions/documents.ts": {
+            "lines": 47,
+            "tokens": 393,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/actions/documents.test.ts": {
+            "lines": 178,
+            "tokens": 1654,
+            "sources": 1,
+            "clones": 7,
+            "duplicatedLines": 77,
+            "duplicatedTokens": 811,
+            "percentage": 43.26,
+            "percentageTokens": 49.03,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/actions/cross-user-security.test.ts": {
+            "lines": 168,
+            "tokens": 1496,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 30,
+            "duplicatedTokens": 323,
+            "percentage": 17.86,
+            "percentageTokens": 21.59,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/actions/chat-threads.ts": {
+            "lines": 125,
+            "tokens": 1009,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 20,
+            "duplicatedTokens": 168,
+            "percentage": 16,
+            "percentageTokens": 16.65,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/actions/badges.ts": {
+            "lines": 177,
+            "tokens": 1383,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/actions/badges.test.ts": {
+            "lines": 217,
+            "tokens": 1842,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/actions/ai-interactions.ts": {
+            "lines": 47,
+            "tokens": 373,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/actions/ai-interactions.test.ts": {
+            "lines": 238,
+            "tokens": 1858,
+            "sources": 1,
+            "clones": 5,
+            "duplicatedLines": 48,
+            "duplicatedTokens": 538,
+            "percentage": 20.17,
+            "percentageTokens": 28.96,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/test/setup.ts": {
+            "lines": 6,
+            "tokens": 49,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/test/sample.test.ts": {
+            "lines": 10,
+            "tokens": 99,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/utils.ts": {
+            "lines": 5,
+            "tokens": 58,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/tiptap-utils.ts": {
+            "lines": 36,
+            "tokens": 274,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/tiptap-utils.test.ts": {
+            "lines": 90,
+            "tokens": 717,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 14,
+            "duplicatedTokens": 99,
+            "percentage": 15.56,
+            "percentageTokens": 13.81,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/timeline-utils.ts": {
+            "lines": 215,
+            "tokens": 1997,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/timeline-utils.test.ts": {
+            "lines": 92,
+            "tokens": 1205,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/metrics.ts": {
+            "lines": 209,
+            "tokens": 1935,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/metrics.test.ts": {
+            "lines": 469,
+            "tokens": 3205,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 54,
+            "duplicatedTokens": 306,
+            "percentage": 11.51,
+            "percentageTokens": 9.55,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/badge-snippets.ts": {
+            "lines": 25,
+            "tokens": 207,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/badge-snippets.test.ts": {
+            "lines": 56,
+            "tokens": 466,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/hooks/useSession.ts": {
+            "lines": 76,
+            "tokens": 554,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/hooks/useSession.test.ts": {
+            "lines": 113,
+            "tokens": 890,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/hooks/useRevisions.ts": {
+            "lines": 69,
+            "tokens": 532,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/hooks/useAutoSave.ts": {
+            "lines": 158,
+            "tokens": 1413,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/hooks/useAutoSave.test.ts": {
+            "lines": 282,
+            "tokens": 2280,
+            "sources": 1,
+            "clones": 3,
+            "duplicatedLines": 40,
+            "duplicatedTokens": 303,
+            "percentage": 14.18,
+            "percentageTokens": 13.29,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/extensions/selection-highlight.ts": {
+            "lines": 59,
+            "tokens": 494,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/extensions/paste-handler.ts": {
+            "lines": 216,
+            "tokens": 1749,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 7,
+            "duplicatedTokens": 93,
+            "percentage": 3.24,
+            "percentageTokens": 5.32,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/extensions/paste-handler.test.ts": {
+            "lines": 231,
+            "tokens": 1847,
+            "sources": 1,
+            "clones": 8,
+            "duplicatedLines": 112,
+            "duplicatedTokens": 874,
+            "percentage": 48.48,
+            "percentageTokens": 47.32,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/extensions/origin-mark.ts": {
+            "lines": 37,
+            "tokens": 276,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/extensions/origin-mark.test.ts": {
+            "lines": 333,
+            "tokens": 2326,
+            "sources": 1,
+            "clones": 4,
+            "duplicatedLines": 52,
+            "duplicatedTokens": 388,
+            "percentage": 15.62,
+            "percentageTokens": 16.68,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/extensions/interaction-policy.ts": {
+            "lines": 102,
+            "tokens": 746,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/extensions/interaction-policy.test.ts": {
+            "lines": 200,
+            "tokens": 1751,
+            "sources": 1,
+            "clones": 10,
+            "duplicatedLines": 82,
+            "duplicatedTokens": 844,
+            "percentage": 41,
+            "percentageTokens": 48.2,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/proxy.ts": {
+            "lines": 21,
+            "tokens": 199,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/middleware.test.ts": {
+            "lines": 71,
+            "tokens": 718,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/auth.ts": {
+            "lines": 29,
+            "tokens": 265,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/auth.config.ts": {
+            "lines": 33,
+            "tokens": 285,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 7876,
+          "tokens": 67993,
+          "sources": 74,
+          "clones": 42,
+          "duplicatedLines": 478,
+          "duplicatedTokens": 4574,
+          "percentage": 6.07,
+          "percentageTokens": 6.73,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      },
+      "javascript": {
+        "sources": {
+          "src/app/editor/[id]/preview/page.tsx": {
+            "lines": 236,
+            "tokens": 2103,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/chat/ChatPanel.tsx": {
+            "lines": 36,
+            "tokens": 250,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/chat/ChatMessage.tsx": {
+            "lines": 13,
+            "tokens": 63,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/chat/ChatInput.tsx": {
+            "lines": 23,
+            "tokens": 158,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/chat/ChatHeader.tsx": {
+            "lines": 37,
+            "tokens": 309,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/chat/ChatEmptyState.tsx": {
+            "lines": 2,
+            "tokens": 27,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/verify/[id]/page.tsx": {
+            "lines": 74,
+            "tokens": 579,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/editor/[id]/page.tsx": {
+            "lines": 6,
+            "tokens": 73,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/editor/[id]/editor-shell.tsx": {
+            "lines": 35,
+            "tokens": 312,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/verify/TimelineMinimap.test.tsx": {
+            "lines": 18,
+            "tokens": 140,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/verify/StatsSummary.test.tsx": {
+            "lines": 71,
+            "tokens": 679,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/verify/DocumentText.tsx": {
+            "lines": 0,
+            "tokens": 12,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/verify/AuditTimeline.tsx": {
+            "lines": 180,
+            "tokens": 1374,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/verify/AuditTimeline.test.tsx": {
+            "lines": 3,
+            "tokens": 25,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/tooltip.tsx": {
+            "lines": 32,
+            "tokens": 189,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/resizable.tsx": {
+            "lines": 98,
+            "tokens": 637,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/resizable.test.tsx": {
+            "lines": 103,
+            "tokens": 686,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/card.tsx": {
+            "lines": 69,
+            "tokens": 395,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/button.tsx": {
+            "lines": 2,
+            "tokens": 27,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/BackLink.tsx": {
+            "lines": 0,
+            "tokens": 3,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/BackLink.test.tsx": {
+            "lines": 0,
+            "tokens": 3,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/settings/AISettings.tsx": {
+            "lines": 32,
+            "tokens": 259,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/TrackChangesDiff.tsx": {
+            "lines": 10,
+            "tokens": 87,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/Toolbar.tsx": {
+            "lines": 307,
+            "tokens": 2522,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/TimelineModal.tsx": {
+            "lines": 33,
+            "tokens": 242,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/TimelineModal.test.tsx": {
+            "lines": 47,
+            "tokens": 493,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/SaveIndicator.tsx": {
+            "lines": 4,
+            "tokens": 51,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/InlineAIStages.tsx": {
+            "lines": 188,
+            "tokens": 1357,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/InlineAI.tsx": {
+            "lines": 6,
+            "tokens": 39,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/InlineAI.test.tsx": {
+            "lines": 293,
+            "tokens": 2044,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/FreeformAI.tsx": {
+            "lines": 26,
+            "tokens": 170,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/EditorLayout.tsx": {
+            "lines": 78,
+            "tokens": 525,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/Editor.tsx": {
+            "lines": 99,
+            "tokens": 654,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/Editor.test.tsx": {
+            "lines": 311,
+            "tokens": 2704,
+            "sources": 1,
+            "clones": 4,
+            "duplicatedLines": 376,
+            "duplicatedTokens": 3432,
+            "percentage": 120.9,
+            "percentageTokens": 126.92,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/CollapseRail.tsx": {
+            "lines": 0,
+            "tokens": 14,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/CollapseRail.test.tsx": {
+            "lines": 37,
+            "tokens": 475,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/BadgeSnippets.tsx": {
+            "lines": 28,
+            "tokens": 223,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/BadgeList.tsx": {
+            "lines": 27,
+            "tokens": 237,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/dashboard/Sidebar.tsx": {
+            "lines": 18,
+            "tokens": 103,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/dashboard/Sidebar.test.tsx": {
+            "lines": 42,
+            "tokens": 425,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/dashboard/DocumentRow.tsx": {
+            "lines": 86,
+            "tokens": 531,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/dashboard/DocumentRow.test.tsx": {
+            "lines": 54,
+            "tokens": 479,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/dashboard/DashboardContent.tsx": {
+            "lines": 75,
+            "tokens": 546,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/dashboard/DashboardContent.test.tsx": {
+            "lines": 62,
+            "tokens": 489,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 96,
+            "duplicatedTokens": 762,
+            "percentage": 154.84,
+            "percentageTokens": 155.83,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/settings/page.tsx": {
+            "lines": 1,
+            "tokens": 17,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/dashboard/page.tsx": {
+            "lines": 2,
+            "tokens": 19,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/dashboard/loading.tsx": {
+            "lines": 0,
+            "tokens": 3,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/badge-image.tsx": {
+            "lines": 34,
+            "tokens": 158,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/layout.tsx": {
+            "lines": 2,
+            "tokens": 27,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/error.tsx": {
+            "lines": 0,
+            "tokens": 3,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 2940,
+          "tokens": 22940,
+          "sources": 50,
+          "clones": 3,
+          "duplicatedLines": 236,
+          "duplicatedTokens": 2097,
+          "percentage": 8.03,
+          "percentageTokens": 9.14,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      },
+      "tsx": {
+        "sources": {
+          "src/app/editor/[id]/preview/page.tsx": {
+            "lines": 259,
+            "tokens": 2284,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 12,
+            "duplicatedTokens": 98,
+            "percentage": 4.63,
+            "percentageTokens": 4.29,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/chat/ChatPanel.tsx": {
+            "lines": 326,
+            "tokens": 2867,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/chat/ChatMessage.tsx": {
+            "lines": 50,
+            "tokens": 359,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/chat/ChatInput.tsx": {
+            "lines": 116,
+            "tokens": 869,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/chat/ChatHeader.tsx": {
+            "lines": 111,
+            "tokens": 895,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/chat/ChatEmptyState.tsx": {
+            "lines": 53,
+            "tokens": 454,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/verify/[id]/page.tsx": {
+            "lines": 264,
+            "tokens": 2121,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/login/e2e/page.tsx": {
+            "lines": 61,
+            "tokens": 507,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/editor/[id]/page.tsx": {
+            "lines": 82,
+            "tokens": 780,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/editor/[id]/loading.tsx": {
+            "lines": 10,
+            "tokens": 89,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/editor/[id]/editor-shell.tsx": {
+            "lines": 176,
+            "tokens": 1577,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/verify/TimelineMinimap.tsx": {
+            "lines": 131,
+            "tokens": 1249,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 6,
+            "duplicatedTokens": 93,
+            "percentage": 4.58,
+            "percentageTokens": 7.45,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/verify/TimelineMinimap.test.tsx": {
+            "lines": 65,
+            "tokens": 565,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/verify/StatsSummary.tsx": {
+            "lines": 154,
+            "tokens": 1758,
+            "sources": 1,
+            "clones": 4,
+            "duplicatedLines": 32,
+            "duplicatedTokens": 472,
+            "percentage": 20.78,
+            "percentageTokens": 26.85,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/verify/StatsSummary.test.tsx": {
+            "lines": 92,
+            "tokens": 884,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/verify/ScopeStatement.tsx": {
+            "lines": 44,
+            "tokens": 562,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/verify/ScopeStatement.test.tsx": {
+            "lines": 36,
+            "tokens": 365,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/verify/DocumentText.tsx": {
+            "lines": 37,
+            "tokens": 295,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/verify/AuditTimeline.tsx": {
+            "lines": 352,
+            "tokens": 3109,
+            "sources": 1,
+            "clones": 3,
+            "duplicatedLines": 42,
+            "duplicatedTokens": 383,
+            "percentage": 11.93,
+            "percentageTokens": 12.32,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/verify/AuditTimeline.test.tsx": {
+            "lines": 110,
+            "tokens": 933,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/tooltip.tsx": {
+            "lines": 56,
+            "tokens": 340,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/resizable.tsx": {
+            "lines": 121,
+            "tokens": 772,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/resizable.test.tsx": {
+            "lines": 125,
+            "tokens": 937,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/card.tsx": {
+            "lines": 91,
+            "tokens": 509,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/button.tsx": {
+            "lines": 65,
+            "tokens": 403,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/BackLink.tsx": {
+            "lines": 20,
+            "tokens": 125,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/BackLink.test.tsx": {
+            "lines": 31,
+            "tokens": 339,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/settings/AISettings.tsx": {
+            "lines": 83,
+            "tokens": 740,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/TrackChangesDiff.tsx": {
+            "lines": 117,
+            "tokens": 1182,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/TrackChangesDiff.test.tsx": {
+            "lines": 70,
+            "tokens": 710,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/Toolbar.tsx": {
+            "lines": 396,
+            "tokens": 3157,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/TimelineModal.tsx": {
+            "lines": 148,
+            "tokens": 1322,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 24,
+            "duplicatedTokens": 192,
+            "percentage": 16.22,
+            "percentageTokens": 14.52,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/TimelineModal.test.tsx": {
+            "lines": 90,
+            "tokens": 846,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/SaveIndicator.tsx": {
+            "lines": 35,
+            "tokens": 245,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/InlineAIStages.tsx": {
+            "lines": 250,
+            "tokens": 1806,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/InlineAI.tsx": {
+            "lines": 315,
+            "tokens": 2253,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/InlineAI.test.tsx": {
+            "lines": 360,
+            "tokens": 2664,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 32,
+            "duplicatedTokens": 190,
+            "percentage": 8.89,
+            "percentageTokens": 7.13,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/FreeformAI.tsx": {
+            "lines": 156,
+            "tokens": 1114,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/EditorLayout.tsx": {
+            "lines": 147,
+            "tokens": 1005,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/Editor.tsx": {
+            "lines": 498,
+            "tokens": 4091,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/Editor.test.tsx": {
+            "lines": 439,
+            "tokens": 4303,
+            "sources": 1,
+            "clones": 4,
+            "duplicatedLines": 54,
+            "duplicatedTokens": 586,
+            "percentage": 12.3,
+            "percentageTokens": 13.62,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/CollapseRail.tsx": {
+            "lines": 37,
+            "tokens": 250,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/CollapseRail.test.tsx": {
+            "lines": 47,
+            "tokens": 613,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/BadgeSnippets.tsx": {
+            "lines": 69,
+            "tokens": 547,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/BadgeList.tsx": {
+            "lines": 107,
+            "tokens": 894,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/editor/BadgeList.test.tsx": {
+            "lines": 80,
+            "tokens": 645,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/dashboard/Sidebar.tsx": {
+            "lines": 60,
+            "tokens": 546,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/dashboard/Sidebar.test.tsx": {
+            "lines": 54,
+            "tokens": 552,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/dashboard/DocumentRow.tsx": {
+            "lines": 159,
+            "tokens": 1212,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/dashboard/DocumentRow.test.tsx": {
+            "lines": 85,
+            "tokens": 788,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/dashboard/DashboardContent.tsx": {
+            "lines": 178,
+            "tokens": 1582,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/dashboard/DashboardContent.test.tsx": {
+            "lines": 112,
+            "tokens": 876,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/settings/page.tsx": {
+            "lines": 42,
+            "tokens": 357,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/login/page.tsx": {
+            "lines": 49,
+            "tokens": 367,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/dashboard/page.tsx": {
+            "lines": 130,
+            "tokens": 1137,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/dashboard/loading.tsx": {
+            "lines": 14,
+            "tokens": 138,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/badge-image.tsx": {
+            "lines": 54,
+            "tokens": 296,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/page.tsx": {
+            "lines": 98,
+            "tokens": 997,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/not-found.tsx": {
+            "lines": 15,
+            "tokens": 146,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/layout.tsx": {
+            "lines": 34,
+            "tokens": 250,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app/error.tsx": {
+            "lines": 26,
+            "tokens": 233,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 7592,
+          "tokens": 63811,
+          "sources": 61,
+          "clones": 8,
+          "duplicatedLines": 101,
+          "duplicatedTokens": 1007,
+          "percentage": 1.33,
+          "percentageTokens": 1.58,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      },
+      "css": {
+        "sources": {
+          "src/app/globals.css": {
+            "lines": 259,
+            "tokens": 2291,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 259,
+          "tokens": 2291,
+          "sources": 1,
+          "clones": 0,
+          "duplicatedLines": 0,
+          "duplicatedTokens": 0,
+          "percentage": 0,
+          "percentageTokens": 0,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      }
+    },
+    "total": {
+      "lines": 18667,
+      "tokens": 157035,
+      "sources": 186,
+      "clones": 53,
+      "duplicatedLines": 815,
+      "duplicatedTokens": 7678,
+      "percentage": 4.37,
+      "percentageTokens": 4.89,
+      "newDuplicatedLines": 0,
+      "newClones": 0
+    }
+  },
+  "duplicates": [
+    {
+      "format": "typescript",
+      "lines": 7,
+      "fragment": "const request = new Request(`http://localhost/api/documents/${validUuid}/timeline`);\n    const res = await GET(request, { params: Promise.resolve({ id: validUuid }) });\n\n    expect(res.status).toBe(404);\n  });\n\n  it(\"should return timeline data for authenticated document owner\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/app/api/documents/[id]/timeline/route.test.ts",
+        "start": 76,
+        "end": 82,
+        "startLoc": {
+          "line": 76,
+          "column": 5,
+          "position": 813
+        },
+        "endLoc": {
+          "line": 82,
+          "column": 63,
+          "position": 892
+        }
+      },
+      "secondFile": {
+        "name": "src/app/api/documents/[id]/timeline/route.test.ts",
+        "start": 66,
+        "end": 72,
+        "startLoc": {
+          "line": 66,
+          "column": 5,
+          "position": 673
+        },
+        "endLoc": {
+          "line": 72,
+          "column": 60,
+          "position": 752
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 7,
+      "fragment": ", async () => {\n    mockAuth.mockResolvedValue(null);\n\n    const request = new Request(`http://localhost/api/documents/${validUuid}/timeline`);\n    const res = await GET(request, { params: Promise.resolve({ id: validUuid }) });\n\n    expect(res.headers",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/app/api/documents/[id]/timeline/route.test.ts",
+        "start": 102,
+        "end": 108,
+        "startLoc": {
+          "line": 102,
+          "column": 43,
+          "position": 1181
+        },
+        "endLoc": {
+          "line": 108,
+          "column": 8,
+          "position": 1264
+        }
+      },
+      "secondFile": {
+        "name": "src/app/api/documents/[id]/timeline/route.test.ts",
+        "start": 53,
+        "end": 59,
+        "startLoc": {
+          "line": 53,
+          "column": 43,
+          "position": 523
+        },
+        "endLoc": {
+          "line": 59,
+          "column": 7,
+          "position": 606
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 19,
+      "fragment": ";\nimport {\n  PRIVATE_HEADERS,\n  resolveOwnedDocumentRequest,\n  toAuditInteraction,\n  toAuditPasteEvent,\n} from \"@/lib/api/private-document\";\nimport { NextResponse } from \"next/server\";\n\nexport async function GET(\n  _request: Request,\n  { params }: { params: Promise<{ id: string }> }\n) {\n  const { id } = await params;\n  const ownedDocument = await resolveOwnedDocumentRequest(id);\n  if (\"response\" in ownedDocument) {\n    return ownedDocument.response;\n  }\n  const {",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/app/api/preview/[id]/route.ts",
+        "start": 4,
+        "end": 22,
+        "startLoc": {
+          "line": 4,
+          "column": 21,
+          "position": 53
+        },
+        "endLoc": {
+          "line": 22,
+          "column": 2,
+          "position": 201
+        }
+      },
+      "secondFile": {
+        "name": "src/app/api/documents/[id]/timeline/route.ts",
+        "start": 8,
+        "end": 27,
+        "startLoc": {
+          "line": 8,
+          "column": 14,
+          "position": 51
+        },
+        "endLoc": {
+          "line": 27,
+          "column": 2,
+          "position": 200
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 10,
+      "fragment": "] = await Promise.all([\n    db\n      .select()\n      .from(aiInteractions)\n      .where(eq(aiInteractions.documentId, id)),\n    db\n      .select()\n      .from(pasteEvents)\n      .where(eq(pasteEvents.documentId, id)),\n  ]",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/app/api/preview/[id]/route.ts",
+        "start": 24,
+        "end": 33,
+        "startLoc": {
+          "line": 24,
+          "column": 7,
+          "position": 221
+        },
+        "endLoc": {
+          "line": 33,
+          "column": 2,
+          "position": 298
+        }
+      },
+      "secondFile": {
+        "name": "src/app/api/documents/[id]/timeline/route.ts",
+        "start": 27,
+        "end": 30,
+        "startLoc": {
+          "line": 27,
+          "column": 5,
+          "position": 211
+        },
+        "endLoc": {
+          "line": 30,
+          "column": 3,
+          "position": 276
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 8,
+      "fragment": ",\n  {\n    id: uuid(\"id\").primaryKey().defaultRandom(),\n    documentId: uuid(\"document_id\")\n      .notNull()\n      .references(() => documents.id),\n    sessionId: uuid(\"session_id\").references(() => writingSessions.id),\n    content",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/lib/db/schema.ts",
+        "start": 131,
+        "end": 138,
+        "startLoc": {
+          "line": 131,
+          "column": 15,
+          "position": 1305
+        },
+        "endLoc": {
+          "line": 138,
+          "column": 8,
+          "position": 1381
+        }
+      },
+      "secondFile": {
+        "name": "src/lib/db/schema.ts",
+        "start": 109,
+        "end": 116,
+        "startLoc": {
+          "line": 109,
+          "column": 18,
+          "position": 1040
+        },
+        "endLoc": {
+          "line": 116,
+          "column": 5,
+          "position": 1116
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 10,
+      "fragment": ",\n  {\n    id: uuid(\"id\").primaryKey().defaultRandom(),\n    documentId: uuid(\"document_id\")\n      .notNull()\n      .references(() => documents.id),\n    userId: text(\"user_id\")\n      .notNull()\n      .references(() => users.id),\n    title",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/lib/db/schema.ts",
+        "start": 189,
+        "end": 198,
+        "startLoc": {
+          "line": 189,
+          "column": 15,
+          "position": 1963
+        },
+        "endLoc": {
+          "line": 198,
+          "column": 6,
+          "position": 2047
+        }
+      },
+      "secondFile": {
+        "name": "src/lib/db/schema.ts",
+        "start": 147,
+        "end": 156,
+        "startLoc": {
+          "line": 147,
+          "column": 19,
+          "position": 1493
+        },
+        "endLoc": {
+          "line": 156,
+          "column": 10,
+          "position": 1577
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 17,
+      "fragment": "role: z.enum([\"user\", \"assistant\", \"system\", \"tool\"]),\n    content: z\n      .union([z.string().max(20_000), z.array(messagePartSchema).max(MAX_MESSAGE_PARTS)])\n      .optional(),\n    parts: z.array(messagePartSchema).max(MAX_MESSAGE_PARTS).optional(),\n  })\n  .passthrough()\n  .superRefine((value, ctx) => {\n    if (!isWithinMessageByteBudget(value)) {\n      ctx.addIssue({\n        code: z.ZodIssueCode.custom,\n        message: \"Message payload too large\",\n      });\n    }\n  });\n\nexport",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/lib/ai/schemas.ts",
+        "start": 44,
+        "end": 60,
+        "startLoc": {
+          "line": 44,
+          "column": 5,
+          "position": 400
+        },
+        "endLoc": {
+          "line": 60,
+          "column": 7,
+          "position": 565
+        }
+      },
+      "secondFile": {
+        "name": "src/lib/ai/schemas.ts",
+        "start": 26,
+        "end": 42,
+        "startLoc": {
+          "line": 26,
+          "column": 5,
+          "position": 220
+        },
+        "endLoc": {
+          "line": 42,
+          "column": 6,
+          "position": 385
+        }
+      }
+    },
+    {
+      "format": "tsx",
+      "lines": 7,
+      "fragment": "\">\n                <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 20 20\" fill=\"currentColor\" className=\"h-4 w-4\">\n                  <path fillRule=\"evenodd\" d=\"M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z\" clipRule=\"evenodd\" />\n                </svg>\n                How is this calculated?\n              </span>\n            </",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/components/verify/StatsSummary.tsx",
+        "start": 64,
+        "end": 70,
+        "startLoc": {
+          "line": 64,
+          "column": 31,
+          "position": 767
+        },
+        "endLoc": {
+          "line": 70,
+          "column": 3,
+          "position": 844
+        }
+      },
+      "secondFile": {
+        "name": "src/components/verify/StatsSummary.tsx",
+        "start": 39,
+        "end": 45,
+        "startLoc": {
+          "line": 39,
+          "column": 106,
+          "position": 433
+        },
+        "endLoc": {
+          "line": 45,
+          "column": 2,
+          "position": 510
+        }
+      }
+    },
+    {
+      "format": "tsx",
+      "lines": 11,
+      "fragment": "\">\n                Represents the proportion of final text that originated from accepted AI suggestions\n                and remained substantially unchanged (&lt;20% modification). Text typed by the author,\n                or AI text modified by more than 20%, is classified as human-written.\n              </p>\n              <div className=\"border-t pt-2 text-xs leading-relaxed text-muted-foreground\">\n                Does not account for: AI used outside this tool, pre-writing research,\n                or ideas from AI conversation typed manually.\n              </div>\n            </div>\n          </details",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/components/verify/StatsSummary.tsx",
+        "start": 73,
+        "end": 83,
+        "startLoc": {
+          "line": 73,
+          "column": 51,
+          "position": 886
+        },
+        "endLoc": {
+          "line": 83,
+          "column": 8,
+          "position": 1045
+        }
+      },
+      "secondFile": {
+        "name": "src/components/verify/StatsSummary.tsx",
+        "start": 47,
+        "end": 57,
+        "startLoc": {
+          "line": 47,
+          "column": 51,
+          "position": 547
+        },
+        "endLoc": {
+          "line": 57,
+          "column": 5,
+          "position": 706
+        }
+      }
+    },
+    {
+      "format": "tsx",
+      "lines": 13,
+      "fragment": "interactions: Array<{\n    mode: string;\n    prompt: string;\n    response: string;\n    action: string;\n    createdAt: string | Date | null;\n  }>;\n  pasteEvents: Array<{\n    sourceType: string;\n    characterCount: number;\n    createdAt: string | Date | null;\n  }>;\n  sessions",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/components/verify/AuditTimeline.tsx",
+        "start": 16,
+        "end": 28,
+        "startLoc": {
+          "line": 16,
+          "column": 3,
+          "position": 92
+        },
+        "endLoc": {
+          "line": 28,
+          "column": 9,
+          "position": 190
+        }
+      },
+      "secondFile": {
+        "name": "src/app/editor/[id]/preview/page.tsx",
+        "start": 30,
+        "end": 42,
+        "startLoc": {
+          "line": 30,
+          "column": 5,
+          "position": 303
+        },
+        "endLoc": {
+          "line": 42,
+          "column": 2,
+          "position": 401
+        }
+      }
+    },
+    {
+      "format": "tsx",
+      "lines": 7,
+      "fragment": ".sort((a, b) => {\n    const ta = a.timestamp ? new Date(a.timestamp).getTime() : 0;\n    const tb = b.timestamp ? new Date(b.timestamp).getTime() : 0;\n    return ta - tb;\n  });\n\n  const",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/components/verify/AuditTimeline.tsx",
+        "start": 80,
+        "end": 86,
+        "startLoc": {
+          "line": 80,
+          "column": 10,
+          "position": 827
+        },
+        "endLoc": {
+          "line": 86,
+          "column": 6,
+          "position": 920
+        }
+      },
+      "secondFile": {
+        "name": "src/components/verify/TimelineMinimap.tsx",
+        "start": 52,
+        "end": 57,
+        "startLoc": {
+          "line": 52,
+          "column": 2,
+          "position": 427
+        },
+        "endLoc": {
+          "line": 57,
+          "column": 2,
+          "position": 518
+        }
+      }
+    },
+    {
+      "format": "tsx",
+      "lines": 25,
+      "fragment": "{\n  interactions: Array<{\n    mode: string;\n    prompt: string;\n    response: string;\n    action: string;\n    createdAt: string | Date | null;\n  }>;\n  pasteEvents: Array<{\n    sourceType: string;\n    characterCount: number;\n    createdAt: string | Date | null;\n  }>;\n  sessions: Array<{\n    startedAt: string | Date | null;\n    endedAt: string | Date | null;\n    activeSeconds: number | null;\n  }>;\n  revisions: Array<{\n    trigger: string;\n    createdAt: string | Date | null;\n  }>;\n}\n\nexport",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/components/editor/TimelineModal.tsx",
+        "start": 13,
+        "end": 37,
+        "startLoc": {
+          "line": 13,
+          "column": 2,
+          "position": 92
+        },
+        "endLoc": {
+          "line": 37,
+          "column": 7,
+          "position": 284
+        }
+      },
+      "secondFile": {
+        "name": "src/components/verify/AuditTimeline.tsx",
+        "start": 15,
+        "end": 52,
+        "startLoc": {
+          "line": 15,
+          "column": 2,
+          "position": 89
+        },
+        "endLoc": {
+          "line": 52,
+          "column": 10,
+          "position": 415
+        }
+      }
+    },
+    {
+      "format": "tsx",
+      "lines": 17,
+      "fragment": ";\n    const editor = createMockEditor();\n\n    render(\n      <InlineAI\n        editor={editor as never}\n        documentId=\"doc-1\"\n        provider=\"anthropic\"\n        selectedText=\"text\"\n        selectionFrom={0}\n        selectionTo={4}\n        onDismiss={vi.fn()}\n      />\n    );\n\n    await act(async () => {\n      fireEvent.click",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/components/editor/InlineAI.test.tsx",
+        "start": 338,
+        "end": 354,
+        "startLoc": {
+          "line": 338,
+          "column": 13,
+          "position": 2497
+        },
+        "endLoc": {
+          "line": 354,
+          "column": 6,
+          "position": 2592
+        }
+      },
+      "secondFile": {
+        "name": "src/components/editor/InlineAI.test.tsx",
+        "start": 277,
+        "end": 293,
+        "startLoc": {
+          "line": 277,
+          "column": 2,
+          "position": 2070
+        },
+        "endLoc": {
+          "line": 293,
+          "column": 8,
+          "position": 2161
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 63,
+      "fragment": "} documentId=\"doc-1\" />\n    );\n\n    expect(useEditor).toHaveBeenCalledWith(\n      expect.objectContaining({\n        content,\n      })\n    );\n  });\n\n  it(\"should render editor content within resizable panel layout\", () => {\n    render(\n      <Editor\n        content={{ type: \"doc\", content: [] }}\n        documentId=\"doc-1\"\n      />\n    );\n\n    expect(screen.getByTestId(\"editor-content\")).toBeTruthy();\n  });\n\n  it(\"should not auto-open inline AI when text is selected\", async () => {\n    render(\n      <Editor\n        content={{ type: \"doc\", content: [] }}\n        documentId=\"doc-1\"\n      />\n    );\n\n    const selectionUpdateHandler = (mockEditor.on as ReturnType<typeof vi.fn>).mock.calls\n      .find((call) => call[0] === \"selectionUpdate\")?.[1] as (() => void) | undefined;\n\n    mockEditor.state.selection = { from: 1, to: 5 };\n    await act(async () => {\n      selectionUpdateHandler?.();\n    });\n\n    expect(screen.queryByTestId(\"inline-ai-toolbar\")).toBeNull();\n    // Trigger should appear when text is selected\n    expect(screen.getByTestId(\"inline-ai-trigger\")).toBeTruthy();\n  });\n\n  it(\"should subscribe selection syncing to selectionUpdate only\", () => {\n    render(\n      <Editor\n        content={{ type: \"doc\", content: [] }}\n        documentId=\"doc-1\"\n      />\n    );\n\n    const subscribedEvents = (mockEditor.on as ReturnType<typeof vi.fn>).mock.calls.map(\n      (call) => call[0]\n    );\n\n    expect(subscribedEvents).toContain(\"selectionUpdate\");\n    expect(subscribedEvents).not.toContain(\"transaction\");\n  });\n\n  it(\"should hide AI trigger when document is empty\", () => {\n    mockEditor.state.doc.textContent = \"\";\n    render(\n      <Editor\n        content={{",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/components/editor/Editor.test.tsx",
+        "start": 233,
+        "end": 295,
+        "startLoc": {
+          "line": 233,
+          "column": 8,
+          "position": 2501
+        },
+        "endLoc": {
+          "line": 295,
+          "column": 2,
+          "position": 3011
+        }
+      },
+      "secondFile": {
+        "name": "src/components/editor/Editor.test.tsx",
+        "start": 156,
+        "end": 233,
+        "startLoc": {
+          "line": 156,
+          "column": 17,
+          "position": 1894
+        },
+        "endLoc": {
+          "line": 233,
+          "column": 8,
+          "position": 2500
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 127,
+      "fragment": "}\n        documentId=\"doc-1\"\n      />\n    );\n\n    expect(screen.getByTestId(\"editor-content\")).toBeTruthy();\n  });\n\n  it(\"should not auto-open inline AI when text is selected\", async () => {\n    render(\n      <Editor\n        content={{ type: \"doc\", content: [] }}\n        documentId=\"doc-1\"\n      />\n    );\n\n    const selectionUpdateHandler = (mockEditor.on as ReturnType<typeof vi.fn>).mock.calls\n      .find((call) => call[0] === \"selectionUpdate\")?.[1] as (() => void) | undefined;\n\n    mockEditor.state.selection = { from: 1, to: 5 };\n    await act(async () => {\n      selectionUpdateHandler?.();\n    });\n\n    expect(screen.queryByTestId(\"inline-ai-toolbar\")).toBeNull();\n    // Trigger should appear when text is selected\n    expect(screen.getByTestId(\"inline-ai-trigger\")).toBeTruthy();\n  });\n\n  it(\"should subscribe selection syncing to selectionUpdate only\", () => {\n    render(\n      <Editor\n        content={{ type: \"doc\", content: [] }}\n        documentId=\"doc-1\"\n      />\n    );\n\n    const subscribedEvents = (mockEditor.on as ReturnType<typeof vi.fn>).mock.calls.map(\n      (call) => call[0]\n    );\n\n    expect(subscribedEvents).toContain(\"selectionUpdate\");\n    expect(subscribedEvents).not.toContain(\"transaction\");\n  });\n\n  it(\"should hide AI trigger when document is empty\", () => {\n    mockEditor.state.doc.textContent = \"\";\n    render(\n      <Editor\n        content={{ type: \"doc\", content: [] }}\n        documentId=\"doc-1\"\n      />\n    );\n\n    expect(screen.queryByTestId(\"inline-ai-trigger\")).toBeNull();\n    mockEditor.state.doc.textContent = \"some document text\";\n  });\n\n  it(\"should keep AI trigger aligned with cursor line when text is selected\", async () => {\n    render(\n      <Editor\n        content={{ type: \"doc\", content: [] }}\n        documentId=\"doc-1\"\n      />\n    );\n\n    const selectionUpdateHandler = (mockEditor.on as ReturnType<typeof vi.fn>).mock.calls\n      .find((call) => call[0] === \"selectionUpdate\")?.[1] as (() => void) | undefined;\n\n    (mockEditor.view.coordsAtPos as ReturnType<typeof vi.fn>).mockReturnValueOnce({\n      top: 220,\n      left: 640,\n      right: 640,\n      bottom: 236,\n    });\n    mockEditor.state.selection = { from: 1, to: 5 };\n    await act(async () => {\n      selectionUpdateHandler?.();\n    });\n    const trigger = screen.getByTestId(\"inline-ai-trigger\");\n    expect(trigger.getAttribute(\"style\")).toContain(\"top:\");\n\n    (mockEditor.view.coordsAtPos as ReturnType<typeof vi.fn>).mockReturnValueOnce({\n      top: 320,\n      left: 640,\n      right: 640,\n      bottom: 336,\n    });\n    mockEditor.state.selection = { from: 2, to: 10 };\n    await act(async () => {\n      selectionUpdateHandler?.();\n    });\n    expect(trigger.getAttribute(\"style\")).toContain(\"top:\");\n  });\n\n  it(\"should open inline AI when trigger is clicked with a selection\", async () => {\n    render(\n      <Editor\n        content={{ type: \"doc\", content: [] }}\n        documentId=\"doc-1\"\n      />\n    );\n\n    const selectionUpdateHandler = (mockEditor.on as ReturnType<typeof vi.fn>).mock.calls\n      .find((call) => call[0] === \"selectionUpdate\")?.[1] as (() => void) | undefined;\n\n    mockEditor.state.selection = { from: 1, to: 5 };\n    await act(async () => {\n      selectionUpdateHandler?.();\n    });\n\n    const trigger = screen.getByTestId(\"inline-ai-trigger\");\n    await act(async () => {\n      fireEvent.mouseDown(trigger);\n      fireEvent.click(trigger);\n    });\n\n    expect(screen.getByTestId(\"inline-ai-toolbar\")).toBeTruthy();\n    expect(mockSetTextSelection).toHaveBeenCalledWith({ from: 1, to: 5 });\n  });\n\n  it(\"should render chat panel when chatOpen is true\", () => {\n    render(\n      <Editor\n        content={{ type: \"doc\", content: [] }}\n        documentId=\"doc-1\"\n        chatOpen={true",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/components/editor/Editor.test.tsx",
+        "start": 246,
+        "end": 372,
+        "startLoc": {
+          "line": 246,
+          "column": 2,
+          "position": 2588
+        },
+        "endLoc": {
+          "line": 372,
+          "column": 5,
+          "position": 3794
+        }
+      },
+      "secondFile": {
+        "name": "src/components/editor/Editor.test.tsx",
+        "start": 156,
+        "end": 233,
+        "startLoc": {
+          "line": 156,
+          "column": 17,
+          "position": 1894
+        },
+        "endLoc": {
+          "line": 233,
+          "column": 8,
+          "position": 2500
+        }
+      }
+    },
+    {
+      "format": "tsx",
+      "lines": 12,
+      "fragment": ", async () => {\n    render(\n      <Editor\n        content={{ type: \"doc\", content: [] }}\n        documentId=\"doc-1\"\n      />\n    );\n\n    const selectionUpdateHandler = (mockEditor.on as ReturnType<typeof vi.fn>).mock.calls\n      .find((call) => call[0] === \"selectionUpdate\")?.[1] as (() => void) | undefined;\n\n    (",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/components/editor/Editor.test.tsx",
+        "start": 304,
+        "end": 315,
+        "startLoc": {
+          "line": 304,
+          "column": 72,
+          "position": 3080
+        },
+        "endLoc": {
+          "line": 315,
+          "column": 2,
+          "position": 3200
+        }
+      },
+      "secondFile": {
+        "name": "src/components/editor/Editor.test.tsx",
+        "start": 254,
+        "end": 265,
+        "startLoc": {
+          "line": 254,
+          "column": 55,
+          "position": 2629
+        },
+        "endLoc": {
+          "line": 265,
+          "column": 11,
+          "position": 2749
+        }
+      }
+    },
+    {
+      "format": "tsx",
+      "lines": 17,
+      "fragment": ", async () => {\n    render(\n      <Editor\n        content={{ type: \"doc\", content: [] }}\n        documentId=\"doc-1\"\n      />\n    );\n\n    const selectionUpdateHandler = (mockEditor.on as ReturnType<typeof vi.fn>).mock.calls\n      .find((call) => call[0] === \"selectionUpdate\")?.[1] as (() => void) | undefined;\n\n    mockEditor.state.selection = { from: 1, to: 5 };\n    await act(async () => {\n      selectionUpdateHandler?.();\n    });\n\n    const",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/components/editor/Editor.test.tsx",
+        "start": 341,
+        "end": 357,
+        "startLoc": {
+          "line": 341,
+          "column": 65,
+          "position": 3473
+        },
+        "endLoc": {
+          "line": 357,
+          "column": 6,
+          "position": 3646
+        }
+      },
+      "secondFile": {
+        "name": "src/components/editor/Editor.test.tsx",
+        "start": 254,
+        "end": 270,
+        "startLoc": {
+          "line": 254,
+          "column": 55,
+          "position": 2629
+        },
+        "endLoc": {
+          "line": 270,
+          "column": 7,
+          "position": 2802
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 49,
+      "fragment": "={mockDocs}\n        referenceNowMs={Date.now()}\n        createAction={vi.fn()}\n      />\n    );\n\n    const searchInput = screen.getByPlaceholderText(\"Search documents...\");\n    fireEvent.change(searchInput, { target: { value: \"First\" } });\n\n    expect(screen.getByText(\"First Document\")).toBeDefined();\n    expect(screen.queryByText(\"Second Document\")).toBeNull();\n  });\n\n  it(\"should filter by 'Has Badge' chip\", () => {\n    render(\n      <DashboardContent\n        documents={mockDocs}\n        referenceNowMs={Date.now()}\n        createAction={vi.fn()}\n      />\n    );\n\n    fireEvent.click(screen.getByText(\"Has Badge\"));\n\n    expect(screen.getByText(\"First Document\")).toBeDefined();\n    expect(screen.queryByText(\"Second Document\")).toBeNull();\n  });\n\n  it(\"should filter by 'Drafts' chip\", () => {\n    render(\n      <DashboardContent\n        documents={mockDocs}\n        referenceNowMs={Date.now()}\n        createAction={vi.fn()}\n      />\n    );\n\n    fireEvent.click(screen.getByText(\"Drafts\"));\n\n    expect(screen.queryByText(\"First Document\")).toBeNull();\n    expect(screen.getByText(\"Second Document\")).toBeDefined();\n  });\n\n  it(\"should render New Document button with provenance styling\", () => {\n    const { container } = render(\n      <DashboardContent\n        documents={mockDocs}\n        referenceNowMs={Date.now()}\n        createAction={vi.fn()}",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/components/dashboard/DashboardContent.test.tsx",
+        "start": 57,
+        "end": 105,
+        "startLoc": {
+          "line": 57,
+          "column": 10,
+          "position": 438
+        },
+        "endLoc": {
+          "line": 105,
+          "column": 2,
+          "position": 819
+        }
+      },
+      "secondFile": {
+        "name": "src/components/dashboard/DashboardContent.test.tsx",
+        "start": 43,
+        "end": 75,
+        "startLoc": {
+          "line": 43,
+          "column": 10,
+          "position": 330
+        },
+        "endLoc": {
+          "line": 75,
+          "column": 2,
+          "position": 595
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 14,
+      "fragment": ",\n  };\n});\n\nvi.mock(\"@/auth\", () => ({\n  auth: vi.fn(),\n  signIn: vi.fn(),\n  signOut: vi.fn(),\n  handlers: { GET: vi.fn(), POST: vi.fn() },\n}));\n\nvi.mock(\"@/lib/db\", () => ({\n  db: {\n    insert",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/app/actions/sessions.test.ts",
+        "start": 21,
+        "end": 34,
+        "startLoc": {
+          "line": 21,
+          "column": 25,
+          "position": 266
+        },
+        "endLoc": {
+          "line": 34,
+          "column": 7,
+          "position": 381
+        }
+      },
+      "secondFile": {
+        "name": "src/app/actions/user.test.ts",
+        "start": 19,
+        "end": 32,
+        "startLoc": {
+          "line": 19,
+          "column": 16,
+          "position": 258
+        },
+        "endLoc": {
+          "line": 32,
+          "column": 7,
+          "position": 373
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 16,
+      "fragment": ", () => {\n  beforeEach(() => {\n    vi.clearAllMocks();\n\n    mocks.mockRequireAuth.mockResolvedValue({\n      id: \"user-1\",\n      name: \"Test User\",\n      email: \"test@example.com\",\n    });\n\n    mocks.mockUpdate.mockReturnValue({ set: mocks.mockSet });\n    mocks.mockSet.mockReturnValue({ where: mocks.mockWhere });\n    mocks.mockWhere.mockReturnValue({ returning: mocks.mockReturning });\n    mocks.mockReturning.mockResolvedValue([\n      {\n        id: \"session-1\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/app/actions/sessions.test.ts",
+        "start": 113,
+        "end": 128,
+        "startLoc": {
+          "line": 113,
+          "column": 12,
+          "position": 1100
+        },
+        "endLoc": {
+          "line": 128,
+          "column": 12,
+          "position": 1240
+        }
+      },
+      "secondFile": {
+        "name": "src/app/actions/user.test.ts",
+        "start": 56,
+        "end": 71,
+        "startLoc": {
+          "line": 56,
+          "column": 24,
+          "position": 561
+        },
+        "endLoc": {
+          "line": 71,
+          "column": 9,
+          "position": 701
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 14,
+      "fragment": ", () => {\n  beforeEach(() => {\n    vi.clearAllMocks();\n\n    mocks.mockRequireAuth.mockResolvedValue({\n      id: \"user-1\",\n      name: \"Test User\",\n      email: \"test@example.com\",\n    });\n\n    mocks.mockUpdate.mockReturnValue({ set: mocks.mockSet });\n    mocks.mockSet.mockReturnValue({ where: mocks.mockWhere });\n    mocks.mockWhere.mockReturnValue({ returning: mocks.mockReturning });\n    mocks.mockReturning.mockResolvedValue([{ id: \"session-1\" }",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/app/actions/sessions.test.ts",
+        "start": 163,
+        "end": 176,
+        "startLoc": {
+          "line": 163,
+          "column": 13,
+          "position": 1541
+        },
+        "endLoc": {
+          "line": 176,
+          "column": 2,
+          "position": 1680
+        }
+      },
+      "secondFile": {
+        "name": "src/app/actions/user.test.ts",
+        "start": 56,
+        "end": 128,
+        "startLoc": {
+          "line": 56,
+          "column": 24,
+          "position": 561
+        },
+        "endLoc": {
+          "line": 128,
+          "column": 2,
+          "position": 1241
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 12,
+      "fragment": ": expect.any(Date),\n      })\n    );\n    expect(mocks.mockWhere).toHaveBeenCalledWith(\n      expect.objectContaining({\n        _and: expect.arrayContaining([\n          { _eq: { col: \"id\", val: \"session-1\" } },\n          { _eq: { col: \"user_id\", val: \"user-1\" } },\n        ]),\n      })\n    );\n  }",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/app/actions/sessions.test.ts",
+        "start": 186,
+        "end": 197,
+        "startLoc": {
+          "line": 186,
+          "column": 8,
+          "position": 1762
+        },
+        "endLoc": {
+          "line": 197,
+          "column": 2,
+          "position": 1870
+        }
+      },
+      "secondFile": {
+        "name": "src/app/actions/sessions.test.ts",
+        "start": 142,
+        "end": 153,
+        "startLoc": {
+          "line": 142,
+          "column": 14,
+          "position": 1353
+        },
+        "endLoc": {
+          "line": 153,
+          "column": 7,
+          "position": 1461
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 13,
+      "fragment": ": vi.fn(),\n  mockValues: vi.fn(),\n  mockReturning: vi.fn(),\n}));\n\nvi.mock(\"@/lib/auth/authorize\", () => ({\n  requireDocumentOwner: mocks.mockRequireDocumentOwner,\n}));\n\nvi.mock(\"@/lib/db\", () => ({\n  db: {\n    insert: mocks.mockInsert,\n    select",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/app/actions/paste-events.test.ts",
+        "start": 8,
+        "end": 20,
+        "startLoc": {
+          "line": 8,
+          "column": 10,
+          "position": 90
+        },
+        "endLoc": {
+          "line": 20,
+          "column": 7,
+          "position": 188
+        }
+      },
+      "secondFile": {
+        "name": "src/app/actions/revisions.test.ts",
+        "start": 5,
+        "end": 17,
+        "startLoc": {
+          "line": 5,
+          "column": 11,
+          "position": 57
+        },
+        "endLoc": {
+          "line": 17,
+          "column": 2,
+          "position": 155
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 7,
+      "fragment": ",\n}));\n\nvi.mock(\"drizzle-orm\", () => ({\n  and: vi.fn((...conds: unknown[]) => ({ _and: conds })),\n  eq: vi.fn((col: unknown, val: unknown) => ({ _eq: { col, val } })),\n}",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/app/actions/paste-events.test.ts",
+        "start": 30,
+        "end": 36,
+        "startLoc": {
+          "line": 30,
+          "column": 2,
+          "position": 264
+        },
+        "endLoc": {
+          "line": 36,
+          "column": 2,
+          "position": 363
+        }
+      },
+      "secondFile": {
+        "name": "src/app/actions/sessions.test.ts",
+        "start": 53,
+        "end": 59,
+        "startLoc": {
+          "line": 53,
+          "column": 25,
+          "position": 519
+        },
+        "endLoc": {
+          "line": 59,
+          "column": 4,
+          "position": 619
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 9,
+      "fragment": ", () => {\n  beforeEach(() => {\n    vi.clearAllMocks();\n    mocks.mockRequireDocumentOwner.mockResolvedValue({\n      user: { id: \"user-1\" },\n      document: { id: \"doc-1\", userId: \"user-1\" },\n    });\n    mocks.mockReturning.mockResolvedValue([\n      { id: \"paste-1\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/app/actions/paste-events.test.ts",
+        "start": 40,
+        "end": 48,
+        "startLoc": {
+          "line": 40,
+          "column": 16,
+          "position": 386
+        },
+        "endLoc": {
+          "line": 48,
+          "column": 10,
+          "position": 476
+        }
+      },
+      "secondFile": {
+        "name": "src/app/actions/revisions.test.ts",
+        "start": 26,
+        "end": 35,
+        "startLoc": {
+          "line": 26,
+          "column": 17,
+          "position": 216
+        },
+        "endLoc": {
+          "line": 35,
+          "column": 8,
+          "position": 307
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 10,
+      "fragment": "import { describe, it, expect, vi, beforeEach } from \"vitest\";\n\nconst mocks = vi.hoisted(() => {\n  const mockReturning = vi.fn();\n  const mockValues = vi.fn(() => ({ returning: mockReturning }));\n  const mockWhere = vi.fn(() => ({ returning: mockReturning }));\n  const mockSet = vi.fn(() => ({ where: mockWhere }));\n  const mockInsert = vi.fn(() => ({ values: mockValues }));\n  const mockUpdate = vi.fn(() => ({ set: mockSet }));\n  const mockSelect",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/app/actions/documents.test.ts",
+        "start": 1,
+        "end": 10,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 10,
+          "column": 11,
+          "position": 205
+        }
+      },
+      "secondFile": {
+        "name": "src/app/actions/sessions.test.ts",
+        "start": 1,
+        "end": 10,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 10,
+          "column": 16,
+          "position": 205
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 22,
+      "fragment": ",\n    mockValues,\n    mockReturning,\n    mockSet,\n    mockWhere,\n    mockRequireAuth,\n    mockRequireDocumentOwner,\n  };\n});\n\nvi.mock(\"@/auth\", () => ({\n  auth: vi.fn(),\n  signIn: vi.fn(),\n  signOut: vi.fn(),\n  handlers: { GET: vi.fn(), POST: vi.fn() },\n}));\n\nvi.mock(\"@/lib/db\", () => ({\n  db: {\n    insert: mocks.mockInsert,\n    update: mocks.mockUpdate,\n    select",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/app/actions/documents.test.ts",
+        "start": 17,
+        "end": 38,
+        "startLoc": {
+          "line": 17,
+          "column": 11,
+          "position": 260
+        },
+        "endLoc": {
+          "line": 38,
+          "column": 7,
+          "position": 417
+        }
+      },
+      "secondFile": {
+        "name": "src/app/actions/sessions.test.ts",
+        "start": 15,
+        "end": 36,
+        "startLoc": {
+          "line": 15,
+          "column": 11,
+          "position": 242
+        },
+        "endLoc": {
+          "line": 36,
+          "column": 2,
+          "position": 399
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 8,
+      "fragment": ",\n    });\n\n    mocks.mockUpdate.mockReturnValue({ set: mocks.mockSet });\n    mocks.mockSet.mockReturnValue({ where: mocks.mockWhere });\n    mocks.mockWhere.mockReturnValue({ returning: mocks.mockReturning });\n    mocks.mockReturning.mockResolvedValue([\n      { id: \"doc-1\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/app/actions/documents.test.ts",
+        "start": 120,
+        "end": 127,
+        "startLoc": {
+          "line": 120,
+          "column": 2,
+          "position": 1118
+        },
+        "endLoc": {
+          "line": 127,
+          "column": 8,
+          "position": 1201
+        }
+      },
+      "secondFile": {
+        "name": "src/app/actions/user.test.ts",
+        "start": 63,
+        "end": 71,
+        "startLoc": {
+          "line": 63,
+          "column": 19,
+          "position": 617
+        },
+        "endLoc": {
+          "line": 71,
+          "column": 9,
+          "position": 701
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 10,
+      "fragment": ", () => {\n  beforeEach(() => {\n    vi.clearAllMocks();\n\n    mocks.mockRequireDocumentOwner.mockResolvedValue({\n      user: { id: \"user-1\", name: \"Test User\", email: \"test@example.com\" },\n      document: {\n        id: \"doc-1\",\n        userId: \"user-1\",\n        title: \"Test\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/app/actions/documents.test.ts",
+        "start": 140,
+        "end": 149,
+        "startLoc": {
+          "line": 140,
+          "column": 17,
+          "position": 1325
+        },
+        "endLoc": {
+          "line": 149,
+          "column": 7,
+          "position": 1412
+        }
+      },
+      "secondFile": {
+        "name": "src/app/actions/documents.test.ts",
+        "start": 105,
+        "end": 114,
+        "startLoc": {
+          "line": 105,
+          "column": 17,
+          "position": 983
+        },
+        "endLoc": {
+          "line": 114,
+          "column": 12,
+          "position": 1070
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 12,
+      "fragment": ",\n        content: '{\"type\":\"doc\",\"content\":[]}',\n        wordCount: 0,\n        deletedAt: null,\n        createdAt: new Date(),\n        updatedAt: new Date(),\n      },\n    });\n\n    mocks.mockUpdate.mockReturnValue({ set: mocks.mockSet });\n    mocks.mockSet.mockReturnValue({ where: mocks.mockWhere });\n  }",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/app/actions/documents.test.ts",
+        "start": 149,
+        "end": 160,
+        "startLoc": {
+          "line": 149,
+          "column": 7,
+          "position": 1413
+        },
+        "endLoc": {
+          "line": 160,
+          "column": 2,
+          "position": 1509
+        }
+      },
+      "secondFile": {
+        "name": "src/app/actions/documents.test.ts",
+        "start": 114,
+        "end": 125,
+        "startLoc": {
+          "line": 114,
+          "column": 12,
+          "position": 1071
+        },
+        "endLoc": {
+          "line": 125,
+          "column": 6,
+          "position": 1167
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 19,
+      "fragment": ");\n\nvi.mock(\"@/auth\", () => ({\n  auth: vi.fn(),\n  signIn: vi.fn(),\n  signOut: vi.fn(),\n  handlers: { GET: vi.fn(), POST: vi.fn() },\n}));\n\nvi.mock(\"@/lib/db\", () => ({\n  db: {\n    insert: mocks.mockInsert,\n    update: mocks.mockUpdate,\n    select: mocks.mockSelect,\n  },\n}));\n\nvi.mock(\"@/lib/db/schema\", () => ({\n  aiInteractions",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/app/actions/cross-user-security.test.ts",
+        "start": 21,
+        "end": 39,
+        "startLoc": {
+          "line": 21,
+          "column": 2,
+          "position": 159
+        },
+        "endLoc": {
+          "line": 39,
+          "column": 15,
+          "position": 319
+        }
+      },
+      "secondFile": {
+        "name": "src/app/actions/user.test.ts",
+        "start": 21,
+        "end": 43,
+        "startLoc": {
+          "line": 21,
+          "column": 2,
+          "position": 265
+        },
+        "endLoc": {
+          "line": 43,
+          "column": 10,
+          "position": 451
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 13,
+      "fragment": ",\n}));\n\nvi.mock(\"drizzle-orm\", () => ({\n  and: vi.fn((...conds: unknown[]) => ({ _and: conds })),\n  eq: vi.fn((col: unknown, val: unknown) => ({ _eq: { col, val } })),\n  sql: vi.fn((strings: TemplateStringsArray, ...values: unknown[]) => ({\n    _sql: strings.join(\"?\"),\n    _values: values,\n  })),\n}));\n\nimport { logAIInteraction",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/app/actions/cross-user-security.test.ts",
+        "start": 57,
+        "end": 69,
+        "startLoc": {
+          "line": 57,
+          "column": 2,
+          "position": 480
+        },
+        "endLoc": {
+          "line": 69,
+          "column": 17,
+          "position": 643
+        }
+      },
+      "secondFile": {
+        "name": "src/app/actions/sessions.test.ts",
+        "start": 53,
+        "end": 65,
+        "startLoc": {
+          "line": 53,
+          "column": 25,
+          "position": 519
+        },
+        "endLoc": {
+          "line": 65,
+          "column": 13,
+          "position": 682
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 11,
+      "fragment": "(threadId: string) {\n  const [thread] = await db\n    .select()\n    .from(chatThreads)\n    .where(eq(chatThreads.id, threadId));\n\n  if (!thread) throw new Error(\"Not found\");\n\n  await requireDocumentOwner(thread.documentId);\n\n  await",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/app/actions/chat-threads.ts",
+        "start": 115,
+        "end": 125,
+        "startLoc": {
+          "line": 115,
+          "column": 17,
+          "position": 902
+        },
+        "endLoc": {
+          "line": 125,
+          "column": 6,
+          "position": 986
+        }
+      },
+      "secondFile": {
+        "name": "src/app/actions/chat-threads.ts",
+        "start": 49,
+        "end": 59,
+        "startLoc": {
+          "line": 49,
+          "column": 14,
+          "position": 401
+        },
+        "endLoc": {
+          "line": 59,
+          "column": 7,
+          "position": 485
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 6,
+      "fragment": "import { describe, it, expect, vi, beforeEach } from \"vitest\";\n\nconst mocks = vi.hoisted(() => {\n  const mockReturning = vi.fn();\n  const mockValues = vi.fn(() => ({ returning: mockReturning }));\n  const mockInsert",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/app/actions/ai-interactions.test.ts",
+        "start": 1,
+        "end": 6,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 6,
+          "column": 11,
+          "position": 89
+        }
+      },
+      "secondFile": {
+        "name": "src/app/actions/sessions.test.ts",
+        "start": 1,
+        "end": 6,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 6,
+          "column": 10,
+          "position": 89
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 16,
+      "fragment": ",\n    mockRequireDocumentOwner,\n  };\n});\n\nvi.mock(\"@/auth\", () => ({\n  auth: vi.fn(),\n  signIn: vi.fn(),\n  signOut: vi.fn(),\n  handlers: { GET: vi.fn(), POST: vi.fn() },\n}));\n\nvi.mock(\"@/lib/db\", () => ({\n  db: {\n    insert: mocks.mockInsert,\n    select",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/app/actions/ai-interactions.test.ts",
+        "start": 18,
+        "end": 33,
+        "startLoc": {
+          "line": 18,
+          "column": 10,
+          "position": 199
+        },
+        "endLoc": {
+          "line": 33,
+          "column": 7,
+          "position": 327
+        }
+      },
+      "secondFile": {
+        "name": "src/app/actions/sessions.test.ts",
+        "start": 20,
+        "end": 35,
+        "startLoc": {
+          "line": 20,
+          "column": 16,
+          "position": 262
+        },
+        "endLoc": {
+          "line": 35,
+          "column": 7,
+          "position": 390
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 9,
+      "fragment": "requireDocumentOwner: mocks.mockRequireDocumentOwner,\n}));\n\nvi.mock(\"drizzle-orm\", () => ({\n  and: vi.fn((...conds: unknown[]) => ({ _and: conds })),\n  eq: vi.fn((col: unknown, val: unknown) => ({ _eq: { col, val } })),\n}));\n\nimport { logAIInteraction",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/app/actions/ai-interactions.test.ts",
+        "start": 61,
+        "end": 69,
+        "startLoc": {
+          "line": 61,
+          "column": 3,
+          "position": 514
+        },
+        "endLoc": {
+          "line": 69,
+          "column": 17,
+          "position": 629
+        }
+      },
+      "secondFile": {
+        "name": "src/app/actions/sessions.test.ts",
+        "start": 53,
+        "end": 38,
+        "startLoc": {
+          "line": 53,
+          "column": 3,
+          "position": 513
+        },
+        "endLoc": {
+          "line": 38,
+          "column": 14,
+          "position": 373
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 14,
+      "fragment": ", () => {\n  beforeEach(() => {\n    vi.clearAllMocks();\n\n    mocks.mockRequireDocumentOwner.mockResolvedValue({\n      user: { id: \"user-1\" },\n      document: { id: \"doc-1\", userId: \"user-1\" },\n    });\n\n    mocks.mockInsert.mockReturnValue({ values: mocks.mockValues });\n    mocks.mockValues.mockReturnValue({ returning: mocks.mockReturning });\n    mocks.mockReturning.mockResolvedValue([\n      {\n        id: \"ai-1\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/app/actions/ai-interactions.test.ts",
+        "start": 71,
+        "end": 84,
+        "startLoc": {
+          "line": 71,
+          "column": 19,
+          "position": 642
+        },
+        "endLoc": {
+          "line": 84,
+          "column": 7,
+          "position": 775
+        }
+      },
+      "secondFile": {
+        "name": "src/app/actions/sessions.test.ts",
+        "start": 67,
+        "end": 80,
+        "startLoc": {
+          "line": 67,
+          "column": 15,
+          "position": 701
+        },
+        "endLoc": {
+          "line": 80,
+          "column": 12,
+          "position": 834
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 8,
+      "fragment": ");\n\n    mocks.mockWhere.mockResolvedValue([{ id: \"session-1\" }]);\n    mocks.mockFrom.mockReturnValue({ where: mocks.mockWhere });\n    mocks.mockSelect.mockReturnValue({ from: mocks.mockFrom });\n  });\n\n  it(\"should write full interaction record to ai_interactions table\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/app/actions/ai-interactions.test.ts",
+        "start": 93,
+        "end": 100,
+        "startLoc": {
+          "line": 93,
+          "column": 2,
+          "position": 833
+        },
+        "endLoc": {
+          "line": 100,
+          "column": 64,
+          "position": 906
+        }
+      },
+      "secondFile": {
+        "name": "src/app/actions/paste-events.test.ts",
+        "start": 51,
+        "end": 58,
+        "startLoc": {
+          "line": 51,
+          "column": 2,
+          "position": 547
+        },
+        "endLoc": {
+          "line": 58,
+          "column": 49,
+          "position": 620
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 28,
+      "fragment": "const doc = {\n      type: \"doc\",\n      content: [\n        {\n          type: \"paragraph\",\n          content: [\n            {\n              type: \"text\",\n              text: modified,\n              marks: [\n                {\n                  type: \"origin\",\n                  attrs: {\n                    type: \"ai\",\n                    sourceId: \"s1\",\n                    originalLength: original.length,\n                    originalText: original,\n                  },\n                },\n              ],\n            },\n          ],\n        },\n      ],\n    };\n\n    const metrics = calculateMetrics(doc);\n    // Exactly 20% should stay classified as AI (threshold is >20%)",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/lib/metrics.test.ts",
+        "start": 320,
+        "end": 347,
+        "startLoc": {
+          "line": 320,
+          "column": 5,
+          "position": 2128
+        },
+        "endLoc": {
+          "line": 347,
+          "column": 64,
+          "position": 2281
+        }
+      },
+      "secondFile": {
+        "name": "src/lib/metrics.test.ts",
+        "start": 189,
+        "end": 216,
+        "startLoc": {
+          "line": 189,
+          "column": 5,
+          "position": 1279
+        },
+        "endLoc": {
+          "line": 216,
+          "column": 7,
+          "position": 1432
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 14,
+      "fragment": ");\n\n    const { result } = renderHook(() =>\n      useAutoSave({ documentId: \"doc-1\", title: \"Test\" })\n    );\n\n    act(() => {\n      result.current.save(content);\n    });\n\n    await act(async () => {\n      vi.advanceTimersByTime(1000);\n    });\n    await",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/hooks/useAutoSave.test.ts",
+        "start": 111,
+        "end": 124,
+        "startLoc": {
+          "line": 111,
+          "column": 2,
+          "position": 920
+        },
+        "endLoc": {
+          "line": 124,
+          "column": 6,
+          "position": 1022
+        }
+      },
+      "secondFile": {
+        "name": "src/hooks/useAutoSave.test.ts",
+        "start": 78,
+        "end": 92,
+        "startLoc": {
+          "line": 78,
+          "column": 2,
+          "position": 678
+        },
+        "endLoc": {
+          "line": 92,
+          "column": 24,
+          "position": 781
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 15,
+      "fragment": "= {\n      type: \"doc\",\n      content: [\n        {\n          type: \"paragraph\",\n          content: [{ type: \"text\", text: \"First paragraph\" }],\n        },\n        {\n          type: \"paragraph\",\n          content: [{ type: \"text\", text: \"Second paragraph\" }],\n        },\n      ],\n    };\n\n    act",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/hooks/useAutoSave.test.ts",
+        "start": 142,
+        "end": 156,
+        "startLoc": {
+          "line": 142,
+          "column": 2,
+          "position": 1190
+        },
+        "endLoc": {
+          "line": 156,
+          "column": 4,
+          "position": 1289
+        }
+      },
+      "secondFile": {
+        "name": "src/lib/tiptap-utils.test.ts",
+        "start": 20,
+        "end": 34,
+        "startLoc": {
+          "line": 20,
+          "column": 2,
+          "position": 164
+        },
+        "endLoc": {
+          "line": 34,
+          "column": 7,
+          "position": 263
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 8,
+      "fragment": "return \"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx\".replace(/[xy]/g, (char) => {\n    const rand = Math.floor(Math.random() * 16);\n    const value = char === \"x\" ? rand : (rand & 0x3) | 0x8;\n    return value.toString(16);\n  });\n}\n\nfunction getClipboardText",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/extensions/paste-handler.ts",
+        "start": 33,
+        "end": 40,
+        "startLoc": {
+          "line": 33,
+          "column": 3,
+          "position": 266
+        },
+        "endLoc": {
+          "line": 40,
+          "column": 17,
+          "position": 359
+        }
+      },
+      "secondFile": {
+        "name": "src/components/editor/inline-ai-utils.ts",
+        "start": 41,
+        "end": 48,
+        "startLoc": {
+          "line": 41,
+          "column": 3,
+          "position": 558
+        },
+        "endLoc": {
+          "line": 48,
+          "column": 20,
+          "position": 651
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 20,
+      "fragment": ";\n\n    editor = new Editor({\n      element: document.createElement(\"div\"),\n      extensions: [\n        StarterKit,\n        OriginMark,\n        PasteHandler.configure({\n          documentId: \"doc-1\",\n          onExternalPaste,\n          recentAIResponses: [],\n        }),\n      ],\n      content: {\n        type: \"doc\",\n        content: [{ type: \"paragraph\" }],\n      },\n    });\n\n    editor",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/extensions/paste-handler.test.ts",
+        "start": 73,
+        "end": 92,
+        "startLoc": {
+          "line": 73,
+          "column": 28,
+          "position": 652
+        },
+        "endLoc": {
+          "line": 92,
+          "column": 7,
+          "position": 767
+        }
+      },
+      "secondFile": {
+        "name": "src/extensions/paste-handler.test.ts",
+        "start": 35,
+        "end": 54,
+        "startLoc": {
+          "line": 35,
+          "column": 2,
+          "position": 320
+        },
+        "endLoc": {
+          "line": 54,
+          "column": 76,
+          "position": 435
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 13,
+      "fragment": ", () => {\n    const onExternalPaste = vi.fn();\n    const aiResponse = \"This is AI generated text\";\n\n    editor = new Editor({\n      element: document.createElement(\"div\"),\n      extensions: [\n        StarterKit,\n        OriginMark,\n        PasteHandler.configure({\n          documentId: \"doc-1\",\n          onExternalPaste,\n          recentAIResponses: [aiResponse",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/extensions/paste-handler.test.ts",
+        "start": 104,
+        "end": 116,
+        "startLoc": {
+          "line": 104,
+          "column": 64,
+          "position": 846
+        },
+        "endLoc": {
+          "line": 116,
+          "column": 11,
+          "position": 940
+        }
+      },
+      "secondFile": {
+        "name": "src/extensions/paste-handler.test.ts",
+        "start": 71,
+        "end": 83,
+        "startLoc": {
+          "line": 71,
+          "column": 49,
+          "position": 621
+        },
+        "endLoc": {
+          "line": 83,
+          "column": 2,
+          "position": 715
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 6,
+      "fragment": ", [mark]);\n    editor.view.dispatch(tr.replaceWith(1, 1, textNode));\n\n    const json = editor.getJSON();\n    const textContent = json.content?.[0]?.content?.[0];\n    expect(textContent?.marks?.[0]?.attrs?.type).toBe(\"ai\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/extensions/paste-handler.test.ts",
+        "start": 133,
+        "end": 138,
+        "startLoc": {
+          "line": 133,
+          "column": 11,
+          "position": 1074
+        },
+        "endLoc": {
+          "line": 138,
+          "column": 5,
+          "position": 1166
+        }
+      },
+      "secondFile": {
+        "name": "src/extensions/paste-handler.test.ts",
+        "start": 61,
+        "end": 68,
+        "startLoc": {
+          "line": 61,
+          "column": 17,
+          "position": 511
+        },
+        "endLoc": {
+          "line": 68,
+          "column": 17,
+          "position": 607
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 21,
+      "fragment": ", () => {\n    const onExternalPaste = vi.fn();\n\n    editor = new Editor({\n      element: document.createElement(\"div\"),\n      extensions: [\n        StarterKit,\n        OriginMark,\n        PasteHandler.configure({\n          documentId: \"doc-1\",\n          onExternalPaste,\n          recentAIResponses: [],\n        }),\n      ],\n      content: {\n        type: \"doc\",\n        content: [{ type: \"paragraph\" }],\n      },\n    });\n\n    const",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/extensions/paste-handler.test.ts",
+        "start": 170,
+        "end": 190,
+        "startLoc": {
+          "line": 170,
+          "column": 62,
+          "position": 1391
+        },
+        "endLoc": {
+          "line": 190,
+          "column": 6,
+          "position": 1527
+        }
+      },
+      "secondFile": {
+        "name": "src/extensions/paste-handler.test.ts",
+        "start": 34,
+        "end": 54,
+        "startLoc": {
+          "line": 34,
+          "column": 55,
+          "position": 299
+        },
+        "endLoc": {
+          "line": 54,
+          "column": 76,
+          "position": 435
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 12,
+      "fragment": ");\n\n    const json = editor.getJSON();\n    const textNode = json.content?.[0]?.content?.[0];\n    expect(textNode?.marks).toEqual([\n      {\n        type: \"origin\",\n        attrs: {\n          type: \"ai\",\n          sourceId: \"interaction-123\",\n          originalLength: 17,\n          originalText: \"AI generated text\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/extensions/origin-mark.test.ts",
+        "start": 148,
+        "end": 159,
+        "startLoc": {
+          "line": 148,
+          "column": 2,
+          "position": 1049
+        },
+        "endLoc": {
+          "line": 159,
+          "column": 20,
+          "position": 1146
+        }
+      },
+      "secondFile": {
+        "name": "src/extensions/origin-mark.test.ts",
+        "start": 47,
+        "end": 58,
+        "startLoc": {
+          "line": 47,
+          "column": 12,
+          "position": 355
+        },
+        "endLoc": {
+          "line": 58,
+          "column": 5,
+          "position": 452
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 16,
+      "fragment": ", () => {\n    editor = createEditor({\n      type: \"doc\",\n      content: [\n        {\n          type: \"paragraph\",\n          content: [\n            {\n              type: \"text\",\n              text: \"pasted text\",\n              marks: [\n                {\n                  type: \"origin\",\n                  attrs: {\n                    type: \"external_paste\",\n                    sourceId: \"p1\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/extensions/origin-mark.test.ts",
+        "start": 244,
+        "end": 259,
+        "startLoc": {
+          "line": 244,
+          "column": 56,
+          "position": 1782
+        },
+        "endLoc": {
+          "line": 259,
+          "column": 5,
+          "position": 1879
+        }
+      },
+      "secondFile": {
+        "name": "src/extensions/origin-mark.test.ts",
+        "start": 71,
+        "end": 86,
+        "startLoc": {
+          "line": 71,
+          "column": 56,
+          "position": 560
+        },
+        "endLoc": {
+          "line": 86,
+          "column": 12,
+          "position": 657
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 7,
+      "fragment": ", () => {\n    editor = new Editor({\n      element: document.createElement(\"div\"),\n      extensions: [StarterKit, EditorInteractionPolicy],\n      content: {\n        type: \"doc\",\n        content: [{ type: \"paragraph\", content: [{ type: \"text\", text: \"Example\" }",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/extensions/interaction-policy.test.ts",
+        "start": 148,
+        "end": 154,
+        "startLoc": {
+          "line": 148,
+          "column": 63,
+          "position": 1207
+        },
+        "endLoc": {
+          "line": 154,
+          "column": 2,
+          "position": 1294
+        }
+      },
+      "secondFile": {
+        "name": "src/extensions/interaction-policy.test.ts",
+        "start": 110,
+        "end": 122,
+        "startLoc": {
+          "line": 110,
+          "column": 50,
+          "position": 893
+        },
+        "endLoc": {
+          "line": 122,
+          "column": 2,
+          "position": 987
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 10,
+      "fragment": "],\n      },\n    });\n\n    const { plugin, clickHandler } = getClickHandler(editor);\n    expect(clickHandler).toBeTypeOf(\"function\");\n\n    const link = document.createElement(\"a\");\n    link.href = \"https://example.com\";\n    const event = createClickEvent(link,",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/extensions/interaction-policy.test.ts",
+        "start": 154,
+        "end": 163,
+        "startLoc": {
+          "line": 154,
+          "column": 2,
+          "position": 1298
+        },
+        "endLoc": {
+          "line": 163,
+          "column": 2,
+          "position": 1379
+        }
+      },
+      "secondFile": {
+        "name": "src/extensions/interaction-policy.test.ts",
+        "start": 127,
+        "end": 136,
+        "startLoc": {
+          "line": 127,
+          "column": 9,
+          "position": 1031
+        },
+        "endLoc": {
+          "line": 136,
+          "column": 2,
+          "position": 1112
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 10,
+      "fragment": ");\n    const preventDefaultSpy = vi.spyOn(event, \"preventDefault\");\n\n    const handled = clickHandler?.call(\n      plugin!,\n      editor.view,\n      event as unknown as PointerEvent\n    );\n    expect(handled).toBe(false);\n    expect(preventDefaultSpy).not",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/extensions/interaction-policy.test.ts",
+        "start": 163,
+        "end": 172,
+        "startLoc": {
+          "line": 163,
+          "column": 2,
+          "position": 1389
+        },
+        "endLoc": {
+          "line": 172,
+          "column": 4,
+          "position": 1468
+        }
+      },
+      "secondFile": {
+        "name": "src/extensions/interaction-policy.test.ts",
+        "start": 136,
+        "end": 145,
+        "startLoc": {
+          "line": 136,
+          "column": 5,
+          "position": 1112
+        },
+        "endLoc": {
+          "line": 145,
+          "column": 22,
+          "position": 1191
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 7,
+      "fragment": ", () => {\n    editor = new Editor({\n      element: document.createElement(\"div\"),\n      extensions: [StarterKit, EditorInteractionPolicy],\n      content: {\n        type: \"doc\",\n        content: [{ type: \"paragraph\", content: [{ type: \"text\", text: \"Test\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/extensions/interaction-policy.test.ts",
+        "start": 175,
+        "end": 181,
+        "startLoc": {
+          "line": 175,
+          "column": 63,
+          "position": 1485
+        },
+        "endLoc": {
+          "line": 181,
+          "column": 7,
+          "position": 1570
+        }
+      },
+      "secondFile": {
+        "name": "src/extensions/interaction-policy.test.ts",
+        "start": 110,
+        "end": 122,
+        "startLoc": {
+          "line": 110,
+          "column": 50,
+          "position": 893
+        },
+        "endLoc": {
+          "line": 122,
+          "column": 10,
+          "position": 986
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 12,
+      "fragment": ");\n    const preventDefaultSpy = vi.spyOn(event, \"preventDefault\");\n\n    const handled = clickHandler?.call(\n      plugin!,\n      editor.view,\n      event as unknown as PointerEvent\n    );\n    expect(handled).toBe(false);\n    expect(preventDefaultSpy).toHaveBeenCalledTimes(1);\n  });\n}",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/extensions/interaction-policy.test.ts",
+        "start": 190,
+        "end": 201,
+        "startLoc": {
+          "line": 190,
+          "column": 12,
+          "position": 1659
+        },
+        "endLoc": {
+          "line": 201,
+          "column": 2,
+          "position": 1749
+        }
+      },
+      "secondFile": {
+        "name": "src/extensions/interaction-policy.test.ts",
+        "start": 136,
+        "end": 148,
+        "startLoc": {
+          "line": 136,
+          "column": 5,
+          "position": 1112
+        },
+        "endLoc": {
+          "line": 148,
+          "column": 3,
+          "position": 1204
+        }
+      }
+    }
+  ]
+}
