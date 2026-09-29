@@ -78,10 +78,11 @@ npm run lint      # ESLint
 
 ## Documentation
 
-- [Product Spec](PRODUCT_SPEC.md) — Requirements and user stories
-- [Technical Spec](TECHNICAL_SPEC.md) — Architecture and data models
 - [Design System](DESIGN_SYSTEM.md) — Colors, components, interaction patterns
-- [Agent Workflow](AGENTS.md) — Guidelines for AI-assisted development
+- [Manual Testing](MANUAL_TESTING.md) — Current hands-on verification paths
+- [Ideas](IDEAS.md) — Non-binding product opportunities and unresolved questions
+- [Agent Guidance](AGENTS.md) — Repository constraints for AI-assisted development
+- [Initial Brainstorm](INITIAL_BRAINSTORM.md), [V2 Brainstorm](V2_BRAINSTORM.md), and [Research Synthesis](provenance-synthesis.md) — Broader product exploration
 
 ## License
 
