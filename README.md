@@ -1,8 +1,16 @@
 # Provenance
 
-An auditable AI writing tool that makes the writing process transparent and verifiable.
+A writing editor that records edits and AI interactions, then lets readers
+inspect the recorded history.
 
-Writers who use AI thoughtfully have no way to prove it. Readers have no way to tell the difference. Provenance fixes this by recording **how** AI was used during writing and generating a verifiable badge with the results. It's a court reporter, not a judge.
+## What the record can tell you
+
+Provenance tracks activity inside the editor: writing, pasted text, and
+use of the built-in AI tools. A shared badge links back to that history.
+
+It can't establish how text was written before it was pasted in, or
+whether the claims in a document are true. Any AI percentage needs to be
+read within that scope.
 
 ## Quick Start
 
@@ -27,8 +35,8 @@ Open [http://localhost:3000](http://localhost:3000).
 1. **Write** in the TipTap-based editor with full formatting support
 2. **Use AI** via inline tools or the side-panel chat (research, critique, brainstorm)
 3. **Every interaction is tracked** — AI suggestions, pastes from external sources, manual edits
-4. **Generate a badge** that shows the exact AI percentage, embeddable in any blog or site
-5. **Readers verify** by clicking the badge to see the full audit trail
+4. **Generate a badge** showing the AI attribution recorded by the editor
+5. **Readers inspect the history** by clicking the badge
 
 ## Tech Stack
 
@@ -84,6 +92,6 @@ npm run lint      # ESLint
 - [Agent Guidance](AGENTS.md) — Repository constraints for AI-assisted development
 - [Initial Brainstorm](INITIAL_BRAINSTORM.md), [V2 Brainstorm](V2_BRAINSTORM.md), and [Research Synthesis](provenance-synthesis.md) — Broader product exploration
 
-## License
+## Source
 
-Private.
+The source is public for inspection. No open-source license is specified.
